@@ -1,23 +1,19 @@
 package morales.david.desktop;
 
-import com.sun.javafx.css.StyleManager;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
+import morales.david.desktop.managers.ScreenManager;
 
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) {
 
-        Parent root = FXMLLoader.load(getClass().getResource("view/login.fxml"));
+        ScreenManager screenManager = ScreenManager.getInstance();
 
-        primaryStage.setTitle("");
-        primaryStage.setScene(new Scene(root));
+        screenManager.setStage(primaryStage);
 
-        primaryStage.show();
+        screenManager.openScene("login.fxml", "Login");
 
     }
 

@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="503.0" prefWidth="854.0" styleClass="mainPane" stylesheets="@../resources/css/login.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morales.david.desktop.controller.LoginController">
+<AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="855.0" styleClass="mainPane" stylesheets="@../resources/css/login.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morales.david.desktop.controllers.LoginController">
     <children>
         <AnchorPane prefHeight="503.0" prefWidth="382.0" styleClass="leftPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -19,12 +19,12 @@
                         <Image url="@../resources/images/logo.png" />
                     </image>
                 </ImageView>
-                <Label alignment="CENTER" layoutX="65.0" layoutY="251.0" prefHeight="23.0" prefWidth="254.0" text="I.E.S Fernando Aguilar Quignon" textFill="WHITE">
+                <Label alignment="CENTER" layoutX="46.0" layoutY="252.0" prefHeight="23.0" prefWidth="292.0" text="I.E.S Fernando Aguilar Quignon" textFill="WHITE">
                     <font>
-                        <Font name="Segoe UI" size="18.0" />
+                        <Font name="Segoe UI Bold" size="18.0" />
                     </font>
                 </Label>
-                <Label alignment="CENTER" layoutX="89.0" layoutY="285.0" prefHeight="23.0" prefWidth="205.0" text="Sistema de gestión de horarios" textFill="WHITE">
+                <Label alignment="CENTER" layoutX="89.0" layoutY="285.0" prefHeight="23.0" prefWidth="205.0" text="Sistema gestor de horarios" textFill="WHITE">
                     <font>
                         <Font name="Segoe UI" size="14.0" />
                     </font>
