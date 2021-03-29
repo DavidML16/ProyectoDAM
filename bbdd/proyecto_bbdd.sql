@@ -1,0 +1,22 @@
+CREATE DATABASE db_proyecto;
+
+USE db_proyecto;
+
+CREATE TABLE profesor (
+    id_prof INTEGER(11) PRIMARY KEY,
+    numero INTEGER(5),
+    nombre VARCHAR(150) NOT NULL,
+    abrev INTEGER(5),
+    minhdia INTEGER(3),
+    maxhdia INTEGER(3),
+    depart VARCHAR(50)
+);
+
+CREATE TABLE credencial (
+    id_cred INTEGER(11) PRIMARY KEY,
+    usuario VARCHAR(255),
+    passwd VARCHAR(255),
+    rol VARCHAR(50),
+    profesor INTEGER(11),
+    CONSTRAINT credencial_prof_fk FOREIGN KEY (profesor) REFERENCES profesor(id_prof)
+);
