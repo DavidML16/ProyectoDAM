@@ -1,0 +1,28 @@
+package morales.david.server.models;
+
+import morales.david.server.threads.ClientThread;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ClientRepository {
+
+    private final List<ClientThread> clients;
+
+    public ClientRepository(){
+        clients = new ArrayList<>();
+    }
+
+    public synchronized void addClient(ClientThread clientThread){
+        clients.add(clientThread);
+    }
+
+    public synchronized List<ClientThread> getClients() {
+        return clients;
+    }
+
+    public synchronized boolean isNoClients(){
+        return clients.isEmpty();
+    }
+
+}
