@@ -28,7 +28,9 @@ public class Server {
 
             Socket clientSocket = server.accept();
 
-            new ClientThread(this, clientSocket).start();
+            ClientThread clientThread = new ClientThread(this, clientSocket);
+            clientThread.setDaemon(true);
+            clientThread.start();
 
             System.out.println(Constants.LOG_SERVER_USER_CONNECTED);
 

@@ -13,9 +13,9 @@ CREATE TABLE profesor (
 );
 
 CREATE TABLE credencial (
-    id_cred INTEGER(11) PRIMARY KEY,
-    usuario VARCHAR(255),
-    passwd VARCHAR(255),
+    id_cred INTEGER(11) PRIMARY KEY AUTO_INCREMENT,
+    usuario VARCHAR(255) NOT NULL,
+	passwd_hash VARCHAR(255),
     rol VARCHAR(50),
     profesor INTEGER(11),
     CONSTRAINT credencial_prof_fk FOREIGN KEY (profesor) REFERENCES profesor(id_prof)

@@ -17,6 +17,10 @@ public class ClientRepository {
         clients.add(clientThread);
     }
 
+    public synchronized void removeClient(ClientThread clientThread){
+        clients.remove(clientThread);
+    }
+
     public synchronized List<ClientThread> getClients() {
         return clients;
     }
