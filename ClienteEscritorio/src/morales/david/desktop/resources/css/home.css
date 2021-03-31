@@ -1,0 +1,24 @@
+.mainPane {
+    -fx-background-color: #F8F9F9;
+}
+
+.leftPane {
+    -fx-background-color: #e60547;
+}
+
+.navigationButton {
+    -fx-background-color: #e60547;
+    -fx-text-fill: #FFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+.navigationButton:hover {
+    -fx-background-color: #B00A3A;
+    -fx-text-fill: #FFF;
+}
+
+.navigationButton:pressed {
+    -fx-background-color: #A40A36;
+    -fx-text-fill: #FFF;
+}

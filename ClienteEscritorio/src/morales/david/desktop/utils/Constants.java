@@ -19,5 +19,6 @@ public class Constants {
     public static final String CONFIRMATION_DETAILS = "CF2-DETAILS";
 
     public static final String MESSAGES_ERROR_LOGIN = "Usuario o contraseña incorrecta";
+    public static final String MESSAGES_ERROR_LOGIN_EMPTY = "Campo o campos vacíos";
 
 }

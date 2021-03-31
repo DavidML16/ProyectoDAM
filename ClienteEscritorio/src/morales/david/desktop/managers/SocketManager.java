@@ -70,8 +70,8 @@ public class SocketManager extends Thread {
 
                                 Platform.runLater(() -> {
 
-                                    screenManager.openScene("dashboard.fxml", "Dashboard");
-                                    screenManager.getStage().setMaximized(true);
+                                    screenManager.getStage().setResizable(true);
+                                    screenManager.openScene("home.fxml", "Home");
 
                                 });
 
