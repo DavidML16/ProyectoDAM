@@ -22,10 +22,12 @@ public class Constants {
     public static final String LOG_SERVER_USER_DISCONNECTED = "(+) Se ha desconectado un usuario";
 
     public static final String REQUEST_LOGIN = "R1-LOGIN";
-
-    public static final String ERROR_LOGIN = "E1-LOGIN";
+    public static final String REQUEST_DISCONNECT = "R2-DISCONNECT";
 
     public static final String CONFIRMATION_LOGIN = "CF1-LOGIN";
-    public static final String CONFIRMATION_DETAILS = "CF2-DETAILS";
+    public static final String CONFIRMATION_DISCONNECT = "CF2-DISCONNECT";
+
+    public static final String ERROR_LOGIN = "E1-LOGIN";
+    public static final String ERROR_DISCONNECT = "E2-DISCONNECT";
 
 }

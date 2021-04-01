@@ -1,7 +1,7 @@
 package morales.david.server;
 
-import morales.david.server.models.ClientRepository;
-import morales.david.server.threads.ClientThread;
+import morales.david.server.clients.ClientRepository;
+import morales.david.server.clients.ClientThread;
 import morales.david.server.utils.Constants;
 
 import java.io.IOException;

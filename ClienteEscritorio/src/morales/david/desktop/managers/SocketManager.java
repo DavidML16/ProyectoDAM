@@ -31,6 +31,14 @@ public class SocketManager extends Thread {
 
     public SocketManager() {
 
+        openSocket();
+
+        this.clientSession = new ClientSession();
+
+    }
+
+    public void openSocket() {
+
         try {
 
             socket = new Socket(Constants.SERVER_IP, Constants.SERVER_PORT);
@@ -43,8 +51,6 @@ public class SocketManager extends Thread {
             e.printStackTrace();
 
         }
-
-        this.clientSession = new ClientSession();
 
     }
 
@@ -64,24 +70,29 @@ public class SocketManager extends Thread {
 
                     switch (receivedArguments[0]) {
 
-                        case Constants.CONFIRMATION_LOGIN:
+                        case Constants.CONFIRMATION_LOGIN: {
 
-                            if(screenManager.getController() instanceof LoginController) {
+                            clientSession.setId(Integer.parseInt(receivedArguments[1]));
+                            clientSession.setName(receivedArguments[2]);
+                            clientSession.setRole(receivedArguments[3]);
+
+                            if (screenManager.getController() instanceof LoginController) {
 
                                 Platform.runLater(() -> {
 
                                     screenManager.getStage().setResizable(true);
-                                    screenManager.openScene("home.fxml", "Home");
+                                    screenManager.openScene("dashboard.fxml", "Home");
 
                                 });
 
                             }
 
                             break;
+                        }
 
-                        case Constants.ERROR_LOGIN:
+                        case Constants.ERROR_LOGIN: {
 
-                            if(screenManager.getController() instanceof LoginController) {
+                            if (screenManager.getController() instanceof LoginController) {
 
                                 LoginController loginController = (LoginController) screenManager.getController();
 
@@ -96,14 +107,27 @@ public class SocketManager extends Thread {
 
                             break;
 
-                        case Constants.CONFIRMATION_DETAILS:
+                        }
 
-                            clientSession.setId(Integer.parseInt(receivedArguments[1]));
-                            clientSession.setName(receivedArguments[2]);
-                            clientSession.setRole(receivedArguments[3]);
+                        case Constants.CONFIRMATION_DISCONNECT: {
+
+                            clientSession = new ClientSession();
+
+                            if (!(screenManager.getController() instanceof LoginController)) {
+
+                                Platform.runLater(() -> {
+
+                                    openSocket();
+
+                                    screenManager.getStage().setResizable(false);
+                                    screenManager.openScene("login.fxml", "Home");
+
+                                });
+
+                            }
 
                             break;
-
+                        }
 
                     }
 

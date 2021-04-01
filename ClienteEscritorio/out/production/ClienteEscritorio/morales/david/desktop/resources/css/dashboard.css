@@ -16,6 +16,7 @@
 .navigationButton:hover {
     -fx-background-color: #B00A3A;
     -fx-text-fill: #FFF;
+    -fx-cursor: hand;
 }
 
 .navigationButton:pressed {

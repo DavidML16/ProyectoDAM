@@ -1,7 +1,7 @@
 package morales.david.server.utils;
 
-import morales.david.server.models.ClientSession;
-import morales.david.server.threads.ClientThread;
+import morales.david.server.clients.ClientSession;
+import morales.david.server.clients.ClientThread;
 
 import java.sql.*;
 

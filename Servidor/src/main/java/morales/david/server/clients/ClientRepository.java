@@ -1,6 +1,4 @@
-package morales.david.server.models;
-
-import morales.david.server.threads.ClientThread;
+package morales.david.server.clients;
 
 import java.util.ArrayList;
 import java.util.List;
