@@ -4,13 +4,13 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.ScreenManager;
 import morales.david.desktop.managers.SocketManager;
@@ -23,7 +23,7 @@ import java.util.ResourceBundle;
 public class DashboardController implements Initializable, Controller {
 
     @FXML
-    private BorderPane viewPane;
+    private StackPane viewPane;
 
     @FXML
     private Button teachersNavigationButton;
@@ -52,7 +52,7 @@ public class DashboardController implements Initializable, Controller {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        Platform.runLater(() -> loadView("home.fxml"));
+        Platform.runLater(() -> loadView("home.fxml", "Inicio"));
 
     }
 
@@ -60,9 +60,19 @@ public class DashboardController implements Initializable, Controller {
     public void handleButtonAction(MouseEvent event) {
 
         if(event.getSource() == homeNavigationButton)
-            loadView("home.fxml");
+            loadView("home.fxml", "Inicio");
+        else if (event.getSource() == teachersNavigationButton)
+            loadView("teachers.fxml", "Profesores");
+        else if (event.getSource() == groupsNavigationButton)
+            loadView("groups.fxml", "Grupos");
+        else if (event.getSource() == roomsNavigationButton)
+            loadView("rooms.fxml", "Aulas");
+        else if (event.getSource() == inspectorNavigationButton)
+            loadView("inspections.fxml", "Guardias");
+        else if (event.getSource() == scheduleNavigationButton)
+            loadView("schedules.fxml", "Horarios");
         else if (event.getSource() == importNavigationButton)
-            loadView("import.fxml");
+            loadView("import.fxml", "Importar");
         else if(event.getSource() == disconnectNavigationButton)
             disconnect();
 
@@ -81,20 +91,26 @@ public class DashboardController implements Initializable, Controller {
 
     }
 
-    private void loadView(String view) {
+    private void loadView(String view, String title) {
 
-        Parent parent = null;
+        Node newView = null;
+        Node oldView = null;
 
         try {
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/" + view));
-            parent = loader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/views/" + view));
+            newView = loader.load();
 
-            Controller controller = loader.getController();
+            if(viewPane.getChildren().size() > 0) {
+                oldView = viewPane.getChildren().get(0);
+                viewPane.getChildren().remove(oldView);
+            }
 
-            viewPane.setCenter(parent);
+            viewPane.getChildren().add(newView);
 
-            ScreenManager.getInstance().setController(controller);
+            ScreenManager.getInstance().getStage().setTitle(title + Constants.WINDOW_TITLE);
+
+            ScreenManager.getInstance().setController(loader.getController());
 
         } catch (IOException e) {
             e.printStackTrace();

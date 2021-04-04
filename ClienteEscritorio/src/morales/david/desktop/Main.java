@@ -1,9 +1,11 @@
 package morales.david.desktop;
 
 import javafx.application.Application;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import morales.david.desktop.managers.ScreenManager;
 import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.utils.Constants;
 
 public class Main extends Application {
 
@@ -14,12 +16,13 @@ public class Main extends Application {
         socketManager.setDaemon(true);
         socketManager.start();
 
+        primaryStage.getIcons().add(new Image("resources/images/schedule-icon.png"));
+
         ScreenManager screenManager = ScreenManager.getInstance();
 
         screenManager.setStage(primaryStage);
-        screenManager.getStage().setResizable(false);
 
-        screenManager.openScene("login.fxml", "Login");
+        screenManager.openScene("login.fxml", "Iniciar sesión" + Constants.WINDOW_TITLE);
 
     }
 

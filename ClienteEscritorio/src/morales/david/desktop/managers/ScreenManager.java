@@ -50,7 +50,7 @@ public class ScreenManager {
 
         try {
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/" + url));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/views/" + url));
             Parent parent = loader.load();
 
             controller = loader.getController();

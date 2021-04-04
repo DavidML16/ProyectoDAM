@@ -80,8 +80,7 @@ public class SocketManager extends Thread {
 
                                 Platform.runLater(() -> {
 
-                                    screenManager.getStage().setResizable(true);
-                                    screenManager.openScene("dashboard.fxml", "Home");
+                                    screenManager.openScene("dashboard.fxml", "Inicio" + Constants.WINDOW_TITLE);
 
                                 });
 
@@ -119,8 +118,7 @@ public class SocketManager extends Thread {
 
                                     openSocket();
 
-                                    screenManager.getStage().setResizable(false);
-                                    screenManager.openScene("login.fxml", "Home");
+                                    screenManager.openScene("login.fxml", "Iniciar sesión" + Constants.WINDOW_TITLE);
 
                                 });
 

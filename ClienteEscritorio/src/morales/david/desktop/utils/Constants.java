@@ -2,6 +2,8 @@ package morales.david.desktop.utils;
 
 public class Constants {
 
+    public static final String WINDOW_TITLE = " (SGH)";
+
     public static final String SERVER_IP = "localhost";
     public static final int SERVER_PORT = 6565;
 

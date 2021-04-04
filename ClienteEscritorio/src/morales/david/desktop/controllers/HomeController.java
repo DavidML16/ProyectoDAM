@@ -16,6 +16,8 @@ import java.util.ResourceBundle;
 
 public class HomeController implements Initializable, Controller {
 
+    //TODO HOME VIEW
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
