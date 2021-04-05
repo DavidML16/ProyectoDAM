@@ -1,7 +1,10 @@
 package morales.david.server;
 
+import com.google.gson.Gson;
 import morales.david.server.clients.ClientRepository;
 import morales.david.server.clients.ClientThread;
+import morales.david.server.models.Packet;
+import morales.david.server.models.PacketBuilder;
 import morales.david.server.utils.Constants;
 
 import java.io.IOException;
@@ -15,6 +18,8 @@ public class Server {
     private ClientRepository clientRepository;
 
     private boolean running;
+
+    public static final Gson GSON = new Gson();
 
     private void init() throws IOException {
 

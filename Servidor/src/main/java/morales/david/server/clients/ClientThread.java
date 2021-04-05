@@ -1,6 +1,7 @@
 package morales.david.server.clients;
 
 import morales.david.server.Server;
+import morales.david.server.models.Packet;
 import morales.david.server.utils.Constants;
 import morales.david.server.utils.DBConnection;
 
@@ -18,8 +19,7 @@ public class ClientThread extends Thread {
 
     private boolean connected;
 
-    private String receivedMessage;
-    private String[] receivedArguments;
+    private Packet receivedPacket;
 
     private ClientSession clientSession;
     private ClientProtocol clientProtocol;
@@ -53,14 +53,12 @@ public class ClientThread extends Thread {
 
         while(connected) {
 
-            receivedMessage = clientProtocol.readMessageIO();
+            receivedPacket = clientProtocol.readPacketIO();
 
-            if(receivedMessage == null)
+            if(receivedPacket == null)
                 continue;
 
-            receivedArguments = receivedMessage.split(Constants.ARGUMENT_DIVIDER);
-
-            clientProtocol.parseInput(receivedArguments);
+            clientProtocol.parseInput(receivedPacket);
 
         }
 

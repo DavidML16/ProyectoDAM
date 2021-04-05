@@ -1,5 +1,8 @@
 package morales.david.server.clients;
 
+import morales.david.server.Server;
+import morales.david.server.models.Packet;
+import morales.david.server.models.PacketBuilder;
 import morales.david.server.utils.Constants;
 import morales.david.server.utils.DBConnection;
 
@@ -12,18 +15,18 @@ public class ClientProtocol {
 
     private boolean logged;
 
-    private String[] lastArguments;
+    private Packet lastPacket;
 
     public ClientProtocol(ClientThread clientThread) {
         this.clientThread = clientThread;
         this.logged = false;
     }
 
-    public void parseInput(String[] arguments) {
+    public void parseInput(Packet packet) {
 
-        lastArguments = arguments;
+        lastPacket = packet;
 
-        switch (arguments[0]) {
+        switch (lastPacket.getType()) {
 
             case Constants.REQUEST_LOGIN:
                 login();
@@ -39,8 +42,8 @@ public class ClientProtocol {
 
     private void login() {
 
-        final String username = lastArguments[1];
-        final String password = lastArguments[2];
+        final String username = (String) lastPacket.getArgument("username");
+        final String password = (String) lastPacket.getArgument("password");
 
         ClientSession clientSession = clientThread.getClientSession();
         DBConnection dbConnection = clientThread.getDbConnection();
@@ -49,22 +52,24 @@ public class ClientProtocol {
 
             dbConnection.getUserDetails(username, clientSession);
 
-            StringBuilder sb = new StringBuilder()
-                    .append(Constants.CONFIRMATION_LOGIN)
-                    .append(Constants.ARGUMENT_DIVIDER)
-                    .append(clientSession.getId())
-                    .append(Constants.ARGUMENT_DIVIDER)
-                    .append(clientSession.getName())
-                    .append(Constants.ARGUMENT_DIVIDER)
-                    .append(clientSession.getRole());
+            Packet loginConfirmationPacket = new PacketBuilder()
+                    .ofType(Constants.CONFIRMATION_LOGIN)
+                    .addArgument("id", clientSession.getId())
+                    .addArgument("name", clientSession.getName())
+                    .addArgument("role", clientSession.getRole())
+                    .build();
 
-            sendMessageIO(sb.toString());
+            sendPacketIO(loginConfirmationPacket);
 
             logged = true;
 
         } else {
 
-            sendMessageIO(Constants.ERROR_LOGIN);
+            Packet loginErrorPacket = new PacketBuilder()
+                    .ofType(Constants.ERROR_LOGIN)
+                    .build();
+
+            sendPacketIO(loginErrorPacket);
 
         }
 
@@ -74,20 +79,28 @@ public class ClientProtocol {
 
         if(logged) {
 
-            sendMessageIO(Constants.CONFIRMATION_DISCONNECT);
+            Packet disconnectConfirmationPacket = new PacketBuilder()
+                    .ofType(Constants.CONFIRMATION_DISCONNECT)
+                    .build();
+
+            sendPacketIO(disconnectConfirmationPacket);
             clientThread.setConnected(false);
 
         } else {
 
-            sendMessageIO(Constants.ERROR_DISCONNECT);
+            Packet disconnectErrorPacket = new PacketBuilder()
+                    .ofType(Constants.ERROR_DISCONNECT)
+                    .build();
+
+            sendPacketIO(disconnectErrorPacket);
 
         }
 
     }
 
-    public void sendMessageIO(String message) {
+    public void sendPacketIO(Packet packet) {
         try {
-            clientThread.getOutput().write(message);
+            clientThread.getOutput().write(packet.toString());
             clientThread.getOutput().newLine();
             clientThread.getOutput().flush();
         } catch (IOException e) {
@@ -96,9 +109,10 @@ public class ClientProtocol {
         }
     }
 
-    public String readMessageIO() {
+    public Packet readPacketIO() {
         try {
-            return clientThread.getInput().readLine();
+            String json = clientThread.getInput().readLine();
+            return Server.GSON.fromJson(json, Packet.class);
         } catch (SocketException e) {
             clientThread.setConnected(false);
         } catch (IOException e) {

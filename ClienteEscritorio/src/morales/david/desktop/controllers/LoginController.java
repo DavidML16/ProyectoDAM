@@ -2,9 +2,7 @@ package morales.david.desktop.controllers;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -13,12 +11,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import morales.david.desktop.interfaces.Controller;
-import morales.david.desktop.managers.ScreenManager;
 import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.models.Packet;
+import morales.david.desktop.models.PacketBuilder;
 import morales.david.desktop.utils.Constants;
 import morales.david.desktop.utils.HashUtil;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -81,14 +79,13 @@ public class LoginController implements Initializable, Controller {
 
         }
 
-        StringBuilder sb = new StringBuilder()
-            .append(Constants.REQUEST_LOGIN)
-            .append(Constants.ARGUMENT_DIVIDER)
-            .append(username)
-            .append(Constants.ARGUMENT_DIVIDER)
-            .append(password);
+        Packet loginRequestPacket = new PacketBuilder()
+                .ofType(Constants.REQUEST_LOGIN)
+                .addArgument("username", username)
+                .addArgument("password", password)
+                .build();
 
-        SocketManager.getInstance().sendMessageIO(sb.toString());
+        SocketManager.getInstance().sendPacketIO(loginRequestPacket);
 
     }
 

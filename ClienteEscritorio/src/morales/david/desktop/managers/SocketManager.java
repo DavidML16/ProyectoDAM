@@ -2,8 +2,10 @@ package morales.david.desktop.managers;
 
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
+import morales.david.desktop.Client;
 import morales.david.desktop.controllers.LoginController;
 import morales.david.desktop.models.ClientSession;
+import morales.david.desktop.models.Packet;
 import morales.david.desktop.utils.Constants;
 
 import java.io.*;
@@ -24,8 +26,7 @@ public final class SocketManager extends Thread {
     private BufferedReader input;
     private BufferedWriter output;
 
-    private String receivedMessage;
-    private String[] receivedArguments;
+    private Packet receivedPacket;
 
     private ClientSession clientSession;
 
@@ -57,24 +58,23 @@ public final class SocketManager extends Thread {
     @Override
     public void run() {
 
+        ScreenManager screenManager = ScreenManager.getInstance();
+
         while(true) {
 
             try {
 
                 if (input != null && input.ready()) {
 
-                    receivedMessage = input.readLine();
-                    receivedArguments = receivedMessage.split(Constants.ARGUMENT_DIVIDER);
+                    receivedPacket = readPacketIO();
 
-                    ScreenManager screenManager = ScreenManager.getInstance();
-
-                    switch (receivedArguments[0]) {
+                    switch (receivedPacket.getType()) {
 
                         case Constants.CONFIRMATION_LOGIN: {
 
-                            clientSession.setId(Integer.parseInt(receivedArguments[1]));
-                            clientSession.setName(receivedArguments[2]);
-                            clientSession.setRole(receivedArguments[3]);
+                            clientSession.setId(((Double) receivedPacket.getArgument("id")).intValue());
+                            clientSession.setName((String) receivedPacket.getArgument("name"));
+                            clientSession.setRole((String) receivedPacket.getArgument("role"));
 
                             if (screenManager.getController() instanceof LoginController) {
 
@@ -139,9 +139,9 @@ public final class SocketManager extends Thread {
 
     }
 
-    public void sendMessageIO(String message) {
+    public void sendPacketIO(Packet packet) {
         try {
-            output.write(message);
+            output.write(packet.toString());
             output.newLine();
             output.flush();
         } catch (IOException e) {
@@ -150,9 +150,10 @@ public final class SocketManager extends Thread {
         }
     }
 
-    public String readMessageIO() {
+    public Packet readPacketIO() {
         try {
-            return input.readLine();
+            String json = input.readLine();
+            return Client.GSON.fromJson(json, Packet.class);
         } catch (IOException e) {
             System.out.println(Constants.LOG_SERVER_ERROR_IO_READ);
             e.printStackTrace();

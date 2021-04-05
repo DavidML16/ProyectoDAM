@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -14,6 +13,8 @@ import javafx.scene.layout.StackPane;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.ScreenManager;
 import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.models.Packet;
+import morales.david.desktop.models.PacketBuilder;
 import morales.david.desktop.utils.Constants;
 
 import java.io.IOException;
@@ -85,7 +86,11 @@ public class DashboardController implements Initializable, Controller {
 
         if (alert.getResult() == ButtonType.YES) {
 
-            SocketManager.getInstance().sendMessageIO(Constants.REQUEST_DISCONNECT);
+            Packet disconnectRequestPacket = new PacketBuilder()
+                    .ofType(Constants.REQUEST_DISCONNECT)
+                    .build();
+
+            SocketManager.getInstance().sendPacketIO(disconnectRequestPacket);
 
         }
 

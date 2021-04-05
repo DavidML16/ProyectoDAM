@@ -1,5 +1,6 @@
 package morales.david.desktop;
 
+import com.google.gson.Gson;
 import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -7,7 +8,9 @@ import morales.david.desktop.managers.ScreenManager;
 import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.utils.Constants;
 
-public class Main extends Application {
+public class Client extends Application {
+
+    public static final Gson GSON = new Gson();
 
     @Override
     public void start(Stage primaryStage) {
