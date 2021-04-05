@@ -9,7 +9,7 @@ import morales.david.desktop.utils.Constants;
 import java.io.*;
 import java.net.Socket;
 
-public class SocketManager extends Thread {
+public final class SocketManager extends Thread {
 
     private static SocketManager INSTANCE = null;
 

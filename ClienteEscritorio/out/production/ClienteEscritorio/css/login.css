@@ -1,0 +1,33 @@
+.mainPane {
+    -fx-background-color: #FFFFFF;
+}
+
+.leftPane {
+    -fx-background-color: #e60547;
+}
+
+.loginButton {
+    -fx-background-color: #FFF;
+    -fx-border-color: #e60547;
+    -fx-border-width: 2px;
+    -fx-border-radius: 15px;
+    -fx-text-fill: #9a0431;
+    -fx-font-weight: bold;
+}
+
+.loginButton:hover {
+    -fx-border-radius: 15px;
+    -fx-background-radius: 15px;
+    -fx-background-color: #e60547;
+    -fx-text-fill: #FFF;
+}
+
+.loginButton:pressed {
+    -fx-border-color: #B00A3A;
+    -fx-background-color: #B00A3A;
+    -fx-text-fill: #FFF;
+}
+
+.inputField {
+    -fx-border-color: #959595;
+}

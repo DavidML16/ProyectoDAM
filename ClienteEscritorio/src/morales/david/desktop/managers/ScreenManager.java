@@ -8,7 +8,7 @@ import morales.david.desktop.interfaces.Controller;
 
 import java.io.IOException;
 
-public class ScreenManager {
+public final class ScreenManager {
 
     private static ScreenManager INSTANCE = null;
 
