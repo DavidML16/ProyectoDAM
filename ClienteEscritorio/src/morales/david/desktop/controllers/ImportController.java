@@ -16,11 +16,16 @@ import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.ScreenManager;
+import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.models.Packet;
+import morales.david.desktop.models.PacketBuilder;
+import morales.david.desktop.utils.Constants;
 
-import java.io.File;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -144,6 +149,66 @@ public class ImportController implements Initializable, Controller {
 
     }
 
+    @FXML
+    void handleButtonAction(MouseEvent event) {
+
+        if(event.getSource() == importButton) {
+
+            sendFile();
+
+        }
+
+    }
+
+    private void sendFile() {
+
+        importButton.setDisable(true);
+
+        File file = selectedFile.get(0);
+
+        Packet sendRequestPacket = new PacketBuilder()
+                .ofType(Constants.REQUEST_SENDACCESSFILE)
+                .addArgument("size", file.length())
+                .addArgument("name", file.getName().replaceAll(" ", ""))
+                .build();
+
+        SocketManager.getInstance().sendPacketIO(sendRequestPacket);
+
+        int bytes = 0;
+
+        FileInputStream fileInputStream = null;
+        try {
+            fileInputStream = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        DataOutputStream dataOutputStream = null;
+
+        try {
+
+            dataOutputStream = new DataOutputStream(SocketManager.getInstance().getSocket().getOutputStream());
+
+            dataOutputStream.writeLong(file.length());
+
+            byte[] buffer = new byte[4*1024];
+
+            while ( (bytes = fileInputStream.read(buffer)) != -1){
+
+                dataOutputStream.write(buffer,0,bytes);
+                dataOutputStream.flush();
+
+            }
+
+            fileInputStream.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
     private String getExtension(String fileName){
         String extension = "";
         int i = fileName.lastIndexOf('.');
@@ -152,14 +217,14 @@ public class ImportController implements Initializable, Controller {
         return extension;
     }
 
-    @FXML
-    void handleButtonAction(MouseEvent event) {
+    public Label getMessageLabel() { return messageLabel; }
 
-        if(event.getSource() == importButton) {
+    public void receivedFile() {
 
-            importButton.setDisable(true);
+        messageLabel.setText(Constants.MESSAGES_CONFIRMATION_RECEIVEDFILE);
+        messageLabel.setTextFill(Color.DARKGREEN);
 
-        }
+        selectedFile.clear();
 
     }
 

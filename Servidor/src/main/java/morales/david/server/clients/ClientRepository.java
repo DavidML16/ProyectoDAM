@@ -1,5 +1,7 @@
 package morales.david.server.clients;
 
+import morales.david.server.models.Packet;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +27,11 @@ public class ClientRepository {
 
     public synchronized boolean isNoClients(){
         return clients.isEmpty();
+    }
+
+    public synchronized void broadcast(Packet packet) {
+        for(ClientThread clientThread : clients)
+            clientThread.getClientProtocol().sendPacketIO(packet);
     }
 
 }

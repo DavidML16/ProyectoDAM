@@ -3,6 +3,7 @@ package morales.david.server;
 import com.google.gson.Gson;
 import morales.david.server.clients.ClientRepository;
 import morales.david.server.clients.ClientThread;
+import morales.david.server.managers.ImportManager;
 import morales.david.server.models.Packet;
 import morales.david.server.models.PacketBuilder;
 import morales.david.server.utils.Constants;
@@ -17,6 +18,8 @@ public class Server {
 
     private ClientRepository clientRepository;
 
+    private ImportManager importManager;
+
     private boolean running;
 
     public static final Gson GSON = new Gson();
@@ -25,6 +28,7 @@ public class Server {
 
         server = new ServerSocket(Constants.SERVER_PORT);
         clientRepository = new ClientRepository();
+        importManager = new ImportManager(this);
         running = true;
 
         System.out.println(String.format(Constants.LOG_SERVER_INIT, Constants.SERVER_PORT));
@@ -46,6 +50,8 @@ public class Server {
     public ClientRepository getClientRepository() {
         return clientRepository;
     }
+
+    public ImportManager getImportManager() { return importManager; }
 
     public static void main(String[] args) {
 

@@ -32,6 +32,18 @@ public class ClientThread extends Thread {
         this.socket = socket;
         this.connected = true;
 
+        openIO();
+
+        this.server.getClientRepository().addClient(this);
+
+        this.clientSession = new ClientSession();
+        this.clientProtocol = new ClientProtocol(this);
+        this.dbConnection = new DBConnection();
+
+    }
+
+    public void openIO() {
+
         try {
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -39,12 +51,6 @@ public class ClientThread extends Thread {
             System.out.println(Constants.LOG_SERVER_ERROR_IO);
             e.printStackTrace();
         }
-
-        this.server.getClientRepository().addClient(this);
-
-        this.clientSession = new ClientSession();
-        this.clientProtocol = new ClientProtocol(this);
-        this.dbConnection = new DBConnection(this);
 
     }
 
@@ -69,6 +75,8 @@ public class ClientThread extends Thread {
     }
 
     public Server getServer() { return server; }
+
+    public Socket getSocket() { return socket; }
 
     public BufferedReader getInput() { return input; }
 

@@ -2,20 +2,18 @@ package morales.david.server.utils;
 
 import morales.david.server.clients.ClientSession;
 import morales.david.server.clients.ClientThread;
+import morales.david.server.models.Teacher;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DBConnection {
 
-    private ClientThread clientThread;
-
     private Connection connection;
 
-    public DBConnection(ClientThread clientThread) {
-
-        this.clientThread = clientThread;
+    public DBConnection() {
         this.connection = null;
-
     }
 
     public void open() {
@@ -127,6 +125,60 @@ public class DBConnection {
         }
 
         close();
+
+    }
+
+    public List<Teacher> getTeachers() {
+
+        open();
+
+        List<Teacher> teachers = new ArrayList<>();
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            stm = connection.prepareStatement(Constants.DB_QUERY_TEACHERS);
+
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+
+                int id = rs.getInt("id_prof");
+                int number = rs.getInt("numero");
+                String name = rs.getString("nombre");
+                String abreviation = rs.getString("abrev");
+                int minDayHours = rs.getInt("minhdia");
+                int maxDayHours = rs.getInt("maxhdia");
+                String department = rs.getString("depart");
+
+                teachers.add(new Teacher(id, number, name, abreviation, minDayHours, maxDayHours, department));
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return teachers;
 
     }
 

@@ -6,7 +6,7 @@ CREATE TABLE profesor (
     id_prof INTEGER(11) PRIMARY KEY,
     numero INTEGER(5),
     nombre VARCHAR(150) NOT NULL,
-    abrev INTEGER(5),
+    abrev VARCHAR(5),
     minhdia INTEGER(3),
     maxhdia INTEGER(3),
     depart VARCHAR(50)
