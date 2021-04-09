@@ -10,6 +10,7 @@ import morales.david.desktop.Client;
 import morales.david.desktop.controllers.ImportController;
 import morales.david.desktop.controllers.LoginController;
 import morales.david.desktop.controllers.TeachersController;
+import morales.david.desktop.models.Classroom;
 import morales.david.desktop.models.ClientSession;
 import morales.david.desktop.models.Packet;
 import morales.david.desktop.models.Teacher;
@@ -195,15 +196,25 @@ public final class SocketManager extends Thread {
 
                         case Constants.CONFIRMATION_TEACHERS: {
 
-                            if(!(ScreenManager.getInstance().getController() instanceof TeachersController))
-                                break;
-
-                            List<LinkedTreeMap> tchs = (List<LinkedTreeMap>) receivedPacket.getArgument("teachers");
+                            List<LinkedTreeMap> teachers = (List<LinkedTreeMap>) receivedPacket.getArgument("teachers");
 
                             DataManager.getInstance().getTeachers().clear();
 
-                            for(LinkedTreeMap teacherMap : tchs)
+                            for(LinkedTreeMap teacherMap : teachers)
                                 DataManager.getInstance().getTeachers().add(Teacher.parse(teacherMap));
+
+                            break;
+
+                        }
+
+                        case Constants.CONFIRMATION_CLASSROOMS: {
+
+                            List<LinkedTreeMap> classrooms = (List<LinkedTreeMap>) receivedPacket.getArgument("classrooms");
+
+                            DataManager.getInstance().getClassrooms().clear();
+
+                            for(LinkedTreeMap classroomMap : classrooms)
+                                DataManager.getInstance().getClassrooms().add(Classroom.parse(classroomMap));
 
                             break;
 

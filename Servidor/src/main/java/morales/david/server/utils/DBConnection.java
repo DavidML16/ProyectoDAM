@@ -2,6 +2,7 @@ package morales.david.server.utils;
 
 import morales.david.server.clients.ClientSession;
 import morales.david.server.clients.ClientThread;
+import morales.david.server.models.Classroom;
 import morales.david.server.models.Teacher;
 
 import java.sql.*;
@@ -36,6 +37,12 @@ public class DBConnection {
         return connection;
     }
 
+    /**
+     * Check if exists credential provided username and password
+     * @param username
+     * @param password
+     * @return credential exists
+     */
     public boolean existsCredential(String username, String password) {
 
         open();
@@ -82,6 +89,11 @@ public class DBConnection {
 
     }
 
+    /**
+     * Get credential and teacher information and save into provided object
+     * @param username
+     * @param clientSession
+     */
     public void getUserDetails(String username, ClientSession clientSession) {
 
         open();
@@ -99,7 +111,7 @@ public class DBConnection {
 
             if(rs.next()) {
 
-                clientSession.setId(rs.getInt("id_prof"));
+                clientSession.setId(rs.getInt("id_profesor"));
                 clientSession.setName(rs.getString("nombre"));
                 clientSession.setRole(rs.getString("rol"));
 
@@ -128,6 +140,10 @@ public class DBConnection {
 
     }
 
+    /**
+     * Get teachers from database
+     * @return list of teachers
+     */
     public List<Teacher> getTeachers() {
 
         open();
@@ -145,13 +161,13 @@ public class DBConnection {
 
             while (rs.next()) {
 
-                int id = rs.getInt("id_prof");
+                int id = rs.getInt("id_profesor");
                 int number = rs.getInt("numero");
                 String name = rs.getString("nombre");
-                String abreviation = rs.getString("abrev");
-                int minDayHours = rs.getInt("minhdia");
-                int maxDayHours = rs.getInt("maxhdia");
-                String department = rs.getString("depart");
+                String abreviation = rs.getString("abreviacion");
+                int minDayHours = rs.getInt("minhorasdia");
+                int maxDayHours = rs.getInt("maxhorasdia");
+                String department = rs.getString("departamento");
 
                 teachers.add(new Teacher(id, number, name, abreviation, minDayHours, maxDayHours, department));
 
@@ -182,6 +198,11 @@ public class DBConnection {
 
     }
 
+    /**
+     * Add a new teacher to database
+     * @param teacher
+     * @return teacher added
+     */
     public boolean addTeacher(Teacher teacher) {
 
         open();
@@ -220,6 +241,11 @@ public class DBConnection {
 
     }
 
+    /**
+     * Update teacher information from database
+     * @param teacher
+     * @return teacher updated
+     */
     public boolean updateTeacher(Teacher teacher) {
 
         open();
@@ -259,6 +285,11 @@ public class DBConnection {
 
     }
 
+    /**
+     * Remove the teacher provided from the database
+     * @param teacher
+     * @return teacher deleted
+     */
     public boolean removeTeacher(Teacher teacher) {
 
         open();
@@ -271,6 +302,177 @@ public class DBConnection {
             stm = connection.prepareStatement(Constants.DB_QUERY_REMOVETEACHER);
 
             stm.setInt(1, teacher.getId());
+
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return rs == 1;
+
+    }
+
+    /**
+     * Get classrooms from database
+     * @return list of classrooms
+     */
+    public List<Classroom> getClassrooms() {
+
+        open();
+
+        List<Classroom> classrooms = new ArrayList<>();
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            stm = connection.prepareStatement(Constants.DB_QUERY_CLASSROOMS);
+
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+
+                int id = rs.getInt("id_aula");
+                String name = rs.getString("nombre");
+                int floor = rs.getInt("planta");
+
+                classrooms.add(new Classroom(id, name, floor));
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return classrooms;
+
+    }
+
+    /**
+     * Add a new classroom to database
+     * @param classroom
+     * @return classroom added
+     */
+    public boolean addClassroom(Classroom classroom) {
+
+        open();
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(Constants.DB_QUERY_ADDCLASSROOM);
+
+            stm.setString(1, classroom.getName());
+            stm.setInt(2, classroom.getFloor());
+
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return rs == 1;
+
+    }
+
+    /**
+     * Update classroom information from database
+     * @param classroom
+     * @return classroom updated
+     */
+    public boolean updateClassroom(Classroom classroom) {
+
+        open();
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(Constants.DB_QUERY_UPDATECLASSROOM);
+
+            stm.setString(1, classroom.getName());
+            stm.setInt(2, classroom.getFloor());
+            stm.setInt(3, classroom.getId());
+
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return rs == 1;
+
+    }
+
+    /**
+     * Remove classroom provided from the database
+     * @param classroom
+     * @return classroom deleted
+     */
+    public boolean removeClassroom(Classroom classroom) {
+
+        open();
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(Constants.DB_QUERY_REMOVECLASSROOM);
+
+            stm.setInt(1, classroom.getId());
 
             rs = stm.executeUpdate();
 

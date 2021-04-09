@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import morales.david.desktop.controllers.DashboardController;
 import morales.david.desktop.interfaces.Controller;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public final class ScreenManager {
 
     private Stage stage;
     private Scene scene;
-    private Controller controller;
+    private Controller controller, dashboardController;
 
     public Stage getStage() {
         return stage;
@@ -46,6 +47,10 @@ public final class ScreenManager {
         this.controller = controller;
     }
 
+    public Controller getDashboardController() { return dashboardController; }
+
+    public void setDashboardController(Controller dashboardController) { this.dashboardController = dashboardController; }
+
     public void openScene(String url, String title) {
 
         try {
@@ -54,6 +59,10 @@ public final class ScreenManager {
             Parent parent = loader.load();
 
             controller = loader.getController();
+
+            if(controller instanceof DashboardController)
+                dashboardController = controller;
+
             scene = new Scene(parent);
             stage.setTitle(title);
             stage.setScene(scene);

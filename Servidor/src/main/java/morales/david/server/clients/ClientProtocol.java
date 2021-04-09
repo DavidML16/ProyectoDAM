@@ -2,6 +2,7 @@ package morales.david.server.clients;
 
 import com.google.gson.internal.LinkedTreeMap;
 import morales.david.server.Server;
+import morales.david.server.models.Classroom;
 import morales.david.server.models.Packet;
 import morales.david.server.models.PacketBuilder;
 import morales.david.server.models.Teacher;
@@ -25,6 +26,11 @@ public class ClientProtocol {
         this.logged = false;
     }
 
+
+    /**
+     * Parse input packet and execute specified actions
+     * @param packet
+     */
     public void parseInput(Packet packet) {
 
         lastPacket = packet;
@@ -59,10 +65,31 @@ public class ClientProtocol {
                 removeTeacher();
                 break;
 
+            case Constants.REQUEST_CLASSROOMS:
+                classroomsList();
+                break;
+
+            case Constants.REQUEST_ADDCLASSROOM:
+                addClassroom();
+                break;
+
+            case Constants.REQUEST_UPDATECLASSROOM:
+                updateClassroom();
+                break;
+
+            case Constants.REQUEST_REMOVECLASSROOM:
+                removeClassroom();
+                break;
+
         }
 
     }
 
+    /**
+     * Receive username and password from packet
+     * Check credential from database
+     * Send conformation or error packet to client
+     */
     private void login() {
 
         final String username = (String) lastPacket.getArgument("username");
@@ -98,6 +125,10 @@ public class ClientProtocol {
 
     }
 
+    /**
+     * Disconnect client from server
+     * Send conformation or error logout packet to client
+     */
     private void disconnect() {
 
         if(logged) {
@@ -121,6 +152,9 @@ public class ClientProtocol {
 
     }
 
+    /**
+     * Receive file byte data from client's socket input
+     */
     private void receiveFile() {
 
         long fileSize = ((Double)lastPacket.getArgument("size")).longValue();
@@ -190,6 +224,10 @@ public class ClientProtocol {
 
     }
 
+    /**
+     * Get teachers list from database
+     * Send teachers list packet to client
+     */
     private void teachersList() {
 
         List<Teacher> teachers = clientThread.getDbConnection().getTeachers();
@@ -203,6 +241,11 @@ public class ClientProtocol {
 
     }
 
+    /**
+     * Get teacher data from packet
+     * Parse teacher data and return teacher object
+     * Add teacher to database, and send confirmation or error packet to client
+     */
     private void addTeacher() {
 
         LinkedTreeMap teacherMap = (LinkedTreeMap) lastPacket.getArgument("teacher");
@@ -225,6 +268,11 @@ public class ClientProtocol {
 
     }
 
+    /**
+     * Get teacher data from packet
+     * Parse teacher data and return teacher object
+     * Update teacher from database, and send confirmation or error packet to client
+     */
     private void updateTeacher() {
 
         LinkedTreeMap teacherMap = (LinkedTreeMap) lastPacket.getArgument("teacher");
@@ -247,6 +295,11 @@ public class ClientProtocol {
 
     }
 
+    /**
+     * Get teacher data from packet
+     * Parse teacher data and return teacher object
+     * Remove teacher from database, and send confirmation or error packet to client
+     */
     private void removeTeacher() {
 
         LinkedTreeMap teacherMap = (LinkedTreeMap) lastPacket.getArgument("teacher");
@@ -269,7 +322,109 @@ public class ClientProtocol {
 
     }
 
-    // Methods to send data in socket I/O's
+    /**
+     * Get classrooms list from database
+     * Send classrooms list packet to client
+     */
+    private void classroomsList() {
+
+        List<Classroom> classrooms = clientThread.getDbConnection().getClassrooms();
+
+        Packet classroomsConfirmationPacket = new PacketBuilder()
+                .ofType(Constants.CONFIRMATION_CLASSROOMS)
+                .addArgument("classrooms", classrooms)
+                .build();
+
+        sendPacketIO(classroomsConfirmationPacket);
+
+    }
+
+    /**
+     * Get classroom data from packet
+     * Parse classroom data and return classroom object
+     * Add classroom to database, and send confirmation or error packet to client
+     */
+    private void addClassroom() {
+
+        LinkedTreeMap classroomMap = (LinkedTreeMap) lastPacket.getArgument("classroom");
+
+        Classroom classroom = Classroom.parse(classroomMap);
+
+        if(clientThread.getDbConnection().addClassroom(classroom)) {
+
+            classroomsList();
+
+        } else {
+
+            Packet addClassroomErrorPacket = new PacketBuilder()
+                    .ofType(Constants.DB_QUERY_ADDCLASSROOM)
+                    .build();
+
+            sendPacketIO(addClassroomErrorPacket);
+
+        }
+
+    }
+
+    /**
+     * Get classroom data from packet
+     * Parse classroom data and return classroom object
+     * Update classroom from database, and send confirmation or error packet to client
+     */
+    private void updateClassroom() {
+
+        LinkedTreeMap classroomMap = (LinkedTreeMap) lastPacket.getArgument("classroom");
+
+        Classroom classroom = Classroom.parse(classroomMap);
+
+        if(clientThread.getDbConnection().updateClassroom(classroom)) {
+
+            classroomsList();
+
+        } else {
+
+            Packet updateClassroomErrorPacket = new PacketBuilder()
+                    .ofType(Constants.DB_QUERY_UPDATECLASSROOM)
+                    .build();
+
+            sendPacketIO(updateClassroomErrorPacket);
+
+        }
+
+    }
+
+    /**
+     * Get classroom data from packet
+     * Parse classroom data and return classroom object
+     * Remove classroom from database, and send confirmation or error packet to client
+     */
+    private void removeClassroom() {
+
+        LinkedTreeMap classroomMap = (LinkedTreeMap) lastPacket.getArgument("classroom");
+
+        Classroom classroom = Classroom.parse(classroomMap);
+
+        if(clientThread.getDbConnection().removeClassroom(classroom)) {
+
+            classroomsList();
+
+        } else {
+
+            Packet removeClassroomErrorPacket = new PacketBuilder()
+                    .ofType(Constants.DB_QUERY_REMOVECLASSROOM)
+                    .build();
+
+            sendPacketIO(removeClassroomErrorPacket);
+
+        }
+
+    }
+
+
+    /**
+     * Send packet to client's socket output
+     * @param packet
+     */
     public void sendPacketIO(Packet packet) {
         try {
             clientThread.getOutput().write(packet.toString());
@@ -281,6 +436,10 @@ public class ClientProtocol {
         }
     }
 
+    /**
+     * Read packet from server thread, client's socket input
+     * @return packet object parsed by json input
+     */
     public Packet readPacketIO() {
         try {
             String json = clientThread.getInput().readLine();

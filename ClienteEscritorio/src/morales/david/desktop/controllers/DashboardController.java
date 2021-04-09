@@ -24,19 +24,16 @@ import java.util.ResourceBundle;
 public class DashboardController implements Initializable, Controller {
 
     @FXML
-    private StackPane viewPane;
+    private Button homeNavigationButton;
 
     @FXML
     private Button teachersNavigationButton;
 
     @FXML
-    private Button groupsNavigationButton;
+    private Button coursesGroupsNavigationButton;
 
     @FXML
-    private Button roomsNavigationButton;
-
-    @FXML
-    private Button inspectorNavigationButton;
+    private Button classroomsNavigationButton;
 
     @FXML
     private Button scheduleNavigationButton;
@@ -45,10 +42,10 @@ public class DashboardController implements Initializable, Controller {
     private Button importNavigationButton;
 
     @FXML
-    private Button homeNavigationButton;
+    private Button disconnectNavigationButton;
 
     @FXML
-    private Button disconnectNavigationButton;
+    private StackPane viewPane;
 
     private String actualView;
 
@@ -68,12 +65,10 @@ public class DashboardController implements Initializable, Controller {
             loadView("home.fxml", "Inicio", event);
         else if (event.getSource() == teachersNavigationButton)
             loadView("teachers.fxml", "Profesores", event);
-        else if (event.getSource() == groupsNavigationButton)
-            loadView("groups.fxml", "Grupos", event);
-        else if (event.getSource() == roomsNavigationButton)
-            loadView("rooms.fxml", "Aulas", event);
-        else if (event.getSource() == inspectorNavigationButton)
-            loadView("inspections.fxml", "Guardias", event);
+        else if (event.getSource() == coursesGroupsNavigationButton)
+            loadView("courses_groups.fxml", "Cursos y grupos", event);
+        else if (event.getSource() == classroomsNavigationButton)
+            loadView("classrooms.fxml", "Aulas", event);
         else if (event.getSource() == scheduleNavigationButton)
             loadView("schedules.fxml", "Horarios", event);
         else if (event.getSource() == importNavigationButton)
@@ -104,9 +99,8 @@ public class DashboardController implements Initializable, Controller {
 
         homeNavigationButton.getStyleClass().remove("buttonPressed");
         teachersNavigationButton.getStyleClass().remove("buttonPressed");
-        groupsNavigationButton.getStyleClass().remove("buttonPressed");
-        roomsNavigationButton.getStyleClass().remove("buttonPressed");
-        inspectorNavigationButton.getStyleClass().remove("buttonPressed");
+        coursesGroupsNavigationButton.getStyleClass().remove("buttonPressed");
+        classroomsNavigationButton.getStyleClass().remove("buttonPressed");
         scheduleNavigationButton.getStyleClass().remove("buttonPressed");
         importNavigationButton.getStyleClass().remove("buttonPressed");
 

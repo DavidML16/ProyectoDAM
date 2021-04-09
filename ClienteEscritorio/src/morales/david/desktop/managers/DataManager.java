@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import morales.david.desktop.interfaces.Controller;
+import morales.david.desktop.models.Classroom;
 import morales.david.desktop.models.Teacher;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ public final class DataManager {
         return INSTANCE;
     }
 
+
     private ObservableList<Teacher> teachers = FXCollections.observableArrayList();
 
     public ObservableList<Teacher> getTeachers() {
@@ -32,5 +34,17 @@ public final class DataManager {
     public void setTeachers(ObservableList<Teacher> teachers) {
         this.teachers = teachers;
     }
+
+
+    private ObservableList<Classroom> classrooms = FXCollections.observableArrayList();
+
+    public ObservableList<Classroom> getClassrooms() {
+        return classrooms;
+    }
+
+    public void setClassrooms(ObservableList<Classroom> classrooms) {
+        this.classrooms = classrooms;
+    }
+
 
 }

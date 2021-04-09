@@ -12,7 +12,7 @@ import morales.david.desktop.utils.Utils;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class EditTeacherModalController implements Initializable {
+public class TeacherModalController implements Initializable {
 
     @FXML
     private TextField numberField;
@@ -42,9 +42,11 @@ public class EditTeacherModalController implements Initializable {
 
     }
 
-    public void setData(Teacher teacher) {
+    public void setData(Teacher teacher, boolean edit) {
 
         this.teacher = teacher;
+
+        if(!edit) return;
 
         numberField.setText(Integer.toString(teacher.getNumber()));
         nameField.setText(teacher.getName());

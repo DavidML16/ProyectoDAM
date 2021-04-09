@@ -12,10 +12,12 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import morales.david.desktop.controllers.modals.ClassroomModalController;
 import morales.david.desktop.controllers.modals.TeacherModalController;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.DataManager;
 import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.models.Classroom;
 import morales.david.desktop.models.Packet;
 import morales.david.desktop.models.PacketBuilder;
 import morales.david.desktop.models.Teacher;
@@ -26,31 +28,19 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class TeachersController implements Initializable, Controller {
+public class ClassroomsController implements Initializable, Controller {
 
     @FXML
-    private TableView<Teacher> teachersTable;
+    private TableView<Classroom> classroomsTable;
 
     @FXML
-    private TableColumn<Teacher, Integer> idColumn;
+    private TableColumn<Classroom, Integer> idColumn;
 
     @FXML
-    private TableColumn<Teacher, Integer> numberColumn;
+    private TableColumn<Classroom, String> nameColumn;
 
     @FXML
-    private TableColumn<Teacher, String> nameColumn;
-
-    @FXML
-    private TableColumn<Teacher, String> abreviationColumn;
-
-    @FXML
-    private TableColumn<Teacher, Integer> minDayHoursColumn;
-
-    @FXML
-    private TableColumn<Teacher, Integer> maxDayHoursColumn;
-
-    @FXML
-    private TableColumn<Teacher, String> departmentColumn;
+    private TableColumn<Classroom, Integer> floorColumn;
 
     @FXML
     private Button newButton;
@@ -68,11 +58,11 @@ public class TeachersController implements Initializable, Controller {
 
         Platform.runLater(() -> {
 
-            Packet teachersRequestPacket = new PacketBuilder()
-                    .ofType(Constants.REQUEST_TEACHERS)
+            Packet classroomsRequestPacket = new PacketBuilder()
+                    .ofType(Constants.REQUEST_CLASSROOMS)
                     .build();
 
-            SocketManager.getInstance().sendPacketIO(teachersRequestPacket);
+            SocketManager.getInstance().sendPacketIO(classroomsRequestPacket);
 
         });
 
@@ -87,13 +77,13 @@ public class TeachersController implements Initializable, Controller {
 
         } else if(event.getSource() == editButton) {
 
-            Teacher selected = teachersTable.getSelectionModel().getSelectedItem();
+            Classroom selected = classroomsTable.getSelectionModel().getSelectedItem();
 
-            editTeacher(selected);
+            editClassroom(selected);
 
         } else if(event.getSource() == deleteButton) {
 
-            deleteTeacher();
+            deleteClassroom();
 
         }
 
@@ -101,28 +91,24 @@ public class TeachersController implements Initializable, Controller {
 
     public void showTable() {
 
-        ObservableList<Teacher> list = DataManager.getInstance().getTeachers();
+        ObservableList<Classroom> list = DataManager.getInstance().getClassrooms();
 
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        numberColumn.setCellValueFactory(new PropertyValueFactory<>("number"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        abreviationColumn.setCellValueFactory(new PropertyValueFactory<>("abreviation"));
-        minDayHoursColumn.setCellValueFactory(new PropertyValueFactory<>("minDayHours"));
-        maxDayHoursColumn.setCellValueFactory(new PropertyValueFactory<>("maxDayHours"));
-        departmentColumn.setCellValueFactory(new PropertyValueFactory<>("department"));
+        floorColumn.setCellValueFactory(new PropertyValueFactory<>("floor"));
 
-        teachersTable.setItems(list);
+        classroomsTable.setItems(list);
 
-        teachersTable.setRowFactory( tv -> {
+        classroomsTable.setRowFactory( tv -> {
 
-            TableRow<Teacher> row = new TableRow<>();
+            TableRow<Classroom> row = new TableRow<>();
 
             row.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2 && !row.isEmpty()) {
 
-                    Teacher selected = row.getItem();
+                    Classroom selected = row.getItem();
 
-                    editTeacher(selected);
+                    editClassroom(selected);
 
                 }
             });
@@ -133,28 +119,28 @@ public class TeachersController implements Initializable, Controller {
 
     }
 
-    private void deleteTeacher() {
+    private void deleteClassroom() {
 
-        Teacher teacher = teachersTable.getSelectionModel().getSelectedItem();
+        Classroom classroom = classroomsTable.getSelectionModel().getSelectedItem();
 
-        Packet removeTeacherRequestPacket = new PacketBuilder()
-                .ofType(Constants.REQUEST_REMOVETEACHER)
-                .addArgument("teacher", teacher)
+        Packet removeClassroomRequestPacket = new PacketBuilder()
+                .ofType(Constants.REQUEST_REMOVECLASSROOM)
+                .addArgument("classroom", classroom)
                 .build();
 
-        SocketManager.getInstance().sendPacketIO(removeTeacherRequestPacket);
+        SocketManager.getInstance().sendPacketIO(removeClassroomRequestPacket);
 
     }
 
-    private void editTeacher(Teacher teacher) {
+    private void editClassroom(Classroom classroom) {
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/editTeacherModal.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/editClassroomModal.fxml"));
         try {
 
             DialogPane parent = loader.load();
-            TeacherModalController controller = loader.getController();
+            ClassroomModalController controller = loader.getController();
 
-            controller.setData(teacher, true);
+            controller.setData(classroom, true);
 
             Dialog<ButtonType> dialog = new Dialog<>();
 
@@ -187,14 +173,14 @@ public class TeachersController implements Initializable, Controller {
 
             if(clickedButton.get() == updateBtn) {
 
-                Teacher updatedTeacher = controller.getData();
+                Classroom updatedClassroom = controller.getData();
 
-                Packet updateTeacherRequestPacket = new PacketBuilder()
-                        .ofType(Constants.REQUEST_UPDATETEACHER)
-                        .addArgument("teacher", updatedTeacher)
+                Packet updateClassroomRequestPacket = new PacketBuilder()
+                        .ofType(Constants.REQUEST_UPDATECLASSROOM)
+                        .addArgument("classroom", updatedClassroom)
                         .build();
 
-                SocketManager.getInstance().sendPacketIO(updateTeacherRequestPacket);
+                SocketManager.getInstance().sendPacketIO(updateClassroomRequestPacket);
 
             }
 
@@ -206,13 +192,13 @@ public class TeachersController implements Initializable, Controller {
 
     private void newTeacher() {
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/newTeacherModal.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/newClassroomModal.fxml"));
         try {
 
             DialogPane parent = loader.load();
-            TeacherModalController controller = loader.getController();
+            ClassroomModalController controller = loader.getController();
 
-            controller.setData(new Teacher(), false);
+            controller.setData(new Classroom(), false);
 
             Dialog<ButtonType> dialog = new Dialog<>();
 
@@ -245,14 +231,14 @@ public class TeachersController implements Initializable, Controller {
 
             if(clickedButton.get() == addBtn) {
 
-                Teacher teacher = controller.getData();
+                Classroom classroom = controller.getData();
 
-                Packet addTeacherRequestPacket = new PacketBuilder()
-                        .ofType(Constants.REQUEST_ADDTEACHER)
-                        .addArgument("teacher", teacher)
+                Packet addClassroomRequestPacket = new PacketBuilder()
+                        .ofType(Constants.REQUEST_ADDCLASSROOM)
+                        .addArgument("classroom", classroom)
                         .build();
 
-                SocketManager.getInstance().sendPacketIO(addTeacherRequestPacket);
+                SocketManager.getInstance().sendPacketIO(addClassroomRequestPacket);
 
             }
 

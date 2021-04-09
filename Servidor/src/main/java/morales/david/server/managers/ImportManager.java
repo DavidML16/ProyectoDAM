@@ -1,7 +1,6 @@
 package morales.david.server.managers;
 
 import morales.david.server.Server;
-import morales.david.server.utils.AccessConnection;
 import morales.david.server.utils.DBConnection;
 
 import java.io.File;
@@ -13,7 +12,6 @@ public class ImportManager {
     private Server server;
 
     private DBConnection dbConnection;
-    private AccessConnection accessConnection;
 
     private boolean isImporting;
 
@@ -36,10 +34,6 @@ public class ImportManager {
     }
 
     public void importDatabase() {
-
-        accessConnection = new AccessConnection(file.getAbsolutePath());
-
-        accessConnection.open();
 
         if(file.exists())
             file.delete();
