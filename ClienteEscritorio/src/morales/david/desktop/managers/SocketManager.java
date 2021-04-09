@@ -200,13 +200,10 @@ public final class SocketManager extends Thread {
 
                             List<LinkedTreeMap> tchs = (List<LinkedTreeMap>) receivedPacket.getArgument("teachers");
 
-                            List<Teacher> teachers = new ArrayList<>();
+                            DataManager.getInstance().getTeachers().clear();
 
                             for(LinkedTreeMap teacherMap : tchs)
-                                teachers.add(Teacher.parse(teacherMap));
-
-                            DataManager.getInstance().getTeachers().clear();
-                            DataManager.getInstance().getTeachers().addAll(teachers);
+                                DataManager.getInstance().getTeachers().add(Teacher.parse(teacherMap));
 
                             break;
 

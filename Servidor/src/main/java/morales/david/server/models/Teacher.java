@@ -1,5 +1,7 @@
 package morales.david.server.models;
 
+import com.google.gson.internal.LinkedTreeMap;
+
 public class Teacher {
 
     private int id;
@@ -74,6 +76,33 @@ public class Teacher {
 
     public void setDepartment(String department) {
         this.department = department;
+    }
+
+    @Override
+    public String toString() {
+        return "Teacher{" +
+                "id=" + id +
+                ", number=" + number +
+                ", name='" + name + '\'' +
+                ", abreviation='" + abreviation + '\'' +
+                ", minDayHours=" + minDayHours +
+                ", maxDayHours=" + maxDayHours +
+                ", department='" + department + '\'' +
+                '}';
+    }
+
+    public static Teacher parse(LinkedTreeMap teacherMap) {
+
+        int id = ((Double) teacherMap.get("id")).intValue();
+        int number = ((Double) teacherMap.get("number")).intValue();
+        String name = (String) teacherMap.get("name");
+        String abreviation = (String) teacherMap.get("abreviation");
+        int minDayHours = ((Double) teacherMap.get("minDayHours")).intValue();
+        int maxDayHours = ((Double) teacherMap.get("maxDayHours")).intValue();
+        String department = (String) teacherMap.get("department");
+
+        return new Teacher(id, number, name, abreviation, minDayHours, maxDayHours, department);
+
     }
 
 }

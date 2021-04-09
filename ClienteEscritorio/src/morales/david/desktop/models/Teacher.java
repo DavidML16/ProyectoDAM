@@ -12,6 +12,10 @@ public class Teacher {
     private int maxDayHours;
     private String department;
 
+    public Teacher() {
+        this(-1, 0, "", "", 0, 0, "");
+    }
+
     public Teacher(int id, int number, String name, String abreviation, int minDayHours, int maxDayHours, String department) {
         this.id = id;
         this.number = number;
@@ -78,14 +82,27 @@ public class Teacher {
         this.department = department;
     }
 
+    @Override
+    public String toString() {
+        return "Teacher{" +
+                "id=" + id +
+                ", number=" + number +
+                ", name='" + name + '\'' +
+                ", abreviation='" + abreviation + '\'' +
+                ", minDayHours=" + minDayHours +
+                ", maxDayHours=" + maxDayHours +
+                ", department='" + department + '\'' +
+                '}';
+    }
+
     public static Teacher parse(LinkedTreeMap teacherMap) {
 
         int id = ((Double) teacherMap.get("id")).intValue();
-        int number = ((Double) teacherMap.get("id")).intValue();
+        int number = ((Double) teacherMap.get("number")).intValue();
         String name = (String) teacherMap.get("name");
         String abreviation = (String) teacherMap.get("abreviation");
-        int minDayHours = ((Double) teacherMap.get("id")).intValue();
-        int maxDayHours = ((Double) teacherMap.get("id")).intValue();
+        int minDayHours = ((Double) teacherMap.get("minDayHours")).intValue();
+        int maxDayHours = ((Double) teacherMap.get("maxDayHours")).intValue();
         String department = (String) teacherMap.get("department");
 
         return new Teacher(id, number, name, abreviation, minDayHours, maxDayHours, department);

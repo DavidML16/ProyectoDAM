@@ -50,10 +50,14 @@ public class DashboardController implements Initializable, Controller {
     @FXML
     private Button disconnectNavigationButton;
 
+    private String actualView;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        Platform.runLater(() -> loadView("home.fxml", "Inicio"));
+        actualView = "";
+
+        Platform.runLater(() -> loadView("home.fxml", "Inicio", null));
 
     }
 
@@ -61,19 +65,19 @@ public class DashboardController implements Initializable, Controller {
     public void handleButtonAction(MouseEvent event) {
 
         if(event.getSource() == homeNavigationButton)
-            loadView("home.fxml", "Inicio");
+            loadView("home.fxml", "Inicio", event);
         else if (event.getSource() == teachersNavigationButton)
-            loadView("teachers.fxml", "Profesores");
+            loadView("teachers.fxml", "Profesores", event);
         else if (event.getSource() == groupsNavigationButton)
-            loadView("groups.fxml", "Grupos");
+            loadView("groups.fxml", "Grupos", event);
         else if (event.getSource() == roomsNavigationButton)
-            loadView("rooms.fxml", "Aulas");
+            loadView("rooms.fxml", "Aulas", event);
         else if (event.getSource() == inspectorNavigationButton)
-            loadView("inspections.fxml", "Guardias");
+            loadView("inspections.fxml", "Guardias", event);
         else if (event.getSource() == scheduleNavigationButton)
-            loadView("schedules.fxml", "Horarios");
+            loadView("schedules.fxml", "Horarios", event);
         else if (event.getSource() == importNavigationButton)
-            loadView("import.fxml", "Importar");
+            loadView("import.fxml", "Importar", event);
         else if(event.getSource() == disconnectNavigationButton)
             disconnect();
 
@@ -96,10 +100,35 @@ public class DashboardController implements Initializable, Controller {
 
     }
 
-    private void loadView(String view, String title) {
+    private void removePressed() {
+
+        homeNavigationButton.getStyleClass().remove("buttonPressed");
+        teachersNavigationButton.getStyleClass().remove("buttonPressed");
+        groupsNavigationButton.getStyleClass().remove("buttonPressed");
+        roomsNavigationButton.getStyleClass().remove("buttonPressed");
+        inspectorNavigationButton.getStyleClass().remove("buttonPressed");
+        scheduleNavigationButton.getStyleClass().remove("buttonPressed");
+        importNavigationButton.getStyleClass().remove("buttonPressed");
+
+    }
+
+    private void loadView(String view, String title, MouseEvent event) {
 
         Node newView = null;
         Node oldView = null;
+
+        if(actualView.equalsIgnoreCase(view))
+            return;
+
+        if(event != null) {
+            Button button = (Button) event.getSource();
+            removePressed();
+            if(button != homeNavigationButton) {
+                button.getStyleClass().add("buttonPressed");
+            }
+        }
+
+        actualView = view;
 
         try {
 

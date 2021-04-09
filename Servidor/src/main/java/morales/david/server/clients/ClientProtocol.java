@@ -1,5 +1,6 @@
 package morales.david.server.clients;
 
+import com.google.gson.internal.LinkedTreeMap;
 import morales.david.server.Server;
 import morales.david.server.models.Packet;
 import morales.david.server.models.PacketBuilder;
@@ -43,7 +44,19 @@ public class ClientProtocol {
                 break;
 
             case Constants.REQUEST_TEACHERS:
-                sendTeachersList();
+                teachersList();
+                break;
+
+            case Constants.REQUEST_ADDTEACHER:
+                addTeacher();
+                break;
+
+            case Constants.REQUEST_UPDATETEACHER:
+                updateTeacher();
+                break;
+
+            case Constants.REQUEST_REMOVETEACHER:
+                removeTeacher();
                 break;
 
         }
@@ -177,7 +190,7 @@ public class ClientProtocol {
 
     }
 
-    private void sendTeachersList() {
+    private void teachersList() {
 
         List<Teacher> teachers = clientThread.getDbConnection().getTeachers();
 
@@ -187,6 +200,72 @@ public class ClientProtocol {
                 .build();
 
         sendPacketIO(teachersConfirmationPacket);
+
+    }
+
+    private void addTeacher() {
+
+        LinkedTreeMap teacherMap = (LinkedTreeMap) lastPacket.getArgument("teacher");
+
+        Teacher teacher = Teacher.parse(teacherMap);
+
+        if(clientThread.getDbConnection().addTeacher(teacher)) {
+
+            teachersList();
+
+        } else {
+
+            Packet addTeacherErrorPacket = new PacketBuilder()
+                    .ofType(Constants.ERROR_ADDTEACHER)
+                    .build();
+
+            sendPacketIO(addTeacherErrorPacket);
+
+        }
+
+    }
+
+    private void updateTeacher() {
+
+        LinkedTreeMap teacherMap = (LinkedTreeMap) lastPacket.getArgument("teacher");
+
+        Teacher teacher = Teacher.parse(teacherMap);
+
+        if(clientThread.getDbConnection().updateTeacher(teacher)) {
+
+            teachersList();
+
+        } else {
+
+            Packet updateTeacherErrorPacket = new PacketBuilder()
+                    .ofType(Constants.ERROR_UPDATETEACHER)
+                    .build();
+
+            sendPacketIO(updateTeacherErrorPacket);
+
+        }
+
+    }
+
+    private void removeTeacher() {
+
+        LinkedTreeMap teacherMap = (LinkedTreeMap) lastPacket.getArgument("teacher");
+
+        Teacher teacher = Teacher.parse(teacherMap);
+
+        if(clientThread.getDbConnection().removeTeacher(teacher)) {
+
+            teachersList();
+
+        } else {
+
+            Packet removeTeacherErrorPacket = new PacketBuilder()
+                    .ofType(Constants.ERROR_REMOVETEACHER)
+                    .build();
+
+            sendPacketIO(removeTeacherErrorPacket);
+
+        }
 
     }
 

@@ -182,4 +182,114 @@ public class DBConnection {
 
     }
 
+    public boolean addTeacher(Teacher teacher) {
+
+        open();
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(Constants.DB_QUERY_ADDTEACHER);
+
+            stm.setInt(1, teacher.getNumber());
+            stm.setString(2, teacher.getName());
+            stm.setString(3, teacher.getAbreviation());
+            stm.setInt(4, teacher.getMinDayHours());
+            stm.setInt(5, teacher.getMaxDayHours());
+            stm.setString(6, teacher.getDepartment());
+
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return rs == 1;
+
+    }
+
+    public boolean updateTeacher(Teacher teacher) {
+
+        open();
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(Constants.DB_QUERY_UPDATETEACHER);
+
+            stm.setInt(1, teacher.getNumber());
+            stm.setString(2, teacher.getName());
+            stm.setString(3, teacher.getAbreviation());
+            stm.setInt(4, teacher.getMinDayHours());
+            stm.setInt(5, teacher.getMaxDayHours());
+            stm.setString(6, teacher.getDepartment());
+            stm.setInt(7, teacher.getId());
+
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return rs == 1;
+
+    }
+
+    public boolean removeTeacher(Teacher teacher) {
+
+        open();
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(Constants.DB_QUERY_REMOVETEACHER);
+
+            stm.setInt(1, teacher.getId());
+
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return rs == 1;
+
+    }
+
 }

@@ -19,7 +19,7 @@ public class Client extends Application {
         socketManager.setDaemon(true);
         socketManager.start();
 
-        primaryStage.getIcons().add(new Image("/resources/images/schedule-icon.png"));
+        primaryStage.getIcons().add(new Image("/resources/images/schedule-icon-inverted.png"));
 
         ScreenManager screenManager = ScreenManager.getInstance();
 

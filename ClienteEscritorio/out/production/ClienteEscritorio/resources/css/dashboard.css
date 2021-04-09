@@ -1,9 +1,16 @@
 .mainPane {
-    -fx-background-color: #F8F9F9;
+    -fx-background-color: #F2F3F4;
 }
 
 .leftPane {
     -fx-background-color: #e60547;
+}
+
+.stackPane {
+   -fx-effect: dropshadow(three-pass-box, derive(#F8F9F9, -20%), 10, 0, 4, 4);
+     -fx-background-color: white;
+     -fx-background-insets: 0;
+     -fx-background-radius: 0;
 }
 
 .navigationButton {
@@ -21,5 +28,10 @@
 
 .navigationButton:pressed {
     -fx-background-color: #A40A36;
+    -fx-text-fill: #FFF;
+}
+
+.buttonPressed {
+    -fx-background-color: #B00A3A;
     -fx-text-fill: #FFF;
 }

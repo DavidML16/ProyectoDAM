@@ -13,6 +13,9 @@ public class Constants {
     public static final String DB_QUERY_CREDENTIAL = "SELECT id_cred FROM credencial WHERE usuario = ? AND passwd_hash = ?";
     public static final String DB_QUERY_DETAILS = "SELECT * FROM credencial, profesor WHERE usuario = ? AND profesor = id_prof";
     public static final String DB_QUERY_TEACHERS = "SELECT * FROM profesor";
+    public static final String DB_QUERY_ADDTEACHER = "INSERT INTO profesor (`numero`, `nombre`, `abrev`, `minhdia`, `maxhdia`, `depart`) VALUES (?, ?, ?, ?, ?, ?)";
+    public static final String DB_QUERY_UPDATETEACHER = "UPDATE profesor SET `numero` = ?, `nombre` = ?, `abrev` = ?, `minhdia` = ?, `maxhdia` = ?, `depart` = ? WHERE `id_prof` = ?";
+    public static final String DB_QUERY_REMOVETEACHER = "DELETE FROM profesor WHERE `id_prof` = ?";
 
     public static final String LOG_SERVER_INIT = "(+) Servidor iniciado en el puerto '%d'";
     public static final String LOG_SERVER_ERROR = "(X) Se ha producido un error con el servidor";
@@ -26,15 +29,24 @@ public class Constants {
     public static final String REQUEST_DISCONNECT = "R2-DISCONNECT";
     public static final String REQUEST_SENDACCESSFILE = "R3-SENDACCESSFILE";
     public static final String REQUEST_TEACHERS = "R4-TEACHERS";
+    public static final String REQUEST_ADDTEACHER = "R5-ADDTEACHER";
+    public static final String REQUEST_UPDATETEACHER = "R6-UPDATETEACHER";
+    public static final String REQUEST_REMOVETEACHER = "R7-REMOVETEACHER";
 
     public static final String CONFIRMATION_LOGIN = "CF1-LOGIN";
     public static final String CONFIRMATION_DISCONNECT = "CF2-DISCONNECT";
     public static final String CONFIRMATION_SENDACCESSFILE = "CF3-SENDACCESSFILE";
     public static final String CONFIRMATION_TEACHERS = "CF4-TEACHERS";
+    public static final String CONFIRMATION_ADDTEACHER = "CF5-ADDTEACHER";
+    public static final String CONFIRMATION_UPDATETEACHER = "CF6-UPDATETEACHER";
+    public static final String CONFIRMATION_REMOVETEACHER = "CF7-REMOVETEACHER";
 
     public static final String ERROR_LOGIN = "E1-LOGIN";
     public static final String ERROR_DISCONNECT = "E2-DISCONNECT";
     public static final String ERROR_SENDACCESSFILE = "E3-SENDACCESSFILE";
     public static final String ERROR_TEACHERS = "E4-TEACHERS";
+    public static final String ERROR_ADDTEACHER = "E5-ADDTEACHER";
+    public static final String ERROR_UPDATETEACHER = "E6-UPDATETEACHER";
+    public static final String ERROR_REMOVETEACHER = "E7-REMOVETEACHER";
 
 }

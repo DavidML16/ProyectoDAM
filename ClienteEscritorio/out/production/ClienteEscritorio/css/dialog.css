@@ -1,0 +1,48 @@
+.mainPane {
+    -fx-background-color: #FFFFFF;
+}
+
+.topPane {
+    -fx-background-color: #e60547;
+}
+
+.text-field {
+    -fx-padding: 0.5em;
+    -fx-font-size: 14px;
+}
+
+.dialogButton {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+.addButton {
+    -fx-background-color: #59D73A;
+}
+.addButton:hover {
+    -fx-background-color: #52C435;
+}
+.addButton:pressed {
+    -fx-background-color: #4AAD30;
+}
+
+.updateButton {
+    -fx-background-color: #3AC4D7;
+}
+.updateButton:hover {
+    -fx-background-color: #2FA9BA;
+}
+.updateButton:pressed {
+    -fx-background-color: #2995A4;
+}
+
+.cancelButton {
+    -fx-background-color: #D73A3A;
+}
+.cancelButton:hover {
+    -fx-background-color: #A92D2D;
+}
+.cancelButton:pressed {
+    -fx-background-color: #902626;
+}
