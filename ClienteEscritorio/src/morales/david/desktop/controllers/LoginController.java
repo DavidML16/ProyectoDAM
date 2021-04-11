@@ -12,8 +12,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.SocketManager;
-import morales.david.desktop.models.Packet;
-import morales.david.desktop.models.PacketBuilder;
+import morales.david.desktop.models.packets.Packet;
+import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.utils.Constants;
 import morales.david.desktop.utils.HashUtil;
 

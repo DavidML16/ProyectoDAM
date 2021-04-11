@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.models.Classroom;
+import morales.david.desktop.models.Course;
 import morales.david.desktop.models.Teacher;
 
 import java.io.IOException;
@@ -46,5 +47,15 @@ public final class DataManager {
         this.classrooms = classrooms;
     }
 
+
+    private ObservableList<Course> courses = FXCollections.observableArrayList();
+
+    public ObservableList<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(ObservableList<Course> courses) {
+        this.courses = courses;
+    }
 
 }

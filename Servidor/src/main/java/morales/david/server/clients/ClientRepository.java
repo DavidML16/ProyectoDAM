@@ -1,6 +1,6 @@
 package morales.david.server.clients;
 
-import morales.david.server.models.Packet;
+import morales.david.server.models.packets.Packet;
 
 import java.util.ArrayList;
 import java.util.List;

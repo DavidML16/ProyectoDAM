@@ -6,27 +6,6 @@ public class Constants {
     public static final int SERVER_PORT = 6565;
 
 
-    public static final String DB_URL = "jdbc:mysql://localhost/db_proyecto";
-    public static final String DB_USER = "david";
-    public static final String DB_PASS = "161100";
-
-
-    public static final String ACCESS_URL = "jdbc:ucanaccess://";
-
-
-    public static final String DB_QUERY_CREDENTIAL = "SELECT id_credencial FROM credencial WHERE usuario = ? AND passwd_hash = ?";
-    public static final String DB_QUERY_DETAILS = "SELECT * FROM credencial, profesor WHERE usuario = ? AND profesor = id_profesor";
-
-    public static final String DB_QUERY_TEACHERS = "SELECT * FROM profesor";
-    public static final String DB_QUERY_ADDTEACHER = "INSERT INTO profesor (`numero`, `nombre`, `abreviacion`, `minhorasdia`, `maxhorasdia`, `departamento`) VALUES (?, ?, ?, ?, ?, ?)";
-    public static final String DB_QUERY_UPDATETEACHER = "UPDATE profesor SET `numero` = ?, `nombre` = ?, `abreviacion` = ?, `minhorasdia` = ?, `maxhorasdia` = ?, `departamento` = ? WHERE `id_profesor` = ?";
-    public static final String DB_QUERY_REMOVETEACHER = "DELETE FROM profesor WHERE `id_profesor` = ?";
-
-    public static final String DB_QUERY_CLASSROOMS = "SELECT * FROM aula";
-    public static final String DB_QUERY_ADDCLASSROOM = "INSERT INTO aula (`nombre`, `planta`) VALUES (?, ?)";
-    public static final String DB_QUERY_UPDATECLASSROOM = "UPDATE aula SET `nombre` = ?, `planta` = ?, WHERE `id_aula` = ?";
-    public static final String DB_QUERY_REMOVECLASSROOM = "DELETE FROM aula WHERE `id_aula` = ?";
-
 
     public static final String LOG_SERVER_INIT = "(+) Servidor iniciado en el puerto '%d'";
     public static final String LOG_SERVER_ERROR = "(X) Se ha producido un error con el servidor";
@@ -54,6 +33,11 @@ public class Constants {
     public static final String REQUEST_UPDATECLASSROOM = "R10-UPDATECLASSROOM";
     public static final String REQUEST_REMOVECLASSROOM = "R11-REMOVECLASSROOM";
 
+    public static final String REQUEST_COURSES = "R12-COURSES";
+    public static final String REQUEST_ADDCOURSE = "R13-ADDCOURSE";
+    public static final String REQUEST_UPDATECOURSE = "R14-UPDATECOURSE";
+    public static final String REQUEST_REMOVECOURSE = "R15-REMOVECOURSE";
+
 
 
     // CONFIRMATION MESSAGES
@@ -72,6 +56,11 @@ public class Constants {
     public static final String CONFIRMATION_UPDATECLASSROOM = "CF10-UPDATECLASSROOM";
     public static final String CONFIRMATION_REMOVECLASSROOM = "CF11-REMOVECLASSROOM";
 
+    public static final String CONFIRMATION_COURSES = "CF12-COURSES";
+    public static final String CONFIRMATION_ADDCOURSE = "CF13-ADDCOURSE";
+    public static final String CONFIRMATION_UPDATECOURSE = "CF14-UPDATECOURSE";
+    public static final String CONFIRMATION_REMOVECOURSE = "CF15-REMOVECOURSE";
+
 
 
     // ERROR MESSAGES
@@ -89,6 +78,11 @@ public class Constants {
     public static final String ERROR_ADDCLASSROOM = "E9-ADDCLASSROOM";
     public static final String ERROR_UPDATECLASSROOM = "E10-UPDATECLASSROOM";
     public static final String ERROR_REMOVECLASSROOM = "E11-REMOVECLASSROOM";
+
+    public static final String ERROR_COURSES = "E12-COURSES";
+    public static final String ERROR_ADDCOURSE = "E13-ADDCOURSE";
+    public static final String ERROR_UPDATECOURSE = "E14-UPDATECOURSE";
+    public static final String ERROR_REMOVECOURSE = "E15-REMOVECOURSE";
 
 
 

@@ -1,4 +1,4 @@
-package morales.david.server.models;
+package morales.david.desktop.models.packets;
 
 import java.util.HashMap;
 import java.util.Map;

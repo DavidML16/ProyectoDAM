@@ -1,7 +1,7 @@
 package morales.david.server.clients;
 
 import morales.david.server.Server;
-import morales.david.server.models.Packet;
+import morales.david.server.models.packets.Packet;
 import morales.david.server.utils.Constants;
 import morales.david.server.utils.DBConnection;
 

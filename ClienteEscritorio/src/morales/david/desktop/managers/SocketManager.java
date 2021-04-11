@@ -1,25 +1,20 @@
 package morales.david.desktop.managers;
 
-import com.google.gson.JsonElement;
 import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.scene.paint.Color;
 import morales.david.desktop.Client;
 import morales.david.desktop.controllers.ImportController;
 import morales.david.desktop.controllers.LoginController;
-import morales.david.desktop.controllers.TeachersController;
 import morales.david.desktop.models.Classroom;
 import morales.david.desktop.models.ClientSession;
-import morales.david.desktop.models.Packet;
+import morales.david.desktop.models.Course;
+import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.Teacher;
 import morales.david.desktop.utils.Constants;
 
 import java.io.*;
-import java.lang.reflect.Type;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 
 public final class SocketManager extends Thread {
@@ -215,6 +210,19 @@ public final class SocketManager extends Thread {
 
                             for(LinkedTreeMap classroomMap : classrooms)
                                 DataManager.getInstance().getClassrooms().add(Classroom.parse(classroomMap));
+
+                            break;
+
+                        }
+
+                        case Constants.CONFIRMATION_COURSES: {
+
+                            List<LinkedTreeMap> courses = (List<LinkedTreeMap>) receivedPacket.getArgument("courses");
+
+                            DataManager.getInstance().getCourses().clear();
+
+                            for(LinkedTreeMap courseMap : courses)
+                                DataManager.getInstance().getCourses().add(Course.parse(courseMap));
 
                             break;
 

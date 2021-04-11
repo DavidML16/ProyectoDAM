@@ -26,3 +26,9 @@ CREATE TABLE aula (
     nombre VARCHAR(150) NOT NULL,
     planta INTEGER(3)
 );
+
+CREATE TABLE curso (
+    id_curso INTEGER(11) PRIMARY KEY AUTO_INCREMENT,
+    nivel INTEGER(3) NOT NULL,
+    nombre VARCHAR(150) NOT NULL
+);

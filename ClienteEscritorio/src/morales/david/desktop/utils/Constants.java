@@ -35,6 +35,11 @@ public class Constants {
     public static final String REQUEST_UPDATECLASSROOM = "R10-UPDATECLASSROOM";
     public static final String REQUEST_REMOVECLASSROOM = "R11-REMOVECLASSROOM";
 
+    public static final String REQUEST_COURSES = "R12-COURSES";
+    public static final String REQUEST_ADDCOURSE = "R13-ADDCOURSE";
+    public static final String REQUEST_UPDATECOURSE = "R14-UPDATECOURSE";
+    public static final String REQUEST_REMOVECOURSE = "R15-REMOVECOURSE";
+
 
 
     // CONFIRMATION MESSAGES
@@ -53,6 +58,11 @@ public class Constants {
     public static final String CONFIRMATION_UPDATECLASSROOM = "CF10-UPDATECLASSROOM";
     public static final String CONFIRMATION_REMOVECLASSROOM = "CF11-REMOVECLASSROOM";
 
+    public static final String CONFIRMATION_COURSES = "CF12-COURSES";
+    public static final String CONFIRMATION_ADDCOURSE = "CF13-ADDCOURSE";
+    public static final String CONFIRMATION_UPDATECOURSE = "CF14-UPDATECOURSE";
+    public static final String CONFIRMATION_REMOVECOURSE = "CF15-REMOVECOURSE";
+
 
 
     // ERROR MESSAGES
@@ -70,6 +80,11 @@ public class Constants {
     public static final String ERROR_ADDCLASSROOM = "E9-ADDCLASSROOM";
     public static final String ERROR_UPDATECLASSROOM = "E10-UPDATECLASSROOM";
     public static final String ERROR_REMOVECLASSROOM = "E11-REMOVECLASSROOM";
+
+    public static final String ERROR_COURSES = "E12-COURSES";
+    public static final String ERROR_ADDCOURSE = "E13-ADDCOURSE";
+    public static final String ERROR_UPDATECOURSE = "E14-UPDATECOURSE";
+    public static final String ERROR_REMOVECOURSE = "E15-REMOVECOURSE";
 
 
 

@@ -1,4 +1,4 @@
-package morales.david.server.models;
+package morales.david.server.models.packets;
 
 import morales.david.server.Server;
 

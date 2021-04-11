@@ -3,8 +3,9 @@ package morales.david.server.clients;
 import com.google.gson.internal.LinkedTreeMap;
 import morales.david.server.Server;
 import morales.david.server.models.Classroom;
-import morales.david.server.models.Packet;
-import morales.david.server.models.PacketBuilder;
+import morales.david.server.models.Course;
+import morales.david.server.models.packets.Packet;
+import morales.david.server.models.packets.PacketBuilder;
 import morales.david.server.models.Teacher;
 import morales.david.server.utils.Constants;
 import morales.david.server.utils.DBConnection;
@@ -79,6 +80,22 @@ public class ClientProtocol {
 
             case Constants.REQUEST_REMOVECLASSROOM:
                 removeClassroom();
+                break;
+
+            case Constants.REQUEST_COURSES:
+                coursesList();
+                break;
+
+            case Constants.REQUEST_ADDCOURSE:
+                addCourse();
+                break;
+
+            case Constants.REQUEST_UPDATECOURSE:
+                updateCourse();
+                break;
+
+            case Constants.REQUEST_REMOVECOURSE:
+                removeCourse();
                 break;
 
         }
@@ -224,6 +241,7 @@ public class ClientProtocol {
 
     }
 
+
     /**
      * Get teachers list from database
      * Send teachers list packet to client
@@ -322,6 +340,7 @@ public class ClientProtocol {
 
     }
 
+
     /**
      * Get classrooms list from database
      * Send classrooms list packet to client
@@ -357,7 +376,7 @@ public class ClientProtocol {
         } else {
 
             Packet addClassroomErrorPacket = new PacketBuilder()
-                    .ofType(Constants.DB_QUERY_ADDCLASSROOM)
+                    .ofType(Constants.ERROR_ADDCLASSROOM)
                     .build();
 
             sendPacketIO(addClassroomErrorPacket);
@@ -384,7 +403,7 @@ public class ClientProtocol {
         } else {
 
             Packet updateClassroomErrorPacket = new PacketBuilder()
-                    .ofType(Constants.DB_QUERY_UPDATECLASSROOM)
+                    .ofType(Constants.ERROR_UPDATECLASSROOM)
                     .build();
 
             sendPacketIO(updateClassroomErrorPacket);
@@ -411,10 +430,109 @@ public class ClientProtocol {
         } else {
 
             Packet removeClassroomErrorPacket = new PacketBuilder()
-                    .ofType(Constants.DB_QUERY_REMOVECLASSROOM)
+                    .ofType(Constants.ERROR_REMOVECLASSROOM)
                     .build();
 
             sendPacketIO(removeClassroomErrorPacket);
+
+        }
+
+    }
+
+
+    /**
+     * Get courses list from database
+     * Send courses list packet to client
+     */
+    private void coursesList() {
+
+        List<Course> courses = clientThread.getDbConnection().getCourses();
+
+        Packet coursesConfirmationPacket = new PacketBuilder()
+                .ofType(Constants.CONFIRMATION_COURSES)
+                .addArgument("courses", courses)
+                .build();
+
+        sendPacketIO(coursesConfirmationPacket);
+
+    }
+
+    /**
+     * Get course data from packet
+     * Parse course data and return course object
+     * Add course to database, and send confirmation or error packet to client
+     */
+    private void addCourse() {
+
+        LinkedTreeMap courseMap = (LinkedTreeMap) lastPacket.getArgument("course");
+
+        Course course = Course.parse(courseMap);
+
+        if(clientThread.getDbConnection().addCourse(course)) {
+
+            coursesList();
+
+        } else {
+
+            Packet addCourseErrorPacket = new PacketBuilder()
+                    .ofType(Constants.ERROR_ADDCOURSE)
+                    .build();
+
+            sendPacketIO(addCourseErrorPacket);
+
+        }
+
+    }
+
+    /**
+     * Get course data from packet
+     * Parse course data and return course object
+     * Update course from database, and send confirmation or error packet to client
+     */
+    private void updateCourse() {
+
+        LinkedTreeMap courseMap = (LinkedTreeMap) lastPacket.getArgument("course");
+
+        Course course = Course.parse(courseMap);
+
+        if(clientThread.getDbConnection().updateCourse(course)) {
+
+            coursesList();
+
+        } else {
+
+            Packet updateCourseErrorPacket = new PacketBuilder()
+                    .ofType(Constants.ERROR_UPDATECOURSE)
+                    .build();
+
+            sendPacketIO(updateCourseErrorPacket);
+
+        }
+
+    }
+
+    /**
+     * Get course data from packet
+     * Parse course data and return course object
+     * Remove course from database, and send confirmation or error packet to client
+     */
+    private void removeCourse() {
+
+        LinkedTreeMap courseMap = (LinkedTreeMap) lastPacket.getArgument("course");
+
+        Course course = Course.parse(courseMap);
+
+        if(clientThread.getDbConnection().removeCourse(course)) {
+
+            coursesList();
+
+        } else {
+
+            Packet removeCourseErrorPacket = new PacketBuilder()
+                    .ofType(Constants.ERROR_REMOVECOURSE)
+                    .build();
+
+            sendPacketIO(removeCourseErrorPacket);
 
         }
 

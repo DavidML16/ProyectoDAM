@@ -1,4 +1,4 @@
-package morales.david.desktop.models;
+package morales.david.desktop.models.packets;
 
 import morales.david.desktop.Client;
 

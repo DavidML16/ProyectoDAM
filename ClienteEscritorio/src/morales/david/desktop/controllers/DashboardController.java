@@ -13,8 +13,8 @@ import javafx.scene.layout.StackPane;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.ScreenManager;
 import morales.david.desktop.managers.SocketManager;
-import morales.david.desktop.models.Packet;
-import morales.david.desktop.models.PacketBuilder;
+import morales.david.desktop.models.packets.Packet;
+import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.utils.Constants;
 
 import java.io.IOException;
@@ -56,6 +56,19 @@ public class DashboardController implements Initializable, Controller {
 
         Platform.runLater(() -> loadView("home.fxml", "Inicio", null));
 
+        Platform.runLater(() -> {
+
+            Packet classroomsRequestPacket = new PacketBuilder().ofType(Constants.REQUEST_CLASSROOMS).build();
+            SocketManager.getInstance().sendPacketIO(classroomsRequestPacket);
+
+            Packet teachersRequestPacket = new PacketBuilder().ofType(Constants.REQUEST_TEACHERS).build();
+            SocketManager.getInstance().sendPacketIO(teachersRequestPacket);
+
+            Packet coursesRequestPacket = new PacketBuilder().ofType(Constants.REQUEST_COURSES).build();
+            SocketManager.getInstance().sendPacketIO(coursesRequestPacket);
+
+        });
+
     }
 
     @FXML
@@ -66,7 +79,7 @@ public class DashboardController implements Initializable, Controller {
         else if (event.getSource() == teachersNavigationButton)
             loadView("teachers.fxml", "Profesores", event);
         else if (event.getSource() == coursesGroupsNavigationButton)
-            loadView("courses_groups.fxml", "Cursos y grupos", event);
+            loadView("coursesmenu.fxml", "Cursos", event);
         else if (event.getSource() == classroomsNavigationButton)
             loadView("classrooms.fxml", "Aulas", event);
         else if (event.getSource() == scheduleNavigationButton)

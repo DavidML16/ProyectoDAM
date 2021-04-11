@@ -13,14 +13,12 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import morales.david.desktop.controllers.modals.ClassroomModalController;
-import morales.david.desktop.controllers.modals.TeacherModalController;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.DataManager;
 import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.models.Classroom;
-import morales.david.desktop.models.Packet;
-import morales.david.desktop.models.PacketBuilder;
-import morales.david.desktop.models.Teacher;
+import morales.david.desktop.models.packets.Packet;
+import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.utils.Constants;
 
 import java.io.IOException;
