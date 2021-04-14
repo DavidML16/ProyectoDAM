@@ -4,6 +4,7 @@ import morales.david.server.clients.ClientSession;
 import morales.david.server.clients.ClientThread;
 import morales.david.server.models.Classroom;
 import morales.david.server.models.Course;
+import morales.david.server.models.Subject;
 import morales.david.server.models.Teacher;
 
 import java.sql.*;
@@ -668,5 +669,8 @@ public class DBConnection {
         return rs == 1;
 
     }
+
+
+
 
 }

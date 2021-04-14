@@ -23,35 +23,35 @@ public final class ScreenManager {
     private Scene scene;
     private Controller controller, dashboardController;
 
-    public Stage getStage() {
+    public synchronized Stage getStage() {
         return stage;
     }
 
-    public void setStage(Stage stage) {
+    public synchronized void setStage(Stage stage) {
         this.stage = stage;
     }
 
-    public Scene getScene() {
+    public synchronized Scene getScene() {
         return scene;
     }
 
-    public void setScene(Scene scene) {
+    public synchronized void setScene(Scene scene) {
         this.scene = scene;
     }
 
-    public Controller getController() {
+    public synchronized Controller getController() {
         return controller;
     }
 
-    public void setController(Controller controller) {
+    public synchronized void setController(Controller controller) {
         this.controller = controller;
     }
 
-    public Controller getDashboardController() { return dashboardController; }
+    public synchronized Controller getDashboardController() { return dashboardController; }
 
-    public void setDashboardController(Controller dashboardController) { this.dashboardController = dashboardController; }
+    public synchronized void setDashboardController(Controller dashboardController) { this.dashboardController = dashboardController; }
 
-    public void openScene(String url, String title) {
+    public synchronized void openScene(String url, String title) {
 
         try {
 

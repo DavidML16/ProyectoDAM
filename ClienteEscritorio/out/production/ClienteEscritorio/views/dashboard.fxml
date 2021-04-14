@@ -7,7 +7,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="960.0" styleClass="mainPane" stylesheets="@../css/dashboard.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morales.david.desktop.controllers.DashboardController">
@@ -41,10 +40,10 @@
       </AnchorPane>
    </left>
    <center>
-      <StackPane fx:id="viewPane" prefHeight="150.0" prefWidth="200.0" styleClass="stackPane" BorderPane.alignment="CENTER">
+      <BorderPane fx:id="viewPane" prefHeight="200.0" prefWidth="200.0" styleClass="stackPane" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
          </BorderPane.margin>
-      </StackPane>
+      </BorderPane>
    </center>
 </BorderPane>

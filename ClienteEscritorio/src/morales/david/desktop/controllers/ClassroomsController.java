@@ -132,6 +132,9 @@ public class ClassroomsController implements Initializable, Controller {
 
     private void editClassroom(Classroom classroom) {
 
+        if(classroom == null)
+            return;
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/editClassroomModal.fxml"));
         try {
 

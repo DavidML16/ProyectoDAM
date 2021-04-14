@@ -1,6 +1,7 @@
 package morales.david.desktop.controllers;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,12 +14,12 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import morales.david.desktop.controllers.modals.CourseModalController;
-import morales.david.desktop.controllers.modals.TeacherModalController;
+import morales.david.desktop.controllers.modals.SubjectModalController;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.DataManager;
 import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.models.Course;
-import morales.david.desktop.models.Teacher;
+import morales.david.desktop.models.Subject;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.utils.Constants;
@@ -28,19 +29,25 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class CoursesController implements Initializable, Controller {
+public class SubjectsController implements Initializable, Controller {
 
     @FXML
-    private TableView<Course> coursesTable;
+    private TableView<Subject> subjectsTable;
 
     @FXML
-    private TableColumn<Course, Integer> idColumn;
+    private TableColumn<Subject, Integer> idColumn;
 
     @FXML
-    private TableColumn<Course, Integer> levelColumn;
+    private TableColumn<Subject, Integer> numberColumn;
 
     @FXML
-    private TableColumn<Course, Integer> nameColumn;
+    private TableColumn<Subject, String> abreviationColumn;
+
+    @FXML
+    private TableColumn<Subject, String> nameColumn;
+
+    @FXML
+    private TableColumn<Subject, String> courseColumn;
 
     @FXML
     private Button newButton;
@@ -73,17 +80,17 @@ public class CoursesController implements Initializable, Controller {
 
         if(event.getSource() == newButton) {
 
-            newCourse();
+            newSubject();
 
         } else if(event.getSource() == editButton) {
 
-            Course selected = coursesTable.getSelectionModel().getSelectedItem();
+            Subject selected = subjectsTable.getSelectionModel().getSelectedItem();
 
-            editCourse(selected);
+            editSubject(selected);
 
         } else if(event.getSource() == deleteButton) {
 
-            deleteCourse();
+            deleteSubject();
 
         }
 
@@ -91,24 +98,27 @@ public class CoursesController implements Initializable, Controller {
 
     public void showTable() {
 
-        ObservableList<Course> list = DataManager.getInstance().getCourses();
+        ObservableList<Subject> list = DataManager.getInstance().getSubjects();
 
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        levelColumn.setCellValueFactory(new PropertyValueFactory<>("level"));
+        numberColumn.setCellValueFactory(new PropertyValueFactory<>("number"));
+        abreviationColumn.setCellValueFactory(new PropertyValueFactory<>("abreviation"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        courseColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCourses().size() + " Curso"
+                + (cellData.getValue().getCourses().size() > 1 ? "s" : "")));
 
-        coursesTable.setItems(list);
+        subjectsTable.setItems(list);
 
-        coursesTable.setRowFactory( tv -> {
+        subjectsTable.setRowFactory( tv -> {
 
-            TableRow<Course> row = new TableRow<>();
+            TableRow<Subject> row = new TableRow<>();
 
             row.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2 && !row.isEmpty()) {
 
-                    Course selected = row.getItem();
+                    Subject selected = row.getItem();
 
-                    editCourse(selected);
+                    editSubject(selected);
 
                 }
             });
@@ -119,31 +129,31 @@ public class CoursesController implements Initializable, Controller {
 
     }
 
-    private void deleteCourse() {
+    private void deleteSubject() {
 
-        Course course = coursesTable.getSelectionModel().getSelectedItem();
+        Subject subject = subjectsTable.getSelectionModel().getSelectedItem();
 
-        Packet removeCourseRequestPacket = new PacketBuilder()
-                .ofType(Constants.REQUEST_REMOVECOURSE)
-                .addArgument("course", course)
+        Packet removeSubjectRequestPacket = new PacketBuilder()
+                .ofType(Constants.REQUEST_REMOVESUBJECT)
+                .addArgument("subject", subject)
                 .build();
 
-        SocketManager.getInstance().sendPacketIO(removeCourseRequestPacket);
+        SocketManager.getInstance().sendPacketIO(removeSubjectRequestPacket);
 
     }
 
-    private void editCourse(Course course) {
+    private void editSubject(Subject subject) {
 
-        if(course == null)
+        if(subject == null)
             return;
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/editCourseModal.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/editSubjectModal.fxml"));
         try {
 
             DialogPane parent = loader.load();
-            CourseModalController controller = loader.getController();
+            SubjectModalController controller = loader.getController();
 
-            controller.setData(course, true);
+            controller.setData(subject, true);
 
             Dialog<ButtonType> dialog = new Dialog<>();
 
@@ -176,14 +186,14 @@ public class CoursesController implements Initializable, Controller {
 
             if(clickedButton.get() == updateBtn) {
 
-                Course updatedCourse = controller.getData();
+                Subject updatedSubject = controller.getData();
 
-                Packet updateCourseRequestPacket = new PacketBuilder()
-                        .ofType(Constants.REQUEST_UPDATECOURSE)
-                        .addArgument("course", updatedCourse)
+                Packet updateSubjectRequestPacket = new PacketBuilder()
+                        .ofType(Constants.REQUEST_UPDATESUBJECT)
+                        .addArgument("subject", updatedSubject)
                         .build();
 
-                SocketManager.getInstance().sendPacketIO(updateCourseRequestPacket);
+                SocketManager.getInstance().sendPacketIO(updateSubjectRequestPacket);
 
             }
 
@@ -193,15 +203,15 @@ public class CoursesController implements Initializable, Controller {
 
     }
 
-    private void newCourse() {
+    private void newSubject() {
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/newCourseModal.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/newSubjectModal.fxml"));
         try {
 
             DialogPane parent = loader.load();
-            CourseModalController controller = loader.getController();
+            SubjectModalController controller = loader.getController();
 
-            controller.setData(new Course(), false);
+            controller.setData(new Subject(), false);
 
             Dialog<ButtonType> dialog = new Dialog<>();
 
@@ -234,14 +244,14 @@ public class CoursesController implements Initializable, Controller {
 
             if(clickedButton.get() == addBtn) {
 
-                Course course = controller.getData();
+                Subject subject = controller.getData();
 
-                Packet addCourseRequestPacket = new PacketBuilder()
-                        .ofType(Constants.REQUEST_ADDCOURSE)
-                        .addArgument("course", course)
+                Packet addSubjectRequestPacket = new PacketBuilder()
+                        .ofType(Constants.REQUEST_ADDSUBJECT)
+                        .addArgument("subject", subject)
                         .build();
 
-                SocketManager.getInstance().sendPacketIO(addCourseRequestPacket);
+                SocketManager.getInstance().sendPacketIO(addSubjectRequestPacket);
 
             }
 

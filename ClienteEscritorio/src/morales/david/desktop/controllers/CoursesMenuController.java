@@ -9,6 +9,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.ScreenManager;
@@ -33,7 +34,7 @@ public class CoursesMenuController implements Initializable, Controller {
     private Button subjectsNavigationButton;
 
     @FXML
-    private StackPane viewPane;
+    private BorderPane viewPane;
 
     private String actualView;
 
@@ -96,12 +97,7 @@ public class CoursesMenuController implements Initializable, Controller {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/views/" + view));
             newView = loader.load();
 
-            if(viewPane.getChildren().size() > 0) {
-                oldView = viewPane.getChildren().get(0);
-                viewPane.getChildren().remove(oldView);
-            }
-
-            viewPane.getChildren().add(newView);
+            viewPane.setCenter(newView);
 
             ScreenManager.getInstance().getStage().setTitle(title + Constants.WINDOW_TITLE);
 

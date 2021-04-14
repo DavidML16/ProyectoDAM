@@ -44,11 +44,7 @@ public class Course {
 
     @Override
     public String toString() {
-        return "Course{" +
-                "id=" + id +
-                ", level=" + level +
-                ", name='" + name + '\'' +
-                '}';
+        return level + "º " + name;
     }
 
     public static Course parse(LinkedTreeMap courseMap) {

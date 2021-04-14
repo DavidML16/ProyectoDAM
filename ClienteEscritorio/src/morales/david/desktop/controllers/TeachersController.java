@@ -148,6 +148,9 @@ public class TeachersController implements Initializable, Controller {
 
     private void editTeacher(Teacher teacher) {
 
+        if(teacher == null)
+            return;
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/editTeacherModal.fxml"));
         try {
 

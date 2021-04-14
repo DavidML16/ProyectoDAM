@@ -62,10 +62,11 @@ public class ImportController implements Initializable, Controller {
             FileChooser fileChooser = new FileChooser();
 
             fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Microsoft Access Files", "*.accdb")
+                new FileChooser.ExtensionFilter("Microsoft Access Files", "*.accdb"),
+                    new FileChooser.ExtensionFilter("Microsoft Access Files", "*.mdb")
             );
 
-            List<String> validExtensions = Arrays.asList("accdb");
+            List<String> validExtensions = Arrays.asList("accdb", "mdb");
 
             fileDrop.setOnMouseClicked(event -> {
 

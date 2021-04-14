@@ -26,5 +26,10 @@ public class DBConstants {
     public static final String DB_QUERY_UPDATECOURSE = "UPDATE curso SET `nivel` = ?, `nombre` = ? WHERE `id_curso` = ?";
     public static final String DB_QUERY_REMOVECOURSE = "DELETE FROM curso WHERE `id_curso` = ?";
 
+    public static final String DB_QUERY_SUBJECTS = "SELECT * FROM asignatura";
+    public static final String DB_QUERY_ADDSUBJECT = "INSERT INTO asignatura (`numero`, `abreviacion`, `nombre`) VALUES (?, ?,?)";
+    public static final String DB_QUERY_UPDATESUBJECT = "UPDATE asignatura SET `numero` = ?, `abreviacion` = ?, `nombre` = ? WHERE `id_asignatura` = ?";
+    public static final String DB_QUERY_REMOVESUBJECT = "DELETE FROM asignatura WHERE `id_asignatura` = ?";
+
 
 }

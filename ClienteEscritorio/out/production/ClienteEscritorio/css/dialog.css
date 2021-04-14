@@ -11,6 +11,12 @@
     -fx-font-size: 14px;
 }
 
+
+.combo-box {
+    -fx-padding: 0.25em;
+    -fx-font-size: 14px;
+}
+
 .dialogButton {
     -fx-text-fill: white;
     -fx-font-weight: bold;

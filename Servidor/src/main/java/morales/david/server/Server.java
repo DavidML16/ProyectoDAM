@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import morales.david.server.clients.ClientRepository;
 import morales.david.server.clients.ClientThread;
 import morales.david.server.managers.ImportManager;
+import morales.david.server.models.Course;
+import morales.david.server.models.Subject;
 import morales.david.server.utils.Constants;
 
 import java.io.IOException;
