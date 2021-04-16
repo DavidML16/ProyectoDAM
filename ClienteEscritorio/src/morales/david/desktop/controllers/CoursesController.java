@@ -21,6 +21,7 @@ import morales.david.desktop.models.Course;
 import morales.david.desktop.models.Teacher;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
+import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.Constants;
 
 import java.io.IOException;
@@ -59,7 +60,7 @@ public class CoursesController implements Initializable, Controller {
         Platform.runLater(() -> {
 
             Packet coursesRequestPacket = new PacketBuilder()
-                    .ofType(Constants.REQUEST_COURSES)
+                    .ofType(PacketType.COURSES.getRequest())
                     .build();
 
             SocketManager.getInstance().sendPacketIO(coursesRequestPacket);
@@ -124,7 +125,7 @@ public class CoursesController implements Initializable, Controller {
         Course course = coursesTable.getSelectionModel().getSelectedItem();
 
         Packet removeCourseRequestPacket = new PacketBuilder()
-                .ofType(Constants.REQUEST_REMOVECOURSE)
+                .ofType(PacketType.REMOVECOURSE.getRequest())
                 .addArgument("course", course)
                 .build();
 
@@ -179,7 +180,7 @@ public class CoursesController implements Initializable, Controller {
                 Course updatedCourse = controller.getData();
 
                 Packet updateCourseRequestPacket = new PacketBuilder()
-                        .ofType(Constants.REQUEST_UPDATECOURSE)
+                        .ofType(PacketType.UPDATECOURSE.getRequest())
                         .addArgument("course", updatedCourse)
                         .build();
 
@@ -237,7 +238,7 @@ public class CoursesController implements Initializable, Controller {
                 Course course = controller.getData();
 
                 Packet addCourseRequestPacket = new PacketBuilder()
-                        .ofType(Constants.REQUEST_ADDCOURSE)
+                        .ofType(PacketType.ADDCOURSE.getRequest())
                         .addArgument("course", course)
                         .build();
 

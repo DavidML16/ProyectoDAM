@@ -15,7 +15,7 @@ public class Subject {
     private List<Course> courses;
 
     public Subject() {
-        this(-1, -1, "", "", null);
+        this(-1, -1, "", "", new ArrayList<>());
     }
 
     public Subject(int id, int number, String abreviation, String name, List<Course> courses) {

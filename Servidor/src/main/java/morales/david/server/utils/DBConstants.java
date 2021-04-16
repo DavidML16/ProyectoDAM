@@ -27,9 +27,12 @@ public class DBConstants {
     public static final String DB_QUERY_REMOVECOURSE = "DELETE FROM curso WHERE `id_curso` = ?";
 
     public static final String DB_QUERY_SUBJECTS = "SELECT * FROM asignatura";
-    public static final String DB_QUERY_ADDSUBJECT = "INSERT INTO asignatura (`numero`, `abreviacion`, `nombre`) VALUES (?, ?,?)";
+    public static final String DB_QUERY_ADDSUBJECT = "INSERT INTO asignatura (`numero`, `abreviacion`, `nombre`) VALUES (?, ?, ?)";
+    public static final String DB_QUERY_ADDSUBJECT_RELATION = "INSERT INTO curso_asignatura (`curso`, `asignatura`) VALUES (?, ?)";
     public static final String DB_QUERY_UPDATESUBJECT = "UPDATE asignatura SET `numero` = ?, `abreviacion` = ?, `nombre` = ? WHERE `id_asignatura` = ?";
     public static final String DB_QUERY_REMOVESUBJECT = "DELETE FROM asignatura WHERE `id_asignatura` = ?";
+    public static final String DB_QUERY_REMOVESUBJECT_RELATION = "DELETE FROM curso_asignatura WHERE `asignatura` = ?";
+    public static final String DB_QUERY_SUBJECTS_COURSES = "SELECT * FROM curso WHERE id_curso IN ( SELECT curso FROM curso_asignatura WHERE asignatura = ? )";
 
 
 }

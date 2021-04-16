@@ -17,6 +17,7 @@ import morales.david.desktop.managers.ScreenManager;
 import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
+import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.Constants;
 
 import java.io.*;
@@ -162,7 +163,7 @@ public class ImportController implements Initializable, Controller {
         File file = selectedFile.get(0);
 
         Packet sendRequestPacket = new PacketBuilder()
-                .ofType(Constants.REQUEST_SENDACCESSFILE)
+                .ofType(PacketType.SENDACCESSFILE.getRequest())
                 .addArgument("size", file.length())
                 .addArgument("name", file.getName().replaceAll(" ", ""))
                 .build();

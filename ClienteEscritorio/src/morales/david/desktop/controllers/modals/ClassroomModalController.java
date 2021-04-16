@@ -27,6 +27,12 @@ public class ClassroomModalController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         floorField.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 3));
+        floorField.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue.matches("\\d*")){
+                floorField.getEditor().setText(oldValue);
+            }
+            floorField.getValueFactory().setValue(Integer.parseInt(newValue));
+        });
 
     }
 

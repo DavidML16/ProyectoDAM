@@ -16,6 +16,7 @@ import morales.david.desktop.managers.ScreenManager;
 import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
+import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.Constants;
 
 import java.io.IOException;
@@ -59,16 +60,16 @@ public class DashboardController implements Initializable, Controller {
 
         Platform.runLater(() -> {
 
-            Packet classroomsRequestPacket = new PacketBuilder().ofType(Constants.REQUEST_CLASSROOMS).build();
+            Packet classroomsRequestPacket = new PacketBuilder().ofType(PacketType.CLASSROOMS.getRequest()).build();
             SocketManager.getInstance().sendPacketIO(classroomsRequestPacket);
 
-            Packet teachersRequestPacket = new PacketBuilder().ofType(Constants.REQUEST_TEACHERS).build();
+            Packet teachersRequestPacket = new PacketBuilder().ofType(PacketType.TEACHERS.getRequest()).build();
             SocketManager.getInstance().sendPacketIO(teachersRequestPacket);
 
-            Packet coursesRequestPacket = new PacketBuilder().ofType(Constants.REQUEST_COURSES).build();
+            Packet coursesRequestPacket = new PacketBuilder().ofType(PacketType.COURSES.getRequest()).build();
             SocketManager.getInstance().sendPacketIO(coursesRequestPacket);
 
-            Packet subjectsRequestPacket = new PacketBuilder().ofType(Constants.REQUEST_SUBJECTS).build();
+            Packet subjectsRequestPacket = new PacketBuilder().ofType(PacketType.SUBJECTS.getRequest()).build();
             SocketManager.getInstance().sendPacketIO(subjectsRequestPacket);
 
         });
@@ -103,7 +104,7 @@ public class DashboardController implements Initializable, Controller {
         if (alert.getResult() == ButtonType.YES) {
 
             Packet disconnectRequestPacket = new PacketBuilder()
-                    .ofType(Constants.REQUEST_DISCONNECT)
+                    .ofType(PacketType.DISCONNECT.getRequest())
                     .build();
 
             SocketManager.getInstance().sendPacketIO(disconnectRequestPacket);

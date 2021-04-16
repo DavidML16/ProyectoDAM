@@ -19,6 +19,7 @@ import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.Teacher;
+import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.Constants;
 
 import java.io.IOException;
@@ -69,7 +70,7 @@ public class TeachersController implements Initializable, Controller {
         Platform.runLater(() -> {
 
             Packet teachersRequestPacket = new PacketBuilder()
-                    .ofType(Constants.REQUEST_TEACHERS)
+                    .ofType(PacketType.TEACHERS.getRequest())
                     .build();
 
             SocketManager.getInstance().sendPacketIO(teachersRequestPacket);
@@ -138,7 +139,7 @@ public class TeachersController implements Initializable, Controller {
         Teacher teacher = teachersTable.getSelectionModel().getSelectedItem();
 
         Packet removeTeacherRequestPacket = new PacketBuilder()
-                .ofType(Constants.REQUEST_REMOVETEACHER)
+                .ofType(PacketType.REMOVETEACHER.getRequest())
                 .addArgument("teacher", teacher)
                 .build();
 
@@ -193,7 +194,7 @@ public class TeachersController implements Initializable, Controller {
                 Teacher updatedTeacher = controller.getData();
 
                 Packet updateTeacherRequestPacket = new PacketBuilder()
-                        .ofType(Constants.REQUEST_UPDATETEACHER)
+                        .ofType(PacketType.UPDATETEACHER.getRequest())
                         .addArgument("teacher", updatedTeacher)
                         .build();
 
@@ -251,7 +252,7 @@ public class TeachersController implements Initializable, Controller {
                 Teacher teacher = controller.getData();
 
                 Packet addTeacherRequestPacket = new PacketBuilder()
-                        .ofType(Constants.REQUEST_ADDTEACHER)
+                        .ofType(PacketType.ADDTEACHER.getRequest())
                         .addArgument("teacher", teacher)
                         .build();
 

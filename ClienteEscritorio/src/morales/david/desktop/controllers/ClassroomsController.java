@@ -19,6 +19,7 @@ import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.models.Classroom;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
+import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.Constants;
 
 import java.io.IOException;
@@ -57,7 +58,7 @@ public class ClassroomsController implements Initializable, Controller {
         Platform.runLater(() -> {
 
             Packet classroomsRequestPacket = new PacketBuilder()
-                    .ofType(Constants.REQUEST_CLASSROOMS)
+                    .ofType(PacketType.CLASSROOMS.getRequest())
                     .build();
 
             SocketManager.getInstance().sendPacketIO(classroomsRequestPacket);
@@ -122,7 +123,7 @@ public class ClassroomsController implements Initializable, Controller {
         Classroom classroom = classroomsTable.getSelectionModel().getSelectedItem();
 
         Packet removeClassroomRequestPacket = new PacketBuilder()
-                .ofType(Constants.REQUEST_REMOVECLASSROOM)
+                .ofType(PacketType.REMOVECLASSROOM.getRequest())
                 .addArgument("classroom", classroom)
                 .build();
 
@@ -177,7 +178,7 @@ public class ClassroomsController implements Initializable, Controller {
                 Classroom updatedClassroom = controller.getData();
 
                 Packet updateClassroomRequestPacket = new PacketBuilder()
-                        .ofType(Constants.REQUEST_UPDATECLASSROOM)
+                        .ofType(PacketType.UPDATECLASSROOM.getRequest())
                         .addArgument("classroom", updatedClassroom)
                         .build();
 
@@ -235,7 +236,7 @@ public class ClassroomsController implements Initializable, Controller {
                 Classroom classroom = controller.getData();
 
                 Packet addClassroomRequestPacket = new PacketBuilder()
-                        .ofType(Constants.REQUEST_ADDCLASSROOM)
+                        .ofType(PacketType.ADDCLASSROOM.getRequest())
                         .addArgument("classroom", classroom)
                         .build();
 

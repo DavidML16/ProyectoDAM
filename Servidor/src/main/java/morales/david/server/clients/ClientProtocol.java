@@ -4,15 +4,19 @@ import com.google.gson.internal.LinkedTreeMap;
 import morales.david.server.Server;
 import morales.david.server.models.Classroom;
 import morales.david.server.models.Course;
+import morales.david.server.models.Subject;
 import morales.david.server.models.packets.Packet;
 import morales.david.server.models.packets.PacketBuilder;
 import morales.david.server.models.Teacher;
+import morales.david.server.models.packets.PacketType;
 import morales.david.server.utils.Constants;
 import morales.david.server.utils.DBConnection;
 
 import java.io.*;
 import java.net.SocketException;
 import java.util.List;
+
+import static morales.david.server.models.packets.PacketType.LOGIN;
 
 public class ClientProtocol {
 
@@ -36,66 +40,84 @@ public class ClientProtocol {
 
         lastPacket = packet;
 
-        switch (lastPacket.getType()) {
+        PacketType packetType = PacketType.valueOf(PacketType.getIdentifier(lastPacket.getType()));
 
-            case Constants.REQUEST_LOGIN:
+        switch (packetType) {
+
+            case LOGIN:
                 login();
                 break;
 
-            case Constants.REQUEST_DISCONNECT:
+            case DISCONNECT:
                 disconnect();
                 break;
 
-            case Constants.REQUEST_SENDACCESSFILE:
+            case SENDACCESSFILE:
                 receiveFile();
                 break;
 
-            case Constants.REQUEST_TEACHERS:
+            case TEACHERS:
                 teachersList();
                 break;
 
-            case Constants.REQUEST_ADDTEACHER:
+            case ADDTEACHER:
                 addTeacher();
                 break;
 
-            case Constants.REQUEST_UPDATETEACHER:
+            case UPDATETEACHER:
                 updateTeacher();
                 break;
 
-            case Constants.REQUEST_REMOVETEACHER:
+            case REMOVETEACHER:
                 removeTeacher();
                 break;
 
-            case Constants.REQUEST_CLASSROOMS:
+            case CLASSROOMS:
                 classroomsList();
                 break;
 
-            case Constants.REQUEST_ADDCLASSROOM:
+            case ADDCLASSROOM:
                 addClassroom();
                 break;
 
-            case Constants.REQUEST_UPDATECLASSROOM:
+            case UPDATECLASSROOM:
                 updateClassroom();
                 break;
 
-            case Constants.REQUEST_REMOVECLASSROOM:
+            case REMOVECLASSROOM:
                 removeClassroom();
                 break;
 
-            case Constants.REQUEST_COURSES:
+            case COURSES:
                 coursesList();
                 break;
 
-            case Constants.REQUEST_ADDCOURSE:
+            case ADDCOURSE:
                 addCourse();
                 break;
 
-            case Constants.REQUEST_UPDATECOURSE:
+            case UPDATECOURSE:
                 updateCourse();
                 break;
 
-            case Constants.REQUEST_REMOVECOURSE:
+            case REMOVECOURSE:
                 removeCourse();
+                break;
+
+            case SUBJECTS:
+                subjectsList();
+                break;
+
+            case ADDSUBJECT:
+                addSubject();
+                break;
+
+            case UPDATESUBJECT:
+                updateSubject();
+                break;
+
+            case REMOVESUBJECT:
+                removeSubject();
                 break;
 
         }
@@ -120,7 +142,7 @@ public class ClientProtocol {
             dbConnection.getUserDetails(username, clientSession);
 
             Packet loginConfirmationPacket = new PacketBuilder()
-                    .ofType(Constants.CONFIRMATION_LOGIN)
+                    .ofType(PacketType.LOGIN.getConfirmation())
                     .addArgument("id", clientSession.getId())
                     .addArgument("name", clientSession.getName())
                     .addArgument("role", clientSession.getRole())
@@ -133,7 +155,7 @@ public class ClientProtocol {
         } else {
 
             Packet loginErrorPacket = new PacketBuilder()
-                    .ofType(Constants.ERROR_LOGIN)
+                    .ofType(PacketType.LOGIN.getError())
                     .build();
 
             sendPacketIO(loginErrorPacket);
@@ -151,7 +173,7 @@ public class ClientProtocol {
         if(logged) {
 
             Packet disconnectConfirmationPacket = new PacketBuilder()
-                    .ofType(Constants.CONFIRMATION_DISCONNECT)
+                    .ofType(PacketType.DISCONNECT.getConfirmation())
                     .build();
 
             sendPacketIO(disconnectConfirmationPacket);
@@ -160,7 +182,7 @@ public class ClientProtocol {
         } else {
 
             Packet disconnectErrorPacket = new PacketBuilder()
-                    .ofType(Constants.ERROR_DISCONNECT)
+                    .ofType(PacketType.DISCONNECT.getError())
                     .build();
 
             sendPacketIO(disconnectErrorPacket);
@@ -178,7 +200,7 @@ public class ClientProtocol {
         String fileName = (String) lastPacket.getArgument("name");
 
         Packet sendErrorPacket = new PacketBuilder()
-                .ofType(Constants.CONFIRMATION_SENDACCESSFILE)
+                .ofType(PacketType.SENDACCESSFILE.getError())
                 .build();
 
         int bytes = 0;
@@ -228,7 +250,7 @@ public class ClientProtocol {
         clientThread.openIO();
 
         Packet sendConfirmationPacket = new PacketBuilder()
-                .ofType(Constants.CONFIRMATION_SENDACCESSFILE)
+                .ofType(PacketType.SENDACCESSFILE.getConfirmation())
                 .build();
 
         sendPacketIO(sendConfirmationPacket);
@@ -251,7 +273,7 @@ public class ClientProtocol {
         List<Teacher> teachers = clientThread.getDbConnection().getTeachers();
 
         Packet teachersConfirmationPacket = new PacketBuilder()
-                .ofType(Constants.CONFIRMATION_TEACHERS)
+                .ofType(PacketType.TEACHERS.getConfirmation())
                 .addArgument("teachers", teachers)
                 .build();
 
@@ -277,7 +299,7 @@ public class ClientProtocol {
         } else {
 
             Packet addTeacherErrorPacket = new PacketBuilder()
-                    .ofType(Constants.ERROR_ADDTEACHER)
+                    .ofType(PacketType.ADDTEACHER.getError())
                     .build();
 
             sendPacketIO(addTeacherErrorPacket);
@@ -304,7 +326,7 @@ public class ClientProtocol {
         } else {
 
             Packet updateTeacherErrorPacket = new PacketBuilder()
-                    .ofType(Constants.ERROR_UPDATETEACHER)
+                    .ofType(PacketType.UPDATETEACHER.getError())
                     .build();
 
             sendPacketIO(updateTeacherErrorPacket);
@@ -331,7 +353,7 @@ public class ClientProtocol {
         } else {
 
             Packet removeTeacherErrorPacket = new PacketBuilder()
-                    .ofType(Constants.ERROR_REMOVETEACHER)
+                    .ofType(PacketType.REMOVETEACHER.getError())
                     .build();
 
             sendPacketIO(removeTeacherErrorPacket);
@@ -350,7 +372,7 @@ public class ClientProtocol {
         List<Classroom> classrooms = clientThread.getDbConnection().getClassrooms();
 
         Packet classroomsConfirmationPacket = new PacketBuilder()
-                .ofType(Constants.CONFIRMATION_CLASSROOMS)
+                .ofType(PacketType.CLASSROOMS.getConfirmation())
                 .addArgument("classrooms", classrooms)
                 .build();
 
@@ -376,7 +398,7 @@ public class ClientProtocol {
         } else {
 
             Packet addClassroomErrorPacket = new PacketBuilder()
-                    .ofType(Constants.ERROR_ADDCLASSROOM)
+                    .ofType(PacketType.ADDCLASSROOM.getError())
                     .build();
 
             sendPacketIO(addClassroomErrorPacket);
@@ -403,7 +425,7 @@ public class ClientProtocol {
         } else {
 
             Packet updateClassroomErrorPacket = new PacketBuilder()
-                    .ofType(Constants.ERROR_UPDATECLASSROOM)
+                    .ofType(PacketType.UPDATECLASSROOM.getError())
                     .build();
 
             sendPacketIO(updateClassroomErrorPacket);
@@ -430,7 +452,7 @@ public class ClientProtocol {
         } else {
 
             Packet removeClassroomErrorPacket = new PacketBuilder()
-                    .ofType(Constants.ERROR_REMOVECLASSROOM)
+                    .ofType(PacketType.REMOVECLASSROOM.getError())
                     .build();
 
             sendPacketIO(removeClassroomErrorPacket);
@@ -449,7 +471,7 @@ public class ClientProtocol {
         List<Course> courses = clientThread.getDbConnection().getCourses();
 
         Packet coursesConfirmationPacket = new PacketBuilder()
-                .ofType(Constants.CONFIRMATION_COURSES)
+                .ofType(PacketType.COURSES.getConfirmation())
                 .addArgument("courses", courses)
                 .build();
 
@@ -475,7 +497,7 @@ public class ClientProtocol {
         } else {
 
             Packet addCourseErrorPacket = new PacketBuilder()
-                    .ofType(Constants.ERROR_ADDCOURSE)
+                    .ofType(PacketType.ADDCOURSE.getError())
                     .build();
 
             sendPacketIO(addCourseErrorPacket);
@@ -502,7 +524,7 @@ public class ClientProtocol {
         } else {
 
             Packet updateCourseErrorPacket = new PacketBuilder()
-                    .ofType(Constants.ERROR_UPDATECOURSE)
+                    .ofType(PacketType.UPDATECOURSE.getError())
                     .build();
 
             sendPacketIO(updateCourseErrorPacket);
@@ -529,10 +551,109 @@ public class ClientProtocol {
         } else {
 
             Packet removeCourseErrorPacket = new PacketBuilder()
-                    .ofType(Constants.ERROR_REMOVECOURSE)
+                    .ofType(PacketType.REMOVECOURSE.getError())
                     .build();
 
             sendPacketIO(removeCourseErrorPacket);
+
+        }
+
+    }
+
+
+    /**
+     * Get subjects list from database
+     * Send subjects list packet to client
+     */
+    private void subjectsList() {
+
+        List<Subject> subjects = clientThread.getDbConnection().getSubjects();
+
+        Packet coursesConfirmationPacket = new PacketBuilder()
+                .ofType(PacketType.SUBJECTS.getConfirmation())
+                .addArgument("subjects", subjects)
+                .build();
+
+        sendPacketIO(coursesConfirmationPacket);
+
+    }
+
+    /**
+     * Get subject data from packet
+     * Parse subject data and return subject object
+     * Add subject to database, and send confirmation or error packet to client
+     */
+    private void addSubject() {
+
+        LinkedTreeMap subjectMap = (LinkedTreeMap) lastPacket.getArgument("subject");
+
+        Subject subject = Subject.parse(subjectMap);
+
+        if(clientThread.getDbConnection().addSubject(subject)) {
+
+            subjectsList();
+
+        } else {
+
+            Packet addSubjectErrorPacket = new PacketBuilder()
+                    .ofType(PacketType.ADDSUBJECT.getError())
+                    .build();
+
+            sendPacketIO(addSubjectErrorPacket);
+
+        }
+
+    }
+
+    /**
+     * Get subject data from packet
+     * Parse subject data and return subject object
+     * Update subject from database, and send confirmation or error packet to client
+     */
+    private void updateSubject() {
+
+        LinkedTreeMap subjectMap = (LinkedTreeMap) lastPacket.getArgument("subject");
+
+        Subject subject = Subject.parse(subjectMap);
+
+        if(clientThread.getDbConnection().updateSubject(subject)) {
+
+            subjectsList();
+
+        } else {
+
+            Packet updateSubjectErrorPacket = new PacketBuilder()
+                    .ofType(PacketType.UPDATESUBJECT.getError())
+                    .build();
+
+            sendPacketIO(updateSubjectErrorPacket);
+
+        }
+
+    }
+
+    /**
+     * Get subject data from packet
+     * Parse subject data and return subject object
+     * Remove subject from database, and send confirmation or error packet to client
+     */
+    private void removeSubject() {
+
+        LinkedTreeMap subjectMap = (LinkedTreeMap) lastPacket.getArgument("subject");
+
+        Subject subject = Subject.parse(subjectMap);
+
+        if(clientThread.getDbConnection().removeSubject(subject)) {
+
+            subjectsList();
+
+        } else {
+
+            Packet removeSubjectErrorPacket = new PacketBuilder()
+                    .ofType(PacketType.REMOVESUBJECT.getError())
+                    .build();
+
+            sendPacketIO(removeSubjectErrorPacket);
 
         }
 

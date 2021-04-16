@@ -27,6 +27,12 @@ public class CourseModalController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         levelField.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 99));
+        levelField.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue.matches("\\d*")){
+                levelField.getEditor().setText(oldValue);
+            }
+            levelField.getValueFactory().setValue(Integer.parseInt(newValue));
+        });
 
     }
 

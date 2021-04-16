@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
 public class TeacherModalController implements Initializable {
 
     @FXML
-    private TextField numberField;
+    private Spinner<Integer> numberField;
 
     @FXML
     private TextField nameField;
@@ -37,8 +37,29 @@ public class TeacherModalController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        numberField.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 999999));
+        numberField.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue.matches("\\d*")){
+                numberField.getEditor().setText(oldValue);
+            }
+            numberField.getValueFactory().setValue(Integer.parseInt(newValue));
+        });
+
         minDayHoursField.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 12));
+        minDayHoursField.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue.matches("\\d*")){
+                numberField.getEditor().setText(oldValue);
+            }
+            minDayHoursField.getValueFactory().setValue(Integer.parseInt(newValue));
+        });
+
         maxDayHoursField.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 12));
+        maxDayHoursField.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue.matches("\\d*")){
+                numberField.getEditor().setText(oldValue);
+            }
+            maxDayHoursField.getValueFactory().setValue(Integer.parseInt(newValue));
+        });
 
     }
 
@@ -48,7 +69,7 @@ public class TeacherModalController implements Initializable {
 
         if(!edit) return;
 
-        numberField.setText(Integer.toString(teacher.getNumber()));
+        numberField.getValueFactory().setValue(teacher.getNumber());
         nameField.setText(teacher.getName());
         abreviationField.setText(teacher.getAbreviation());
         departmentField.setText(teacher.getDepartment());
@@ -58,7 +79,7 @@ public class TeacherModalController implements Initializable {
     }
 
     public Teacher getData() {
-        teacher.setNumber(Integer.parseInt(numberField.getText()));
+        teacher.setNumber(numberField.getValue());
         teacher.setName(nameField.getText());
         teacher.setAbreviation(abreviationField.getText());
         teacher.setMinDayHours(minDayHoursField.getValue());
@@ -69,7 +90,7 @@ public class TeacherModalController implements Initializable {
 
     public boolean validateInputs() {
 
-        if(numberField.getText().isEmpty())
+        if(numberField.getValue() == null)
             return false;
         if(nameField.getText().isEmpty())
             return false;

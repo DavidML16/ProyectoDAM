@@ -671,6 +671,265 @@ public class DBConnection {
     }
 
 
+    /**
+     * Get subjects from database
+     * @return list of subjects
+     */
+    public List<Subject> getSubjects() {
 
+        open();
+
+        List<Subject> subjects = new ArrayList<>();
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        PreparedStatement stm2 = null;
+        ResultSet rs2 = null;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_SUBJECTS);
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+
+                int id = rs.getInt("id_asignatura");
+                int number = rs.getInt("numero");
+                String abreviation = rs.getString("abreviacion");
+                String name = rs.getString("nombre");
+
+                stm2 = connection.prepareStatement(DBConstants.DB_QUERY_SUBJECTS_COURSES);
+                stm2.setInt(1, id);
+                rs2 = stm2.executeQuery();
+
+                List<Course> subjectCourses = new ArrayList<>();
+
+                while (rs2.next()) {
+                    int id_c = rs2.getInt("id_curso");
+                    int level_c = rs2.getInt("nivel");
+                    String name_c = rs2.getString("nombre");
+
+                    subjectCourses.add(new Course(id_c, level_c, name_c));
+                }
+
+                stm2.close();
+                rs2.close();
+
+                subjects.add(new Subject(id, number, abreviation, name, subjectCourses));
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return subjects;
+
+    }
+
+    /**
+     * Add a new subject to database
+     * @param subject
+     * @return subject added
+     */
+    public boolean addSubject(Subject subject) {
+
+        open();
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_ADDSUBJECT);
+
+            stm.setInt(1, subject.getNumber());
+            stm.setString(2, subject.getAbreviation());
+            stm.setString(3, subject.getName());
+
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return rs == 1;
+
+    }
+
+    /**
+     * Update subject information from database
+     * @param subject
+     * @return subject updated
+     */
+    public boolean updateSubject(Subject subject) {
+
+        open();
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_UPDATESUBJECT);
+
+            stm.setInt(1, subject.getNumber());
+            stm.setString(2, subject.getAbreviation());
+            stm.setString(3, subject.getName());
+            stm.setInt(4, subject.getId());
+
+            rs = stm.executeUpdate();
+
+            removeAllSubjectRelation(subject);
+
+            for(Course course : subject.getCourses())
+                addSubjectRelation(subject, course);
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return rs == 1;
+
+    }
+
+    /**
+     * Remove subject provided from the database
+     * @param subject
+     * @return subject deleted
+     */
+    public boolean removeSubject(Subject subject) {
+
+        open();
+
+        removeAllSubjectRelation(subject);
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_REMOVESUBJECT);
+
+            stm.setInt(1, subject.getId());
+
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return rs == 1;
+
+    }
+
+    /**
+     * Remove subject relation with all courses
+     * @param subject
+     */
+    private void removeAllSubjectRelation(Subject subject) {
+
+        PreparedStatement stm = null;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_REMOVESUBJECT_RELATION);
+
+            stm.setInt(1, subject.getId());
+
+            stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Add subject relation with the specified course
+     * @param subject
+     * @param course
+     */
+    public void addSubjectRelation(Subject subject, Course course) {
+
+        PreparedStatement stm = null;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_ADDSUBJECT_RELATION);
+
+            stm.setInt(1, course.getId());
+            stm.setInt(2, subject.getId());
+
+            stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+    }
 
 }

@@ -14,6 +14,7 @@ import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
+import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.Constants;
 import morales.david.desktop.utils.HashUtil;
 
@@ -80,7 +81,7 @@ public class LoginController implements Initializable, Controller {
         }
 
         Packet loginRequestPacket = new PacketBuilder()
-                .ofType(Constants.REQUEST_LOGIN)
+                .ofType(PacketType.LOGIN.getRequest())
                 .addArgument("username", username)
                 .addArgument("password", password)
                 .build();

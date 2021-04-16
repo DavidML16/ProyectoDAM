@@ -22,6 +22,7 @@ import morales.david.desktop.models.Course;
 import morales.david.desktop.models.Subject;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
+import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.Constants;
 
 import java.io.IOException;
@@ -66,7 +67,7 @@ public class SubjectsController implements Initializable, Controller {
         Platform.runLater(() -> {
 
             Packet coursesRequestPacket = new PacketBuilder()
-                    .ofType(Constants.REQUEST_COURSES)
+                    .ofType(PacketType.SUBJECTS.getRequest())
                     .build();
 
             SocketManager.getInstance().sendPacketIO(coursesRequestPacket);
@@ -134,7 +135,7 @@ public class SubjectsController implements Initializable, Controller {
         Subject subject = subjectsTable.getSelectionModel().getSelectedItem();
 
         Packet removeSubjectRequestPacket = new PacketBuilder()
-                .ofType(Constants.REQUEST_REMOVESUBJECT)
+                .ofType(PacketType.REMOVESUBJECT.getRequest())
                 .addArgument("subject", subject)
                 .build();
 
@@ -189,7 +190,7 @@ public class SubjectsController implements Initializable, Controller {
                 Subject updatedSubject = controller.getData();
 
                 Packet updateSubjectRequestPacket = new PacketBuilder()
-                        .ofType(Constants.REQUEST_UPDATESUBJECT)
+                        .ofType(PacketType.UPDATESUBJECT.getRequest())
                         .addArgument("subject", updatedSubject)
                         .build();
 
@@ -247,7 +248,7 @@ public class SubjectsController implements Initializable, Controller {
                 Subject subject = controller.getData();
 
                 Packet addSubjectRequestPacket = new PacketBuilder()
-                        .ofType(Constants.REQUEST_ADDSUBJECT)
+                        .ofType(PacketType.ADDSUBJECT.getRequest())
                         .addArgument("subject", subject)
                         .build();
 

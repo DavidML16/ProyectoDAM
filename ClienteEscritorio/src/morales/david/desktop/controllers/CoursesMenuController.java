@@ -16,6 +16,7 @@ import morales.david.desktop.managers.ScreenManager;
 import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
+import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.Constants;
 
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class CoursesMenuController implements Initializable, Controller {
 
         Platform.runLater(() -> {
 
-            Packet coursesRequestPacket = new PacketBuilder().ofType(Constants.REQUEST_COURSES).build();
+            Packet coursesRequestPacket = new PacketBuilder().ofType(PacketType.COURSES.getRequest()).build();
 
             SocketManager.getInstance().sendPacketIO(coursesRequestPacket);
 

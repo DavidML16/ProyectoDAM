@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.image.Image?>
@@ -22,12 +23,24 @@
                   </ImageView>
                </graphic>
             </Button>
-            <VBox layoutX="13.0" layoutY="141.0" prefHeight="466.0" prefWidth="244.0" spacing="10.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="141.0">
+            <VBox layoutX="13.0" layoutY="141.0" prefHeight="466.0" prefWidth="244.0" spacing="10.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="141.0">
                <children>
-                  <Button fx:id="teachersNavigationButton" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="50.0" prefWidth="230.0" styleClass="navigationButton" text="Profesores" />
-                  <Button fx:id="coursesGroupsNavigationButton" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="50.0" prefWidth="230.0" styleClass="navigationButton" text="Cursos" />
-                  <Button fx:id="classroomsNavigationButton" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="50.0" prefWidth="230.0" styleClass="navigationButton" text="Aulas" />
-                  <Button fx:id="scheduleNavigationButton" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="50.0" prefWidth="230.0" styleClass="navigationButton" text="Horarios" />
+                  <Button fx:id="teachersNavigationButton" alignment="BASELINE_LEFT" graphicTextGap="18.0" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="50.0" prefWidth="230.0" styleClass="navigationButton" text="Profesores">
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="USER" size="27" />
+                     </graphic></Button>
+                  <Button fx:id="coursesGroupsNavigationButton" alignment="BASELINE_LEFT" graphicTextGap="16.0" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="50.0" prefWidth="230.0" styleClass="navigationButton" text="Cursos">
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="USERS" size="22" />
+                     </graphic></Button>
+                  <Button fx:id="classroomsNavigationButton" alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="50.0" prefWidth="230.0" styleClass="navigationButton" text="Aulas">
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="CODEPEN" size="25" />
+                     </graphic></Button>
+                  <Button fx:id="scheduleNavigationButton" alignment="BASELINE_LEFT" graphicTextGap="16.0" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="50.0" prefWidth="230.0" styleClass="navigationButton" text="Horarios">
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="CALENDAR" size="25" />
+                     </graphic></Button>
                </children>
             </VBox>
             <HBox prefHeight="50.0" prefWidth="197.0" spacing="15.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">

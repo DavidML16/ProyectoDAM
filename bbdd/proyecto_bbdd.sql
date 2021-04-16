@@ -39,3 +39,11 @@ CREATE TABLE asignatura (
     abreviacion VARCHAR(150) NOT NULL,
     nombre VARCHAR(150) NOT NULL
 );
+
+CREATE TABLE curso_asignatura (
+    curso INTEGER(11),
+    asignatura INTEGER(11),
+    CONSTRAINT c_s_pk PRIMARY KEY (curso, asignatura),
+    CONSTRAINT c_fk FOREIGN KEY (curso) REFERENCES curso(id_curso),
+    CONSTRAINT a_fk FOREIGN KEY (asignatura) REFERENCES asignatura(id_asignatura)
+);
