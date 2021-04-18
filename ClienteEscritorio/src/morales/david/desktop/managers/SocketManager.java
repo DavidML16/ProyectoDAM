@@ -195,6 +195,23 @@ public final class SocketManager extends Thread {
 
                             }
 
+                            case CREDENTIALS: {
+
+                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.CREDENTIALS.getConfirmation())) {
+
+                                    List<LinkedTreeMap> credentials = (List<LinkedTreeMap>) receivedPacket.getArgument("credentials");
+
+                                    DataManager.getInstance().getCredentials().clear();
+
+                                    for (LinkedTreeMap credentialMap : credentials)
+                                        DataManager.getInstance().getCredentials().add(Credential.parse(credentialMap));
+
+                                }
+
+                                break;
+
+                            }
+
                             case CLASSROOMS: {
 
                                 if(receivedPacket.getType().equalsIgnoreCase(PacketType.CLASSROOMS.getConfirmation())) {

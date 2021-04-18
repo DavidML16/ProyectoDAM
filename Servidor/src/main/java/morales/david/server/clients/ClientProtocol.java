@@ -2,12 +2,9 @@ package morales.david.server.clients;
 
 import com.google.gson.internal.LinkedTreeMap;
 import morales.david.server.Server;
-import morales.david.server.models.Classroom;
-import morales.david.server.models.Course;
-import morales.david.server.models.Subject;
+import morales.david.server.models.*;
 import morales.david.server.models.packets.Packet;
 import morales.david.server.models.packets.PacketBuilder;
-import morales.david.server.models.Teacher;
 import morales.david.server.models.packets.PacketType;
 import morales.david.server.utils.Constants;
 import morales.david.server.utils.DBConnection;
@@ -54,6 +51,22 @@ public class ClientProtocol {
 
             case SENDACCESSFILE:
                 receiveFile();
+                break;
+
+            case CREDENTIALS:
+                credentialsList();
+                break;
+
+            case ADDCREDENTIAL:
+                addCredential();
+                break;
+
+            case UPDATECREDENTIAL:
+                updateCredential();
+                break;
+
+            case REMOVECREDENTIAL:
+                removeCredential();
                 break;
 
             case TEACHERS:
@@ -259,6 +272,105 @@ public class ClientProtocol {
         if(dbfile.exists() && !clientThread.getServer().getImportManager().isImporting()) {
             clientThread.getServer().getImportManager().setFile(dbfile);
             clientThread.getServer().getImportManager().importDatabase();
+        }
+
+    }
+
+
+    /**
+     * Get credentials list from database
+     * Send credentials list packet to client
+     */
+    private void credentialsList() {
+
+        List<Credential> credentials = clientThread.getDbConnection().getCredentials();
+
+        Packet credentialsConfirmationPacket = new PacketBuilder()
+                .ofType(PacketType.CREDENTIALS.getConfirmation())
+                .addArgument("credentials", credentials)
+                .build();
+
+        sendPacketIO(credentialsConfirmationPacket);
+
+    }
+
+    /**
+     * Get credential data from packet
+     * Parse credential data and return credential object
+     * Add credential to database, and send confirmation or error packet to client
+     */
+    private void addCredential() {
+
+        LinkedTreeMap credentialMap = (LinkedTreeMap) lastPacket.getArgument("credential");
+
+        Credential credential = Credential.parse(credentialMap);
+
+        if(clientThread.getDbConnection().addCredential(credential)) {
+
+            credentialsList();
+
+        } else {
+
+            Packet addCredentialErrorPacket = new PacketBuilder()
+                    .ofType(PacketType.ADDCREDENTIAL.getError())
+                    .build();
+
+            sendPacketIO(addCredentialErrorPacket);
+
+        }
+
+    }
+
+    /**
+     * Get credential data from packet
+     * Parse credential data and return credential object
+     * Update credential from database, and send confirmation or error packet to client
+     */
+    private void updateCredential() {
+
+        LinkedTreeMap credentialMap = (LinkedTreeMap) lastPacket.getArgument("credential");
+
+        Credential credential = Credential.parse(credentialMap);
+
+        if(clientThread.getDbConnection().updateCredential(credential)) {
+
+            credentialsList();
+
+        } else {
+
+            Packet updateCredentialErrorPacket = new PacketBuilder()
+                    .ofType(PacketType.UPDATECREDENTIAL.getError())
+                    .build();
+
+            sendPacketIO(updateCredentialErrorPacket);
+
+        }
+
+    }
+
+    /**
+     * Get credential data from packet
+     * Parse credential data and return credential object
+     * Remove credential from database, and send confirmation or error packet to client
+     */
+    private void removeCredential() {
+
+        LinkedTreeMap credentialMap = (LinkedTreeMap) lastPacket.getArgument("credential");
+
+        Credential credential = Credential.parse(credentialMap);
+
+        if(clientThread.getDbConnection().removeCredential(credential)) {
+
+            credentialsList();
+
+        } else {
+
+            Packet removeCredentialErrorPacket = new PacketBuilder()
+                    .ofType(PacketType.REMOVECREDENTIAL.getError())
+                    .build();
+
+            sendPacketIO(removeCredentialErrorPacket);
+
         }
 
     }

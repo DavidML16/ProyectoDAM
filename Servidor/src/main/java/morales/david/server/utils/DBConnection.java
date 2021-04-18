@@ -2,10 +2,7 @@ package morales.david.server.utils;
 
 import morales.david.server.clients.ClientSession;
 import morales.david.server.clients.ClientThread;
-import morales.david.server.models.Classroom;
-import morales.david.server.models.Course;
-import morales.david.server.models.Subject;
-import morales.david.server.models.Teacher;
+import morales.david.server.models.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -90,6 +87,247 @@ public class DBConnection {
         return false;
 
     }
+
+    /**
+     * Get credentials from database
+     * @return list of credentials
+     */
+    public List<Credential> getCredentials() {
+
+        open();
+
+        List<Credential> credentials = new ArrayList<>();
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_CREDENTIALS);
+
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+
+                int id = rs.getInt("id_credencial");
+                String username = rs.getString("usuario");
+                String password = rs.getString("passwd_hash");
+                String role = rs.getString("rol");
+
+                int id_teacher = rs.getInt("profesor");
+
+                Teacher teacher = getTeacher(id_teacher);
+
+                credentials.add(new Credential(id, username, password, role, teacher));
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return credentials;
+
+    }
+
+    /**
+     * Get credential from database by specified id
+     * @return credential
+     */
+    public Credential getCredential(int _id) {
+
+        open();
+
+        Credential credential = null;
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_CREDENTIAL_BY_ID);
+            stm.setInt(1, _id);
+
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+
+                int id = rs.getInt("id_credencial");
+                String username = rs.getString("usuario");
+                String password = rs.getString("passwd_hash");
+                String role = rs.getString("rol");
+
+                int id_teacher = rs.getInt("profesor");
+
+                Teacher teacher = getTeacher(id_teacher);
+
+                credential = new Credential(id, username, password, role, teacher);
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return credential;
+
+    }
+
+    /**
+     * Add a new credential to database
+     * @param credential
+     * @return credential added
+     */
+    public boolean addCredential(Credential credential) {
+
+        open();
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_ADDCREDENTIAL);
+
+            stm.setString(1, credential.getUsername());
+            stm.setString(2, credential.getPassword());
+            stm.setInt(3, credential.getTeacher().getId());
+            stm.setString(4, credential.getRole());
+
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return rs == 1;
+
+    }
+
+    /**
+     * Update credential information from database
+     * @param credential
+     * @return credential updated
+     */
+    public boolean updateCredential(Credential credential) {
+
+        open();
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_UPDATECREDENTIAL);
+
+            stm.setString(1, credential.getUsername());
+            stm.setString(2, credential.getPassword());
+            stm.setInt(3, credential.getTeacher().getId());
+            stm.setString(4, credential.getRole());
+            stm.setInt(5, credential.getId());
+
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return rs == 1;
+
+    }
+
+    /**
+     * Remove the credential provided from the database
+     * @param credential
+     * @return credential deleted
+     */
+    public boolean removeCredential(Credential credential) {
+
+        open();
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_REMOVECREDENTIAL);
+
+            stm.setInt(1, credential.getId());
+
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return rs == 1;
+
+    }
+
 
     /**
      * Get credential and teacher information and save into provided object
@@ -198,6 +436,65 @@ public class DBConnection {
         close();
 
         return teachers;
+
+    }
+
+    /**
+     * Get teacher from database by specified id
+     * @return teacher
+     */
+    public Teacher getTeacher(int _id) {
+
+        open();
+
+        Teacher teacher = null;
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_TEACHER_BY_ID);
+            stm.setInt(1, _id);
+
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+
+                int id = rs.getInt("id_profesor");
+                int number = rs.getInt("numero");
+                String name = rs.getString("nombre");
+                String abreviation = rs.getString("abreviacion");
+                int minDayHours = rs.getInt("minhorasdia");
+                int maxDayHours = rs.getInt("maxhorasdia");
+                String department = rs.getString("departamento");
+
+                teacher = new Teacher(id, number, name, abreviation, minDayHours, maxDayHours, department);
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return teacher;
 
     }
 
@@ -382,6 +679,61 @@ public class DBConnection {
     }
 
     /**
+     * Get classroom from database by specified id
+     * @return classroom
+     */
+    public Classroom getClassroom(int _id) {
+
+        open();
+
+        Classroom classroom = null;
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_CLASSROOM_BY_ID);
+            stm.setInt(1, _id);
+
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+
+                int id = rs.getInt("id_aula");
+                String name = rs.getString("nombre");
+                int floor = rs.getInt("planta");
+
+                classroom = new Classroom(id, name, floor);
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return classroom;
+
+    }
+
+    /**
      * Add a new classroom to database
      * @param classroom
      * @return classroom added
@@ -550,6 +902,61 @@ public class DBConnection {
         close();
 
         return courses;
+
+    }
+
+    /**
+     * Get course from database by specified id
+     * @return course
+     */
+    public Course getCourse(int _id) {
+
+        open();
+
+        Course course = null;
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_COURSE_BY_ID);
+            stm.setInt(1, _id);
+
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+
+                int id = rs.getInt("id_curso");
+                int level = rs.getInt("nivel");
+                String name = rs.getString("nombre");
+
+                course = new Course(id, level, name);
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return course;
 
     }
 
@@ -741,6 +1148,81 @@ public class DBConnection {
         close();
 
         return subjects;
+
+    }
+
+    /**
+     * Get subject from database by specified id
+     * @return subject
+     */
+    public Subject getSubject(int _id) {
+
+        open();
+
+        Subject subject = null;
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        PreparedStatement stm2 = null;
+        ResultSet rs2 = null;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_SUBJECT_BY_ID);
+            stm.setInt(1, _id);
+
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+
+                int id = rs.getInt("id_asignatura");
+                int number = rs.getInt("numero");
+                String abreviation = rs.getString("abreviacion");
+                String name = rs.getString("nombre");
+
+                stm2 = connection.prepareStatement(DBConstants.DB_QUERY_SUBJECTS_COURSES);
+                stm2.setInt(1, id);
+                rs2 = stm2.executeQuery();
+
+                List<Course> subjectCourses = new ArrayList<>();
+
+                while (rs2.next()) {
+                    int id_c = rs2.getInt("id_curso");
+                    int level_c = rs2.getInt("nivel");
+                    String name_c = rs2.getString("nombre");
+
+                    subjectCourses.add(new Course(id_c, level_c, name_c));
+                }
+
+                stm2.close();
+                rs2.close();
+
+                subject = new Subject(id, number, abreviation, name, subjectCourses);
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return subject;
 
     }
 

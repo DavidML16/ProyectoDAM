@@ -66,6 +66,9 @@ public class DashboardController implements Initializable, Controller {
             Packet teachersRequestPacket = new PacketBuilder().ofType(PacketType.TEACHERS.getRequest()).build();
             SocketManager.getInstance().sendPacketIO(teachersRequestPacket);
 
+            Packet credentialsRequestPacket = new PacketBuilder().ofType(PacketType.CREDENTIALS.getRequest()).build();
+            SocketManager.getInstance().sendPacketIO(credentialsRequestPacket);
+
             Packet coursesRequestPacket = new PacketBuilder().ofType(PacketType.COURSES.getRequest()).build();
             SocketManager.getInstance().sendPacketIO(coursesRequestPacket);
 

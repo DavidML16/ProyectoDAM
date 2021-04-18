@@ -84,15 +84,7 @@ public class Teacher {
 
     @Override
     public String toString() {
-        return "Teacher{" +
-                "id=" + id +
-                ", number=" + number +
-                ", name='" + name + '\'' +
-                ", abreviation='" + abreviation + '\'' +
-                ", minDayHours=" + minDayHours +
-                ", maxDayHours=" + maxDayHours +
-                ", department='" + department + '\'' +
-                '}';
+       return name;
     }
 
     public static Teacher parse(LinkedTreeMap teacherMap) {

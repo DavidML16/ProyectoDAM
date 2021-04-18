@@ -2,7 +2,9 @@ package morales.david.desktop;
 
 import com.google.gson.Gson;
 import javafx.application.Application;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import morales.david.desktop.managers.ScreenManager;
 import morales.david.desktop.managers.SocketManager;
@@ -27,8 +29,12 @@ public class Client extends Application {
 
         screenManager.openScene("login.fxml", "Iniciar sesión" + Constants.WINDOW_TITLE);
 
-        screenManager.getStage().setWidth(1280);
-        screenManager.getStage().setHeight(720);
+        primaryStage.setWidth(1280);
+        primaryStage.setHeight(720);
+
+        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+        primaryStage.setX((primScreenBounds.getWidth() - primaryStage.getWidth()) / 2);
+        primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
 
     }
 
