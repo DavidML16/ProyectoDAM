@@ -1,6 +1,7 @@
-package morales.david.desktop.controllers;
+package morales.david.desktop.controllers.teachers;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,6 +17,7 @@ import morales.david.desktop.controllers.modals.TeacherModalController;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.DataManager;
 import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.models.Subject;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.Teacher;
@@ -52,6 +54,9 @@ public class TeachersController implements Initializable, Controller {
 
     @FXML
     private TableColumn<Teacher, String> departmentColumn;
+
+    @FXML
+    private TextField filterField;
 
     @FXML
     private Button newButton;
@@ -130,6 +135,33 @@ public class TeachersController implements Initializable, Controller {
 
             return row ;
             
+        });
+
+        filterField.textProperty().addListener(observable -> {
+
+            if(filterField.textProperty().get().isEmpty()) {
+                teachersTable.setItems(list);
+                return;
+            }
+
+            ObservableList<Teacher> tableItems = FXCollections.observableArrayList();
+            ObservableList<TableColumn<Teacher, ?>> cols = teachersTable.getColumns();
+
+            for(int i=0; i< list.size(); i++) {
+
+                for(int j=0; j<cols.size(); j++) {
+                    TableColumn col = cols.get(j);
+                    String cellValue = col.getCellData(list.get(i)).toString();
+                    cellValue = cellValue.toLowerCase();
+                    if(cellValue.contains(filterField.textProperty().get().toLowerCase())) {
+                        tableItems.add(list.get(i));
+                        break;
+                    }
+                }
+            }
+
+            teachersTable.setItems(tableItems);
+
         });
 
     }

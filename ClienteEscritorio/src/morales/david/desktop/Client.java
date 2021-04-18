@@ -27,6 +27,9 @@ public class Client extends Application {
 
         screenManager.openScene("login.fxml", "Iniciar sesión" + Constants.WINDOW_TITLE);
 
+        screenManager.getStage().setWidth(1280);
+        screenManager.getStage().setHeight(720);
+
     }
 
     public static void main(String[] args) {

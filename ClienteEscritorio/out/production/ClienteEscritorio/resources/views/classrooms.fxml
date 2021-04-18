@@ -8,6 +8,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.text.Font?>
 <AnchorPane prefHeight="600.0" prefWidth="907.0" styleClass="mainPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morales.david.desktop.controllers.ClassroomsController">
    <children>
       <TableView fx:id="classroomsTable" prefHeight="600.0" prefWidth="814.0" AnchorPane.bottomAnchor="105.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="25.0">
@@ -20,32 +22,44 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="bottonsBox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0">
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" styleClass="bottonsBox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="45.0" AnchorPane.rightAnchor="25.0">
          <children>
-            <Button fx:id="newButton" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="50.0" prefWidth="162.0" styleClass="newButton" text="NUEVO">
+            <Button fx:id="newButton" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="50.0" prefWidth="142.0" styleClass="newButton" text="NUEVO">
                <padding>
-                  <Insets bottom="15.0" left="25.0" right="25.0" top="15.0" />
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                </padding>
                <HBox.margin>
                   <Insets bottom="25.0" right="25.0" top="25.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="editButton" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="50.0" prefWidth="162.0" styleClass="editButton" text="EDITAR">
+            <Button fx:id="editButton" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="50.0" prefWidth="142.0" styleClass="editButton" text="EDITAR">
                <padding>
-                  <Insets bottom="15.0" left="25.0" right="25.0" top="15.0" />
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                </padding>
                <HBox.margin>
                   <Insets bottom="25.0" right="25.0" top="25.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="deleteButton" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="50.0" prefWidth="162.0" styleClass="deleteButton" text="ELIMINAR">
+            <Button fx:id="deleteButton" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="50.0" prefWidth="142.0" styleClass="deleteButton" text="ELIMINAR">
                <padding>
-                  <Insets bottom="15.0" left="25.0" right="25.0" top="15.0" />
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                </padding>
                <HBox.margin>
                   <Insets bottom="25.0" top="25.0" />
                </HBox.margin>
             </Button>
+            <AnchorPane prefHeight="200.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <TextField fx:id="filterField" layoutY="25.0" prefHeight="55.0" prefWidth="295.0" promptText="Escriba aquí para filtrar los datos" AnchorPane.bottomAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="25.0">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </TextField>
+               </children>
+               <HBox.margin>
+                  <Insets left="25.0" />
+               </HBox.margin>
+            </AnchorPane>
          </children>
       </HBox>
    </children>

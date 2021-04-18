@@ -1,16 +1,13 @@
-package morales.david.desktop.controllers;
+package morales.david.desktop.controllers.teachers;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.ScreenManager;
 import morales.david.desktop.managers.SocketManager;
@@ -23,16 +20,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class CoursesMenuController implements Initializable, Controller {
+public class TeachersMenuController implements Initializable, Controller {
 
     @FXML
-    private Button coursesNavigationButton;
+    private Button teachersNavigationButton;
 
     @FXML
-    private Button groupsNavigationButton;
-
-    @FXML
-    private Button subjectsNavigationButton;
+    private Button credentialsNavigationButton;
 
     @FXML
     private BorderPane viewPane;
@@ -44,14 +38,14 @@ public class CoursesMenuController implements Initializable, Controller {
 
         actualView = "";
 
-        Platform.runLater(() -> loadView("courses.fxml", "Cursos", null));
-        coursesNavigationButton.getStyleClass().add("buttonPressed");
+        Platform.runLater(() -> loadView("teachers/teachers.fxml", "Cursos", null));
+        teachersNavigationButton.getStyleClass().add("buttonPressed");
 
         Platform.runLater(() -> {
 
-            Packet coursesRequestPacket = new PacketBuilder().ofType(PacketType.COURSES.getRequest()).build();
+            Packet teachersRequestPacket = new PacketBuilder().ofType(PacketType.TEACHERS.getRequest()).build();
 
-            SocketManager.getInstance().sendPacketIO(coursesRequestPacket);
+            SocketManager.getInstance().sendPacketIO(teachersRequestPacket);
 
         });
 
@@ -60,20 +54,17 @@ public class CoursesMenuController implements Initializable, Controller {
     @FXML
     public void handleButtonAction(MouseEvent event) {
 
-        if(event.getSource() == coursesNavigationButton)
-            loadView("courses.fxml", "Cursos", event);
-        else if (event.getSource() == groupsNavigationButton)
-            loadView("groups.fxml", "Grupos", event);
-        else if (event.getSource() == subjectsNavigationButton)
-            loadView("subjects.fxml", "Asignaturas", event);
+        if(event.getSource() == teachersNavigationButton)
+            loadView("teachers/teachers.fxml", "Cursos", event);
+        else if (event.getSource() == credentialsNavigationButton)
+            loadView("teachers/credentials.fxml", "Grupos", event);
 
     }
 
     private void removePressed() {
 
-        coursesNavigationButton.getStyleClass().remove("buttonPressed");
-        groupsNavigationButton.getStyleClass().remove("buttonPressed");
-        subjectsNavigationButton.getStyleClass().remove("buttonPressed");
+        teachersNavigationButton.getStyleClass().remove("buttonPressed");
+        credentialsNavigationButton.getStyleClass().remove("buttonPressed");
 
     }
 

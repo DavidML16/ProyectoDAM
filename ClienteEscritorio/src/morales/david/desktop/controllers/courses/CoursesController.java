@@ -1,6 +1,7 @@
-package morales.david.desktop.controllers;
+package morales.david.desktop.controllers.courses;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,6 +19,7 @@ import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.DataManager;
 import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.models.Course;
+import morales.david.desktop.models.Subject;
 import morales.david.desktop.models.Teacher;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
@@ -42,6 +44,9 @@ public class CoursesController implements Initializable, Controller {
 
     @FXML
     private TableColumn<Course, Integer> nameColumn;
+
+    @FXML
+    private TextField filterField;
 
     @FXML
     private Button newButton;
@@ -116,6 +121,33 @@ public class CoursesController implements Initializable, Controller {
 
             return row ;
             
+        });
+
+        filterField.textProperty().addListener(observable -> {
+
+            if(filterField.textProperty().get().isEmpty()) {
+                coursesTable.setItems(list);
+                return;
+            }
+
+            ObservableList<Course> tableItems = FXCollections.observableArrayList();
+            ObservableList<TableColumn<Course, ?>> cols = coursesTable.getColumns();
+
+            for(int i=0; i< list.size(); i++) {
+
+                for(int j=0; j<cols.size(); j++) {
+                    TableColumn col = cols.get(j);
+                    String cellValue = col.getCellData(list.get(i)).toString();
+                    cellValue = cellValue.toLowerCase();
+                    if(cellValue.contains(filterField.textProperty().get().toLowerCase())) {
+                        tableItems.add(list.get(i));
+                        break;
+                    }
+                }
+            }
+
+            coursesTable.setItems(tableItems);
+
         });
 
     }

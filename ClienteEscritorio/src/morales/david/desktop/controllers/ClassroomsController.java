@@ -1,6 +1,7 @@
 package morales.david.desktop.controllers;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,6 +18,7 @@ import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.DataManager;
 import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.models.Classroom;
+import morales.david.desktop.models.Subject;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
@@ -40,6 +42,9 @@ public class ClassroomsController implements Initializable, Controller {
 
     @FXML
     private TableColumn<Classroom, Integer> floorColumn;
+
+    @FXML
+    private TextField filterField;
 
     @FXML
     private Button newButton;
@@ -114,6 +119,33 @@ public class ClassroomsController implements Initializable, Controller {
 
             return row ;
             
+        });
+
+        filterField.textProperty().addListener(observable -> {
+
+            if(filterField.textProperty().get().isEmpty()) {
+                classroomsTable.setItems(list);
+                return;
+            }
+
+            ObservableList<Classroom> tableItems = FXCollections.observableArrayList();
+            ObservableList<TableColumn<Classroom, ?>> cols = classroomsTable.getColumns();
+
+            for(int i=0; i< list.size(); i++) {
+
+                for(int j=0; j<cols.size(); j++) {
+                    TableColumn col = cols.get(j);
+                    String cellValue = col.getCellData(list.get(i)).toString();
+                    cellValue = cellValue.toLowerCase();
+                    if(cellValue.contains(filterField.textProperty().get().toLowerCase())) {
+                        tableItems.add(list.get(i));
+                        break;
+                    }
+                }
+            }
+
+            classroomsTable.setItems(tableItems);
+
         });
 
     }

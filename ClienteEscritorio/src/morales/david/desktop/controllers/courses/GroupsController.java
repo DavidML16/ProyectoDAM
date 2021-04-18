@@ -1,4 +1,4 @@
-package morales.david.desktop.controllers;
+package morales.david.desktop.controllers.courses;
 
 import javafx.fxml.Initializable;
 import morales.david.desktop.interfaces.Controller;

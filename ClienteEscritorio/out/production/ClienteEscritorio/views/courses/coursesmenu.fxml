@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-<AnchorPane prefHeight="600.0" prefWidth="660.0" styleClass="mainPane" stylesheets="@../css/dashboard.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morales.david.desktop.controllers.CoursesMenuController">
+<AnchorPane prefHeight="600.0" prefWidth="660.0" styleClass="mainPane" stylesheets="@../../css/dashboard.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morales.david.desktop.controllers.courses.CoursesMenuController">
    <children>
       <HBox alignment="CENTER" layoutX="230.0" prefHeight="75.0" prefWidth="660.0" spacing="25.0" styleClass="leftPane" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>

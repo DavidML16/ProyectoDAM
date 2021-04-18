@@ -82,9 +82,9 @@ public class DashboardController implements Initializable, Controller {
         if(event.getSource() == homeNavigationButton)
             loadView("home.fxml", "Inicio", event);
         else if (event.getSource() == teachersNavigationButton)
-            loadView("teachers.fxml", "Profesores", event);
+            loadView("teachers/teachersmenu.fxml", "Profesores", event);
         else if (event.getSource() == coursesGroupsNavigationButton)
-            loadView("coursesmenu.fxml", "Cursos", event);
+            loadView("courses/coursesmenu.fxml", "Cursos", event);
         else if (event.getSource() == classroomsNavigationButton)
             loadView("classrooms.fxml", "Aulas", event);
         else if (event.getSource() == scheduleNavigationButton)

@@ -93,178 +93,162 @@ public final class SocketManager extends Thread {
 
                     receivedPacket = readPacketIO();
 
-                    PacketType packetType = PacketType.valueOf(PacketType.getIdentifier(receivedPacket.getType()));
+                    Platform.runLater(() -> {
 
-                    switch (packetType) {
+                        PacketType packetType = PacketType.valueOf(PacketType.getIdentifier(receivedPacket.getType()));
 
-                        case LOGIN: {
+                        switch (packetType) {
 
-                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.LOGIN.getConfirmation())) {
+                            case LOGIN: {
 
-                                clientSession.setId(((Double) receivedPacket.getArgument("id")).intValue());
-                                clientSession.setName((String) receivedPacket.getArgument("name"));
-                                clientSession.setRole((String) receivedPacket.getArgument("role"));
+                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.LOGIN.getConfirmation())) {
 
-                                if (screenManager.getController() instanceof LoginController) {
+                                    clientSession.setId(((Double) receivedPacket.getArgument("id")).intValue());
+                                    clientSession.setName((String) receivedPacket.getArgument("name"));
+                                    clientSession.setRole((String) receivedPacket.getArgument("role"));
 
-                                    Platform.runLater(() -> {
+                                    if (screenManager.getController() instanceof LoginController) {
 
                                         screenManager.openScene("dashboard.fxml", "Inicio" + Constants.WINDOW_TITLE);
 
-                                    });
+                                    }
 
-                                }
+                                } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.LOGIN.LOGIN.getError())) {
 
-                            } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.LOGIN.LOGIN.getError())) {
+                                    if (screenManager.getController() instanceof LoginController) {
 
-                                if (screenManager.getController() instanceof LoginController) {
-
-                                    LoginController loginController = (LoginController) screenManager.getController();
-
-                                    Platform.runLater(() -> {
+                                        LoginController loginController = (LoginController) screenManager.getController();
 
                                         loginController.getMessageLabel().setText(Constants.MESSAGES_ERROR_LOGIN);
                                         loginController.getMessageLabel().setTextFill(Color.TOMATO);
 
-                                    });
+                                    }
 
                                 }
 
+                                break;
                             }
 
-                            break;
-                        }
+                            case DISCONNECT: {
 
-                        case DISCONNECT: {
+                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.DISCONNECT.getConfirmation())) {
 
-                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.DISCONNECT.getConfirmation())) {
+                                    clientSession = new ClientSession();
 
-                                clientSession = new ClientSession();
-
-                                if (!(screenManager.getController() instanceof LoginController)) {
-
-                                    Platform.runLater(() -> {
+                                    if (!(screenManager.getController() instanceof LoginController)) {
 
                                         openSocket();
 
                                         screenManager.openScene("login.fxml", "Iniciar sesión" + Constants.WINDOW_TITLE);
 
-                                    });
+                                    }
 
                                 }
+
+                                break;
 
                             }
 
-                            break;
+                            case SENDACCESSFILE: {
 
-                        }
+                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.SENDACCESSFILE.getConfirmation())) {
 
-                        case SENDACCESSFILE: {
+                                    if (screenManager.getController() instanceof ImportController) {
 
-                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.SENDACCESSFILE.getConfirmation())) {
-
-                                if (screenManager.getController() instanceof ImportController) {
-
-                                    ImportController importController = (ImportController) screenManager.getController();
-
-                                    Platform.runLater(() -> {
+                                        ImportController importController = (ImportController) screenManager.getController();
 
                                         importController.receivedFile();
 
-                                    });
+                                    }
 
-                                }
+                                } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.SENDACCESSFILE.getError())) {
 
-                            } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.SENDACCESSFILE.getError())) {
+                                    if (screenManager.getController() instanceof ImportController) {
 
-                                if (screenManager.getController() instanceof ImportController) {
-
-                                    ImportController importController = (ImportController) screenManager.getController();
-
-                                    Platform.runLater(() -> {
+                                        ImportController importController = (ImportController) screenManager.getController();
 
                                         importController.getMessageLabel().setText(Constants.MESSAGES_ERROR_RECEIVEDFILE);
                                         importController.getMessageLabel().setTextFill(Color.TOMATO);
 
-                                    });
+                                    }
 
                                 }
 
-                            }
-
-                            break;
-
-                        }
-
-                        case TEACHERS: {
-
-                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.TEACHERS.getConfirmation())) {
-
-                                List<LinkedTreeMap> teachers = (List<LinkedTreeMap>) receivedPacket.getArgument("teachers");
-
-                                DataManager.getInstance().getTeachers().clear();
-
-                                for (LinkedTreeMap teacherMap : teachers)
-                                    DataManager.getInstance().getTeachers().add(Teacher.parse(teacherMap));
+                                break;
 
                             }
 
-                            break;
+                            case TEACHERS: {
 
-                        }
+                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.TEACHERS.getConfirmation())) {
 
-                        case CLASSROOMS: {
+                                    List<LinkedTreeMap> teachers = (List<LinkedTreeMap>) receivedPacket.getArgument("teachers");
 
-                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.CLASSROOMS.getConfirmation())) {
+                                    DataManager.getInstance().getTeachers().clear();
 
-                                List<LinkedTreeMap> classrooms = (List<LinkedTreeMap>) receivedPacket.getArgument("classrooms");
+                                    for (LinkedTreeMap teacherMap : teachers)
+                                        DataManager.getInstance().getTeachers().add(Teacher.parse(teacherMap));
 
-                                DataManager.getInstance().getClassrooms().clear();
+                                }
 
-                                for (LinkedTreeMap classroomMap : classrooms)
-                                    DataManager.getInstance().getClassrooms().add(Classroom.parse(classroomMap));
-
-                            }
-
-                            break;
-
-                        }
-
-                        case COURSES: {
-
-                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.COURSES.getConfirmation())) {
-
-                                List<LinkedTreeMap> courses = (List<LinkedTreeMap>) receivedPacket.getArgument("courses");
-
-                                DataManager.getInstance().getCourses().clear();
-
-                                for (LinkedTreeMap courseMap : courses)
-                                    DataManager.getInstance().getCourses().add(Course.parse(courseMap));
+                                break;
 
                             }
 
-                            break;
+                            case CLASSROOMS: {
 
-                        }
+                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.CLASSROOMS.getConfirmation())) {
 
-                        case SUBJECTS: {
+                                    List<LinkedTreeMap> classrooms = (List<LinkedTreeMap>) receivedPacket.getArgument("classrooms");
 
-                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.SUBJECTS.getConfirmation())) {
+                                    DataManager.getInstance().getClassrooms().clear();
 
-                                List<LinkedTreeMap> subjects = (List<LinkedTreeMap>) receivedPacket.getArgument("subjects");
+                                    for (LinkedTreeMap classroomMap : classrooms)
+                                        DataManager.getInstance().getClassrooms().add(Classroom.parse(classroomMap));
 
-                                DataManager.getInstance().getSubjects().clear();
+                                }
 
-                                for (LinkedTreeMap subjectMap : subjects)
-                                    DataManager.getInstance().getSubjects().add(Subject.parse(subjectMap));
+                                break;
 
                             }
 
-                            break;
+                            case COURSES: {
+
+                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.COURSES.getConfirmation())) {
+
+                                    List<LinkedTreeMap> courses = (List<LinkedTreeMap>) receivedPacket.getArgument("courses");
+
+                                    DataManager.getInstance().getCourses().clear();
+
+                                    for (LinkedTreeMap courseMap : courses)
+                                        DataManager.getInstance().getCourses().add(Course.parse(courseMap));
+
+                                }
+
+                                break;
+
+                            }
+
+                            case SUBJECTS: {
+
+                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.SUBJECTS.getConfirmation())) {
+
+                                    List<LinkedTreeMap> subjects = (List<LinkedTreeMap>) receivedPacket.getArgument("subjects");
+
+                                    DataManager.getInstance().getSubjects().clear();
+
+                                    for (LinkedTreeMap subjectMap : subjects)
+                                        DataManager.getInstance().getSubjects().add(Subject.parse(subjectMap));
+
+                                }
+
+                                break;
+
+                            }
 
                         }
 
-                    }
+                    });
 
                 }
 

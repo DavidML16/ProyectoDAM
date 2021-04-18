@@ -1,7 +1,10 @@
-package morales.david.desktop.controllers;
+package morales.david.desktop.controllers.courses;
 
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -49,6 +52,9 @@ public class SubjectsController implements Initializable, Controller {
 
     @FXML
     private TableColumn<Subject, String> courseColumn;
+
+    @FXML
+    private TextField filterField;
 
     @FXML
     private Button newButton;
@@ -106,7 +112,7 @@ public class SubjectsController implements Initializable, Controller {
         abreviationColumn.setCellValueFactory(new PropertyValueFactory<>("abreviation"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         courseColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCourses().size() + " Curso"
-                + (cellData.getValue().getCourses().size() > 1 ? "s" : "")));
+                + (cellData.getValue().getCourses().size() != 1 ? "s" : "")));
 
         subjectsTable.setItems(list);
 
@@ -126,6 +132,33 @@ public class SubjectsController implements Initializable, Controller {
 
             return row ;
             
+        });
+
+        filterField.textProperty().addListener(observable -> {
+
+            if(filterField.textProperty().get().isEmpty()) {
+                subjectsTable.setItems(list);
+                return;
+            }
+
+            ObservableList<Subject> tableItems = FXCollections.observableArrayList();
+            ObservableList<TableColumn<Subject, ?>> cols = subjectsTable.getColumns();
+
+            for(int i=0; i< list.size(); i++) {
+
+                for(int j=0; j<cols.size(); j++) {
+                    TableColumn col = cols.get(j);
+                    String cellValue = col.getCellData(list.get(i)).toString();
+                    cellValue = cellValue.toLowerCase();
+                    if(cellValue.contains(filterField.textProperty().get().toLowerCase())) {
+                        tableItems.add(list.get(i));
+                        break;
+                    }
+                }
+            }
+
+            subjectsTable.setItems(tableItems);
+
         });
 
     }
