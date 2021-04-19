@@ -1,6 +1,7 @@
 package morales.david.desktop.managers;
 
 import com.google.gson.internal.LinkedTreeMap;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
 import morales.david.desktop.Client;
@@ -85,7 +86,12 @@ public final class SocketManager extends Thread {
 
         ScreenManager screenManager = ScreenManager.getInstance();
 
+        final boolean[] closed = {false};
+
         while(true) {
+
+            if(closed[0])
+                break;
 
             try {
 
@@ -133,7 +139,9 @@ public final class SocketManager extends Thread {
 
                                 if(receivedPacket.getType().equalsIgnoreCase(PacketType.DISCONNECT.getConfirmation())) {
 
-                                    clientSession = new ClientSession();
+                                    clientSession.setId(-1);
+                                    clientSession.setName("");
+                                    clientSession.setRole("");
 
                                     if (!(screenManager.getController() instanceof LoginController)) {
 
@@ -142,6 +150,20 @@ public final class SocketManager extends Thread {
                                         screenManager.openScene("login.fxml", "Iniciar sesión" + Constants.WINDOW_TITLE);
 
                                     }
+
+                                }
+
+                                break;
+
+                            }
+
+                            case EXIT: {
+
+                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.EXIT.getConfirmation())) {
+
+                                    closed[0] = true;
+                                    close();
+                                    Platform.exit();
 
                                 }
 
@@ -278,6 +300,8 @@ public final class SocketManager extends Thread {
     }
 
     public Socket getSocket() { return socket; }
+
+    public ClientSession getClientSession() { return clientSession; }
 
     // Methods to send data in socket I/O's
     public void sendPacketIO(Packet packet) {

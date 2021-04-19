@@ -49,6 +49,10 @@ public class ClientProtocol {
                 disconnect();
                 break;
 
+            case EXIT:
+                exit();
+                break;
+
             case SENDACCESSFILE:
                 receiveFile();
                 break;
@@ -201,6 +205,21 @@ public class ClientProtocol {
             sendPacketIO(disconnectErrorPacket);
 
         }
+
+    }
+
+    /**
+     * Close client from server
+     * Send conformation or error logout packet to client
+     */
+    private void exit() {
+
+        Packet exitConfirmationPacket = new PacketBuilder()
+                .ofType(PacketType.EXIT.getConfirmation())
+                .build();
+
+        sendPacketIO(exitConfirmationPacket);
+        clientThread.setConnected(false);
 
     }
 
@@ -795,8 +814,6 @@ public class ClientProtocol {
         try {
             String json = clientThread.getInput().readLine();
             return Server.GSON.fromJson(json, Packet.class);
-        } catch (SocketException e) {
-            clientThread.setConnected(false);
         } catch (IOException e) {
             System.out.println(Constants.LOG_SERVER_ERROR_IO_READ);
             e.printStackTrace();

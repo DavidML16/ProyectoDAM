@@ -1,13 +1,12 @@
 package morales.david.desktop.controllers.modals;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import morales.david.desktop.managers.DataManager;
 import morales.david.desktop.models.Course;
@@ -33,6 +32,9 @@ public class CredentialModalController implements Initializable {
     @FXML
     private ComboBox<Teacher> teacherField;
 
+    @FXML
+    private CheckBox passwordCheckbox;
+
     private Credential credential;
 
     @Override
@@ -41,6 +43,11 @@ public class CredentialModalController implements Initializable {
         roleField.setItems(FXCollections.observableArrayList("Profesor", "Directivo"));
 
         teacherField.setItems(DataManager.getInstance().getTeachers());
+
+        if(passwordCheckbox != null) {
+            passwordField.setDisable(true);
+            passwordCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> passwordField.setDisable(!newValue));
+        }
 
     }
 
@@ -66,8 +73,11 @@ public class CredentialModalController implements Initializable {
 
     public Credential getData() {
         credential.setUsername(usernameField.getText());
-        if(passwordField != null)
+        if(passwordCheckbox == null)
             credential.setPassword(HashUtil.sha1(passwordField.getText()));
+        else
+            if(passwordCheckbox.isSelected())
+                credential.setPassword(HashUtil.sha1(passwordField.getText()));
         credential.setRole(roleField.getSelectionModel().getSelectedItem().toLowerCase());
         credential.setTeacher(teacherField.getSelectionModel().getSelectedItem());
         return credential;
@@ -77,8 +87,13 @@ public class CredentialModalController implements Initializable {
 
         if(usernameField.getText().isEmpty())
             return false;
-        if(passwordField != null && passwordField.getText().isEmpty())
-            return false;
+        if(passwordCheckbox == null)
+            if(passwordField.getText().isEmpty())
+                return false;
+        else
+            if(passwordCheckbox.isSelected())
+                if(passwordField.getText().isEmpty())
+                    return false;
         if(roleField.getSelectionModel().isEmpty())
             return false;
         if(teacherField.getSelectionModel().isEmpty())

@@ -1,6 +1,8 @@
 package morales.david.desktop.controllers;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -8,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
@@ -101,7 +104,8 @@ public class DashboardController implements Initializable, Controller {
 
     private void disconnect() {
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "¿Estás seguro que quieres salir?", ButtonType.YES, ButtonType.NO);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "¿Estás seguro que quieres desconectarte?", ButtonType.YES, ButtonType.NO);
+        alert.setHeaderText("Vas a salir de la aplicación");
         alert.showAndWait();
 
         if (alert.getResult() == ButtonType.YES) {
