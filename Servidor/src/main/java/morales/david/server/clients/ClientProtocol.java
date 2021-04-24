@@ -137,6 +137,22 @@ public class ClientProtocol {
                 removeSubject();
                 break;
 
+            case DAYS:
+                daysList();
+                break;
+
+            case UPDATEDAY:
+                updateDay();
+                break;
+
+            case HOURS:
+                hoursList();
+                break;
+
+            case UPDATEHOUR:
+                updateHour();
+                break;
+
         }
 
     }
@@ -792,6 +808,96 @@ public class ClientProtocol {
 
 
     /**
+     * Get days list from database
+     * Send days list packet to client
+     */
+    private void daysList() {
+
+        List<Day> days = clientThread.getDbConnection().getDays();
+
+        Packet daysConfirmationPacket = new PacketBuilder()
+                .ofType(PacketType.DAYS.getConfirmation())
+                .addArgument("days", days)
+                .build();
+
+        sendPacketIO(daysConfirmationPacket);
+
+    }
+
+    /**
+     * Get day data from packet
+     * Parse day data and return day object
+     * Update day from database, and send confirmation or error packet to client
+     */
+    private void updateDay() {
+
+        LinkedTreeMap dayMap = (LinkedTreeMap) lastPacket.getArgument("day");
+
+        Day day = Day.parse(dayMap);
+
+        if(clientThread.getDbConnection().updateDay(day)) {
+
+            daysList();
+
+        } else {
+
+            Packet updateDayErrorPacket = new PacketBuilder()
+                    .ofType(PacketType.UPDATEDAY.getError())
+                    .build();
+
+            sendPacketIO(updateDayErrorPacket);
+
+        }
+
+    }
+
+
+    /**
+     * Get hours list from database
+     * Send hours list packet to client
+     */
+    private void hoursList() {
+
+        List<Hour> hours = clientThread.getDbConnection().getHours();
+
+        Packet hoursConfirmationPacket = new PacketBuilder()
+                .ofType(PacketType.HOURS.getConfirmation())
+                .addArgument("hours", hours)
+                .build();
+
+        sendPacketIO(hoursConfirmationPacket);
+
+    }
+
+    /**
+     * Get hour data from packet
+     * Parse hour data and return hour object
+     * Update hour from database, and send confirmation or error packet to client
+     */
+    private void updateHour() {
+
+        LinkedTreeMap hourMap = (LinkedTreeMap) lastPacket.getArgument("hour");
+
+        Hour hour = Hour.parse(hourMap);
+
+        if(clientThread.getDbConnection().updateHour(hour)) {
+
+            hoursList();
+
+        } else {
+
+            Packet updateHourErrorPacket = new PacketBuilder()
+                    .ofType(PacketType.UPDATEHOUR.getError())
+                    .build();
+
+            sendPacketIO(updateHourErrorPacket);
+
+        }
+
+    }
+
+
+    /**
      * Send packet to client's socket output
      * @param packet
      */
@@ -813,10 +919,10 @@ public class ClientProtocol {
     public Packet readPacketIO() {
         try {
             String json = clientThread.getInput().readLine();
+            System.out.println(json);
             return Server.GSON.fromJson(json, Packet.class);
         } catch (IOException e) {
-            System.out.println(Constants.LOG_SERVER_ERROR_IO_READ);
-            e.printStackTrace();
+            clientThread.setConnected(false);
         }
         return null;
     }

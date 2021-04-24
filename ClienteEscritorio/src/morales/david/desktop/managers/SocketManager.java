@@ -285,6 +285,40 @@ public final class SocketManager extends Thread {
 
                             }
 
+                            case DAYS: {
+
+                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.DAYS.getConfirmation())) {
+
+                                    List<LinkedTreeMap> days = (List<LinkedTreeMap>) receivedPacket.getArgument("days");
+
+                                    DataManager.getInstance().getDays().clear();
+
+                                    for (LinkedTreeMap dayMap : days)
+                                        DataManager.getInstance().getDays().add(Day.parse(dayMap));
+
+                                }
+
+                                break;
+
+                            }
+
+                            case HOURS: {
+
+                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.HOURS.getConfirmation())) {
+
+                                    List<LinkedTreeMap> hours = (List<LinkedTreeMap>) receivedPacket.getArgument("hours");
+
+                                    DataManager.getInstance().getHours().clear();
+
+                                    for (LinkedTreeMap hourMap : hours)
+                                        DataManager.getInstance().getHours().add(Hour.parse(hourMap));
+
+                                }
+
+                                break;
+
+                            }
+
                         }
 
                     });

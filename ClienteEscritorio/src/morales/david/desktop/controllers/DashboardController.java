@@ -61,24 +61,7 @@ public class DashboardController implements Initializable, Controller {
 
         Platform.runLater(() -> loadView("home.fxml", "Inicio", null));
 
-        Platform.runLater(() -> {
-
-            Packet classroomsRequestPacket = new PacketBuilder().ofType(PacketType.CLASSROOMS.getRequest()).build();
-            SocketManager.getInstance().sendPacketIO(classroomsRequestPacket);
-
-            Packet teachersRequestPacket = new PacketBuilder().ofType(PacketType.TEACHERS.getRequest()).build();
-            SocketManager.getInstance().sendPacketIO(teachersRequestPacket);
-
-            Packet credentialsRequestPacket = new PacketBuilder().ofType(PacketType.CREDENTIALS.getRequest()).build();
-            SocketManager.getInstance().sendPacketIO(credentialsRequestPacket);
-
-            Packet coursesRequestPacket = new PacketBuilder().ofType(PacketType.COURSES.getRequest()).build();
-            SocketManager.getInstance().sendPacketIO(coursesRequestPacket);
-
-            Packet subjectsRequestPacket = new PacketBuilder().ofType(PacketType.SUBJECTS.getRequest()).build();
-            SocketManager.getInstance().sendPacketIO(subjectsRequestPacket);
-
-        });
+        Platform.runLater(() -> sendPackets());
 
     }
 
@@ -94,7 +77,7 @@ public class DashboardController implements Initializable, Controller {
         else if (event.getSource() == classroomsNavigationButton)
             loadView("classrooms.fxml", "Aulas", event);
         else if (event.getSource() == scheduleNavigationButton)
-            loadView("schedules.fxml", "Horarios", event);
+            loadView("schedules/schedulesmenu.fxml", "Horarios", event);
         else if (event.getSource() == importNavigationButton)
             loadView("import.fxml", "Importar", event);
         else if(event.getSource() == disconnectNavigationButton)
@@ -115,6 +98,17 @@ public class DashboardController implements Initializable, Controller {
                     .build();
 
             SocketManager.getInstance().sendPacketIO(disconnectRequestPacket);
+
+        }
+
+    }
+
+    private void sendPackets() {
+
+        for(PacketType packetType : Constants.INIT_PACKETS) {
+
+            Packet requestPacket = new PacketBuilder().ofType(packetType.getRequest()).build();
+            SocketManager.getInstance().sendPacketIO(requestPacket);
 
         }
 

@@ -63,11 +63,10 @@ public class ImportController implements Initializable, Controller {
             FileChooser fileChooser = new FileChooser();
 
             fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Microsoft Access Files", "*.accdb"),
-                    new FileChooser.ExtensionFilter("Microsoft Access Files", "*.mdb")
+                new FileChooser.ExtensionFilter("Microsoft Excel Files", "*.xlsx")
             );
 
-            List<String> validExtensions = Arrays.asList("accdb", "mdb");
+            List<String> validExtensions = Arrays.asList("xlsx");
 
             fileDrop.setOnMouseClicked(event -> {
 
@@ -115,7 +114,7 @@ public class ImportController implements Initializable, Controller {
             fileDrop.setOnDragExited(event -> {
 
                 if(selectedFile.size() == 0)
-                    dropLabel.setText("Arrastra o pulsa para elegir el fichero Access");
+                    dropLabel.setText("Arrastra o pulsa para elegir el fichero Excel");
                 else
                     dropLabel.setText(selectedFile.get(0).getName());
 

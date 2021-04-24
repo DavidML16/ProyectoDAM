@@ -12,6 +12,7 @@ import morales.david.desktop.managers.DataManager;
 import morales.david.desktop.models.Course;
 import morales.david.desktop.models.Credential;
 import morales.david.desktop.models.Teacher;
+import morales.david.desktop.utils.ComboBoxAutoComplete;
 import morales.david.desktop.utils.HashUtil;
 import morales.david.desktop.utils.Utils;
 
@@ -48,6 +49,8 @@ public class CredentialModalController implements Initializable {
             passwordField.setDisable(true);
             passwordCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> passwordField.setDisable(!newValue));
         }
+
+        new ComboBoxAutoComplete(teacherField);
 
     }
 

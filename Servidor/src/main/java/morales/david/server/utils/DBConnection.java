@@ -1414,4 +1414,190 @@ public class DBConnection {
 
     }
 
+
+    /**
+     * Get days from database
+     * @return list of days
+     */
+    public List<Day> getDays() {
+
+        open();
+
+        List<Day> days = new ArrayList<>();
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_DAYS);
+
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+
+                int id = rs.getInt("id_dia");
+                String name = rs.getString("dia");
+
+                days.add(new Day(id, name));
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return days;
+
+    }
+
+    /**
+     * Update day information from database
+     * @param day
+     * @return day updated
+     */
+    public boolean updateDay(Day day) {
+
+        open();
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_UPDATEDAY);
+
+            stm.setString(1, day.getName());
+            stm.setInt(2, day.getId());
+
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return rs == 1;
+
+    }
+
+
+    /**
+     * Get hours from database
+     * @return list of hours
+     */
+    public List<Hour> getHours() {
+
+        open();
+
+        List<Hour> hours = new ArrayList<>();
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_HOURS);
+
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+
+                int id = rs.getInt("id_hora");
+                String name = rs.getString("horas");
+
+                hours.add(new Hour(id, name));
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return hours;
+
+    }
+
+    /**
+     * Update hour information from database
+     * @param hour
+     * @return hour updated
+     */
+    public boolean updateHour(Hour hour) {
+
+        open();
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_UPDATEHOUR);
+
+            stm.setString(1, hour.getName());
+            stm.setInt(2, hour.getId());
+
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return rs == 1;
+
+    }
+
 }

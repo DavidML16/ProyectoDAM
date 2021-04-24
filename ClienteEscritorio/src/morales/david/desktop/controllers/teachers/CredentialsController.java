@@ -151,6 +151,8 @@ public class CredentialsController implements Initializable, Controller {
 
             credentialsTable.setItems(tableItems);
 
+            credentialsTable.setPlaceholder(new Label("No existe ningun credencial registrado"));
+
         });
 
     }

@@ -43,7 +43,7 @@ public class CoursesController implements Initializable, Controller {
     private TableColumn<Course, Integer> levelColumn;
 
     @FXML
-    private TableColumn<Course, Integer> nameColumn;
+    private TableColumn<Course, String> nameColumn;
 
     @FXML
     private TextField filterField;
@@ -147,6 +147,8 @@ public class CoursesController implements Initializable, Controller {
             }
 
             coursesTable.setItems(tableItems);
+
+            coursesTable.setPlaceholder(new Label("No existe ningun curso registrado"));
 
         });
 

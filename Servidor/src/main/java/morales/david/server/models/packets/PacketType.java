@@ -14,7 +14,11 @@ public enum PacketType {
 
     COURSES, ADDCOURSE, UPDATECOURSE, REMOVECOURSE,
 
-    SUBJECTS, ADDSUBJECT, UPDATESUBJECT, REMOVESUBJECT;
+    SUBJECTS, ADDSUBJECT, UPDATESUBJECT, REMOVESUBJECT,
+
+    DAYS, UPDATEDAY,
+
+    HOURS, UPDATEHOUR;
 
     public String getRequest() {
         return "REQUEST_" + ordinal() + "_" + toString();

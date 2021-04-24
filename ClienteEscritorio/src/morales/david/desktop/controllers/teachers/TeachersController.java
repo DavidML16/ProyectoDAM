@@ -162,6 +162,8 @@ public class TeachersController implements Initializable, Controller {
 
             teachersTable.setItems(tableItems);
 
+            teachersTable.setPlaceholder(new Label("No existe ningun profesor/profesora registrad@"));
+
         });
 
     }

@@ -1,5 +1,7 @@
 package morales.david.desktop.utils;
 
+import morales.david.desktop.models.packets.PacketType;
+
 public class Constants {
 
     public static final String WINDOW_TITLE = " (SGH)";
@@ -16,5 +18,10 @@ public class Constants {
     public static final String MESSAGES_ERROR_RECEIVEDFILE = "Se ha producido un error al enviar o recibir el archivo";
 
     public static final String MESSAGES_CONFIRMATION_RECEIVEDFILE = "El archivo se ha recibido correctamente\nIniciando la importación...";
+
+    public static final PacketType[] INIT_PACKETS = {
+        PacketType.CLASSROOMS, PacketType.TEACHERS, PacketType.CREDENTIALS, PacketType.COURSES,
+        PacketType.SUBJECTS, PacketType.DAYS, PacketType.HOURS
+    };
 
 }

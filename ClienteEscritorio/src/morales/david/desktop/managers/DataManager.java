@@ -78,4 +78,26 @@ public final class DataManager {
         this.subjects = subjects;
     }
 
+
+    private ObservableList<Day> days = FXCollections.observableArrayList();
+
+    public synchronized ObservableList<Day> getDays() {
+        return days;
+    }
+
+    public synchronized void setDays(ObservableList<Day> days) {
+        this.days = days;
+    }
+
+
+    private ObservableList<Hour> hours = FXCollections.observableArrayList();
+
+    public synchronized ObservableList<Hour> getHours() {
+        return hours;
+    }
+
+    public synchronized void setHours(ObservableList<Hour> hours) {
+        this.hours = hours;
+    }
+
 }
