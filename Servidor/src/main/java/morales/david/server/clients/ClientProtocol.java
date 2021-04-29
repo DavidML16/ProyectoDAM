@@ -919,7 +919,6 @@ public class ClientProtocol {
     public Packet readPacketIO() {
         try {
             String json = clientThread.getInput().readLine();
-            System.out.println(json);
             return Server.GSON.fromJson(json, Packet.class);
         } catch (IOException e) {
             clientThread.setConnected(false);

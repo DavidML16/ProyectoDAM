@@ -17,6 +17,7 @@ import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.Constants;
+import morales.david.desktop.utils.Utils;
 
 public class Client extends Application {
 
@@ -40,9 +41,7 @@ public class Client extends Application {
         primaryStage.setWidth(1280);
         primaryStage.setHeight(720);
 
-        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-        primaryStage.setX((primScreenBounds.getWidth() - primaryStage.getWidth()) / 2);
-        primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
+        Utils.centerWindow(primaryStage);
 
         primaryStage.setOnCloseRequest(event -> {
 

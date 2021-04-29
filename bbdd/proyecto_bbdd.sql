@@ -76,4 +76,27 @@ CREATE TABLE franja_horaria (
 );
 
 
+CREATE TABLE grupo (
+    id_grupo INTEGER(11) PRIMARY KEY AUTO_INCREMENT,
+    curso INTEGER(11) NOT NULL,
+    letra CHAR NOT NULL,
+	dividido BOOLEAN NOT NULL DEFAULT false,
+	descripcion VARCHAR(150),
+	CONSTRAINT grupo_fk FOREIGN KEY (curso) REFERENCES curso(id_curso)
+);
+
+
+CREATE TABLE imparte (
+	profesor INTEGER(11) NOT NULL,
+	asignatura INTEGER(11) NOT NULL,
+	grupo INTEGER(11) NOT NULL,
+	aula INTEGER(11) NOT NULL,
+	franja INTEGER(11) NOT NULL,
+	CONSTRAINT imparte_pk PRIMARY KEY (profesor, asignatura, grupo, aula, franja),
+	CONSTRAINT imparte_profesor_fk FOREIGN KEY (profesor) REFERENCES profesor(id_profesor),
+	CONSTRAINT imparte_asignatura_fk FOREIGN KEY (asignatura) REFERENCES asignatura(id_asignatura),
+	CONSTRAINT imparte_grupo_fk FOREIGN KEY (grupo) REFERENCES grupo(id_grupo),
+	CONSTRAINT imparte_aula_fk FOREIGN KEY (aula) REFERENCES aula(id_aula),
+	CONSTRAINT imparte_franja_fk FOREIGN KEY (franja) REFERENCES franja_horaria(id_franja)
+);
 

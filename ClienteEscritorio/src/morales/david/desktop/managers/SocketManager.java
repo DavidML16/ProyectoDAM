@@ -3,6 +3,7 @@ package morales.david.desktop.managers;
 import com.google.gson.internal.LinkedTreeMap;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 import morales.david.desktop.Client;
 import morales.david.desktop.controllers.ImportController;
@@ -34,6 +35,8 @@ public final class SocketManager extends Thread {
     private Packet receivedPacket;
 
     private ClientSession clientSession;
+
+    private final boolean[] closed = { false };
 
     public SocketManager() {
 
@@ -86,12 +89,9 @@ public final class SocketManager extends Thread {
 
         ScreenManager screenManager = ScreenManager.getInstance();
 
-        final boolean[] closed = {false};
 
-        while(true) {
 
-            if(closed[0])
-                break;
+        while(!closed[0]) {
 
             try {
 
@@ -337,6 +337,20 @@ public final class SocketManager extends Thread {
 
     public ClientSession getClientSession() { return clientSession; }
 
+    public void socketErrorAlert() {
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Error con la conexión");
+        alert.setHeaderText(null);
+        alert.setContentText("Ha ocurrido un error con la conexión con el servidor.\nCerrando la aplicación");
+        alert.showAndWait();
+
+        closed[0] = true;
+        close();
+        Platform.exit();
+
+    }
+
     // Methods to send data in socket I/O's
     public void sendPacketIO(Packet packet) {
         try {
@@ -344,8 +358,7 @@ public final class SocketManager extends Thread {
             output.newLine();
             output.flush();
         } catch (IOException e) {
-            System.out.println(Constants.LOG_SERVER_ERROR_IO_SEND);
-            e.printStackTrace();
+            socketErrorAlert();
         }
     }
 
@@ -354,8 +367,7 @@ public final class SocketManager extends Thread {
             String json = input.readLine();
             return Client.GSON.fromJson(json, Packet.class);
         } catch (IOException e) {
-            System.out.println(Constants.LOG_SERVER_ERROR_IO_READ);
-            e.printStackTrace();
+            socketErrorAlert();
         }
         return null;
     }
