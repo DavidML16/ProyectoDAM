@@ -1,7 +1,6 @@
 package morales.david.desktop.managers;
 
 import com.google.gson.internal.LinkedTreeMap;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
@@ -88,8 +87,6 @@ public final class SocketManager extends Thread {
     public void run() {
 
         ScreenManager screenManager = ScreenManager.getInstance();
-
-
 
         while(!closed[0]) {
 

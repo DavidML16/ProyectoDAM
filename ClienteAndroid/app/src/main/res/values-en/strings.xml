@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TMS</string>
+    <string name="act_login_button_login">Login</string>
+    <string name="act_login_input_username">Username</string>
+    <string name="act_login_input_password">Password</string>
+    <string name="act_login_checkbox_remember">Remember credentials</string>
+    <string name="act_login_message_error_credentials">Incorrect username or password</string>
+    <string name="act_login_message_error_empty">Empty username or password</string>
+</resources>
