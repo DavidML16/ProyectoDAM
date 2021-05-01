@@ -59,12 +59,22 @@ public class ClientThread extends Thread {
 
         while(connected) {
 
-            receivedPacket = clientProtocol.readPacketIO();
+            try {
 
-            if(receivedPacket == null)
-                continue;
+                if(input != null && input.ready()) {
 
-            clientProtocol.parseInput(receivedPacket);
+                    receivedPacket = clientProtocol.readPacketIO();
+
+                    if (receivedPacket == null)
+                        continue;
+
+                    clientProtocol.parseInput(receivedPacket);
+
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         }
 

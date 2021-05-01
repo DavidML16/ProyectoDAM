@@ -1,5 +1,6 @@
 package morales.david.server.clients;
 
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.LinkedTreeMap;
 import morales.david.server.Server;
 import morales.david.server.models.*;
@@ -917,9 +918,13 @@ public class ClientProtocol {
      * @return packet object parsed by json input
      */
     public Packet readPacketIO() {
+        String json = null;
         try {
-            String json = clientThread.getInput().readLine();
+            json = clientThread.getInput().readLine();
             return Server.GSON.fromJson(json, Packet.class);
+        } catch (JsonSyntaxException ignored) {
+            System.out.println(Constants.LOG_SERVER_ERROR_IO_READ);
+            System.out.println(json);
         } catch (IOException e) {
             clientThread.setConnected(false);
         }

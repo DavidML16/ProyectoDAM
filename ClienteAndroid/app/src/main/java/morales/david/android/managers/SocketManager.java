@@ -3,7 +3,10 @@ package morales.david.android.managers;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
+
+import com.google.gson.internal.LinkedTreeMap;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,10 +14,19 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 import morales.david.android.R;
 import morales.david.android.activities.DashboardActivity;
+import morales.david.android.models.Classroom;
 import morales.david.android.models.ClientSession;
+import morales.david.android.models.Course;
+import morales.david.android.models.Credential;
+import morales.david.android.models.Day;
+import morales.david.android.models.Hour;
+import morales.david.android.models.Subject;
+import morales.david.android.models.Teacher;
 import morales.david.android.models.packets.Packet;
 import morales.david.android.models.packets.PacketBuilder;
 import morales.david.android.models.packets.PacketType;
@@ -95,10 +107,6 @@ public class SocketManager extends Thread {
 
         openSocket();
 
-        context.runOnUiThread(() -> {
-            Toast.makeText(context, "SOCKET ABIERTO", Toast.LENGTH_SHORT).show();
-        });
-
         while(!closed[0]) {
 
             try {
@@ -107,35 +115,193 @@ public class SocketManager extends Thread {
 
                     receivedPacket = readPacketIO();
 
-                    context.runOnUiThread(() -> {
+                    Log.e("Packet:", receivedPacket.toString());
 
-                        PacketType packetType = PacketType.valueOf(PacketType.getIdentifier(receivedPacket.getType()));
+                    PacketType packetType = PacketType.valueOf(PacketType.getIdentifier(receivedPacket.getType()));
 
-                        switch (packetType) {
+                    switch (packetType) {
 
-                            case LOGIN: {
+                        case LOGIN: {
 
-                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.LOGIN.getConfirmation())) {
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.LOGIN.getConfirmation())) {
 
-                                    clientSession.setId(((Double) receivedPacket.getArgument("id")).intValue());
-                                    clientSession.setName((String) receivedPacket.getArgument("name"));
-                                    clientSession.setRole((String) receivedPacket.getArgument("role"));
+                                clientSession.setId(((Double) receivedPacket.getArgument("id")).intValue());
+                                clientSession.setName((String) receivedPacket.getArgument("name"));
+                                clientSession.setRole((String) receivedPacket.getArgument("role"));
 
+                                context.runOnUiThread(() -> {
                                     Intent intent = new Intent(context, DashboardActivity.class);
                                     context.startActivity(intent);
+                                });
 
-                                } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.LOGIN.LOGIN.getError())) {
+                                DataManager.getInstance().getTeachers();
+                                DataManager.getInstance().getClassrooms();
+                                DataManager.getInstance().getSubjects();
+                                DataManager.getInstance().getCourses();
+                                DataManager.getInstance().getCredentials();
+                                DataManager.getInstance().getDays();
+                                DataManager.getInstance().getHours();
+                                sendPackets();
 
+                            } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.LOGIN.LOGIN.getError())) {
+
+                                context.runOnUiThread(() -> {
                                     Toast.makeText(context, context.getString(R.string.act_login_message_error_credentials), Toast.LENGTH_SHORT).show();
+                                });
 
-                                }
-
-                                break;
                             }
+
+                            break;
+                        }
+
+                        case TEACHERS: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.TEACHERS.getConfirmation())) {
+
+                                List<LinkedTreeMap> teachers = (List<LinkedTreeMap>) receivedPacket.getArgument("teachers");
+
+                                final List<Teacher> temp = new ArrayList<>();
+
+                                for (LinkedTreeMap teacherMap : teachers)
+                                    temp.add(Teacher.parse(teacherMap));
+
+                                context.runOnUiThread(() -> {
+                                    DataManager.getInstance().setTeachers(temp);
+                                });
+
+                            }
+
+                            break;
 
                         }
 
-                    });
+                        case CREDENTIALS: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.CREDENTIALS.getConfirmation())) {
+
+                                List<LinkedTreeMap> credentials = (List<LinkedTreeMap>) receivedPacket.getArgument("credentials");
+
+                                final List<Credential> temp = new ArrayList<>();
+
+                                for (LinkedTreeMap credentialMap : credentials)
+                                    temp.add(Credential.parse(credentialMap));
+
+                                context.runOnUiThread(() -> {
+                                    DataManager.getInstance().setCredentials(temp);
+                                });
+
+                            }
+
+                            break;
+
+                        }
+
+                        case CLASSROOMS: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.CLASSROOMS.getConfirmation())) {
+
+                                List<LinkedTreeMap> classrooms = (List<LinkedTreeMap>) receivedPacket.getArgument("classrooms");
+
+                                final List<Classroom> temp = new ArrayList<>();
+
+                                for (LinkedTreeMap classroomMap : classrooms)
+                                    temp.add(Classroom.parse(classroomMap));
+
+                                context.runOnUiThread(() -> {
+                                    DataManager.getInstance().setClassrooms(temp);
+                                });
+
+                            }
+
+                            break;
+
+                        }
+
+                        case COURSES: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.COURSES.getConfirmation())) {
+
+                                List<LinkedTreeMap> courses = (List<LinkedTreeMap>) receivedPacket.getArgument("courses");
+
+                                final List<Course> temp = new ArrayList<>();
+
+                                for (LinkedTreeMap courseMap : courses)
+                                    temp.add(Course.parse(courseMap));
+
+                                context.runOnUiThread(() -> {
+                                    DataManager.getInstance().setCourses(temp);
+                                });
+
+                            }
+
+                            break;
+
+                        }
+
+                        case SUBJECTS: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.SUBJECTS.getConfirmation())) {
+
+                                List<LinkedTreeMap> subjects = (List<LinkedTreeMap>) receivedPacket.getArgument("subjects");
+
+                                final List<Subject> temp = new ArrayList<>();
+
+                                for (LinkedTreeMap subjectMap : subjects)
+                                    temp.add(Subject.parse(subjectMap));
+
+                                context.runOnUiThread(() -> {
+                                    DataManager.getInstance().setSubjects(temp);
+                                });
+
+                            }
+
+                            break;
+
+                        }
+
+                        case DAYS: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.DAYS.getConfirmation())) {
+
+                                List<LinkedTreeMap> days = (List<LinkedTreeMap>) receivedPacket.getArgument("days");
+
+                                final List<Day> temp = new ArrayList<>();
+
+                                for (LinkedTreeMap dayMap : days)
+                                    temp.add(Day.parse(dayMap));
+
+                                context.runOnUiThread(() -> {
+                                    DataManager.getInstance().setDays(temp);
+                                });
+
+                            }
+
+                            break;
+
+                        }
+
+                        case HOURS: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.HOURS.getConfirmation())) {
+
+                                List<LinkedTreeMap> hours = (List<LinkedTreeMap>) receivedPacket.getArgument("hours");
+
+                                final List<Hour> temp = new ArrayList<>();
+
+                                for (LinkedTreeMap hourMap : hours)
+                                    temp.add(Hour.parse(hourMap));
+
+                                context.runOnUiThread(() -> {
+                                    DataManager.getInstance().setHours(temp);
+                                });
+
+                            }
+
+                            break;
+
+                        }
+
+                    }
 
                 }
 
@@ -166,6 +332,17 @@ public class SocketManager extends Thread {
     public void socketError() {
         closed[0] = true;
         close();
+    }
+
+    private void sendPackets() {
+
+        for(PacketType packetType : Constants.INIT_PACKETS) {
+
+            Packet requestPacket = new PacketBuilder().ofType(packetType.getRequest()).build();
+            SocketManager.getInstance().sendPacketIO(requestPacket);
+
+        }
+
     }
 
     // Methods to send data in socket I/O's
