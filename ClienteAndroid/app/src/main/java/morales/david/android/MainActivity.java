@@ -3,11 +3,12 @@ package morales.david.android;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import morales.david.android.managers.ScreenManager;
 import morales.david.android.managers.SocketManager;
 import morales.david.android.models.packets.Packet;
 import morales.david.android.models.packets.PacketBuilder;
@@ -28,8 +29,10 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().hide();
 
+        ScreenManager screenManager = ScreenManager.getInstance();
+        screenManager.setActivity(this);
+
         SocketManager socketManager = SocketManager.getInstance();
-        socketManager.setContext(this);
         if(!socketManager.isOpened()) {
             socketManager.setDaemon(true);
             socketManager.start();
@@ -66,6 +69,12 @@ public class MainActivity extends AppCompatActivity {
 
         SocketManager.getInstance().sendPacketIO(loginRequestPacket);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        SocketManager.getInstance().closeSocket();
+        super.onDestroy();
     }
 
 }

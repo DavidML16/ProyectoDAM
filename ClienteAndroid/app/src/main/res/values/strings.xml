@@ -6,4 +6,8 @@
     <string name="act_login_checkbox_remember">Recordar credenciales</string>
     <string name="act_login_message_error_credentials">Usuario o contraseña incorrecta</string>
     <string name="act_login_message_error_empty">Usuario o contraseña en blanco</string>
+    <string name="act_dashboard_message_teachers">Profesores</string>
+    <string name="act_dashboard_message_courses">Cursos</string>
+    <string name="act_dashboard_message_classrooms">Aulas</string>
+    <string name="act_dashboard_message_schedules">Horarios</string>
 </resources>

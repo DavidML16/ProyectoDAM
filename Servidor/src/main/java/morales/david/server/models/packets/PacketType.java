@@ -2,7 +2,7 @@ package morales.david.server.models.packets;
 
 public enum PacketType {
 
-    LOGIN, DISCONNECT, EXIT,
+    PING, LOGIN, DISCONNECT, EXIT,
 
     SENDACCESSFILE,
 

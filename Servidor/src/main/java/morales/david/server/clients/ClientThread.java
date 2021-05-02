@@ -54,6 +54,34 @@ public class ClientThread extends Thread {
 
     }
 
+    public void closeIO() {
+
+        if(input != null) {
+            try {
+                input.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(output != null) {
+            try {
+                output.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
     @Override
     public void run() {
 
@@ -79,6 +107,7 @@ public class ClientThread extends Thread {
         }
 
         System.out.println(Constants.LOG_SERVER_USER_DISCONNECTED);
+        closeIO();
         this.server.getClientRepository().removeClient(this);
         this.stop();
 

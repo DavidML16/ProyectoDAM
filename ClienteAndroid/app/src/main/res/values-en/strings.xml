@@ -7,4 +7,8 @@
     <string name="act_login_checkbox_remember">Remember credentials</string>
     <string name="act_login_message_error_credentials">Incorrect username or password</string>
     <string name="act_login_message_error_empty">Empty username or password</string>
+    <string name="act_dashboard_message_teachers">Teachers</string>
+    <string name="act_dashboard_message_courses">Courses</string>
+    <string name="act_dashboard_message_classrooms">Classrooms</string>
+    <string name="act_dashboard_message_schedules">Schedules</string>
 </resources>

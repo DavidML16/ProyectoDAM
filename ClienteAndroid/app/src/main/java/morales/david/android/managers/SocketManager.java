@@ -1,7 +1,6 @@
 package morales.david.android.managers;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
@@ -41,8 +40,6 @@ public class SocketManager extends Thread {
             INSTANCE = new SocketManager();
         return INSTANCE;
     }
-
-    private Activity context;
 
     private Socket socket;
 
@@ -107,6 +104,9 @@ public class SocketManager extends Thread {
 
         openSocket();
 
+        Packet pingPacket = new PacketBuilder().ofType(PacketType.PING.getRequest()).build();
+        sendPacketIO(pingPacket);
+
         while(!closed[0]) {
 
             try {
@@ -115,9 +115,9 @@ public class SocketManager extends Thread {
 
                     receivedPacket = readPacketIO();
 
-                    Log.e("Packet:", receivedPacket.toString());
-
                     PacketType packetType = PacketType.valueOf(PacketType.getIdentifier(receivedPacket.getType()));
+
+                    Activity context = ScreenManager.getInstance().getActivity();
 
                     switch (packetType) {
 
@@ -317,31 +317,48 @@ public class SocketManager extends Thread {
         return opened;
     }
 
-    public Activity getContext() {
-        return context;
-    }
-
-    public void setContext(Activity context) {
-        this.context = context;
-    }
-
     public Socket getSocket() { return socket; }
 
     public ClientSession getClientSession() { return clientSession; }
 
-    public void socketError() {
+    public void closeSocket() {
+
+        Packet exitPacket = new PacketBuilder()
+                .ofType(PacketType.EXIT.getRequest())
+                .build();
+
+        sendPacketIO(exitPacket);
+
+        try {
+            sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         closed[0] = true;
+
         close();
+
     }
 
     private void sendPackets() {
 
-        for(PacketType packetType : Constants.INIT_PACKETS) {
+        new Thread(() -> {
 
-            Packet requestPacket = new PacketBuilder().ofType(packetType.getRequest()).build();
-            SocketManager.getInstance().sendPacketIO(requestPacket);
+            for(PacketType packetType : Constants.INIT_PACKETS) {
 
-        }
+                Packet requestPacket = new PacketBuilder().ofType(packetType.getRequest()).build();
+                SocketManager.getInstance().sendPacketIO(requestPacket);
+
+                try {
+                    sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }).start();
 
     }
 
@@ -353,7 +370,7 @@ public class SocketManager extends Thread {
                 output.newLine();
                 output.flush();
             } catch (IOException e) {
-                socketError();
+                e.printStackTrace();
             }
         }).start();
     }
@@ -363,7 +380,7 @@ public class SocketManager extends Thread {
             String json = input.readLine();
             return PacketBuilder.GSON.fromJson(json, Packet.class);
         } catch (IOException e) {
-            socketError();
+            closeSocket();
         }
         return null;
     }
