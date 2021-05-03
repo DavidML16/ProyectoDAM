@@ -1,4 +1,5 @@
-<resources>
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">SGH</string>
     <string name="act_login_button_login">Iniciar sesión</string>
     <string name="act_login_input_username">Nombre de usuario</string>
@@ -16,4 +17,8 @@
     <string name="act_dashboard_message_app">Sistema de gestión de horarios</string>
     <string name="act_dashboard_message_exit">Desconexión</string>
     <string name="act_dashboard_message_disconnected">Desconectándote del sistema...</string>
+    <string name="item_teacher_name">Nombre</string>
+    <string name="item_teacher_department">Departamento: <xliff:g example="-" id="department">%s</xliff:g></string>
+    <string name="item_teacher_abreviation">Abreviación: <xliff:g example="-" id="abreviation">%s</xliff:g></string>
+    <string name="act_teachers_title">Profesores</string>
 </resources>

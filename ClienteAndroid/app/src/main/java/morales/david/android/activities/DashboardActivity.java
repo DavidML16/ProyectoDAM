@@ -3,6 +3,7 @@ package morales.david.android.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import morales.david.android.R;
 import morales.david.android.managers.DataManager;
 import morales.david.android.managers.ScreenManager;
 import morales.david.android.managers.SocketManager;
+import morales.david.android.models.Teacher;
 import morales.david.android.models.packets.Packet;
 import morales.david.android.models.packets.PacketBuilder;
 import morales.david.android.models.packets.PacketType;
@@ -40,11 +42,14 @@ public class DashboardActivity extends AppCompatActivity {
         schedulesCard = findViewById(R.id.act_dashboard_cardview_schedules);
         disconnectCard = findViewById(R.id.act_dashboard_cardview_disconnect);
 
-        disconnectCard.setOnClickListener((view) -> {
+        teachersCard.setOnClickListener((view) -> {
+            Intent intent = new Intent(this, TeachersActivity.class);
+            startActivity(intent);
+        });
 
+        disconnectCard.setOnClickListener((view) -> {
             Packet exitRequestPacket = new PacketBuilder().ofType(PacketType.EXIT.getRequest()).build();
             SocketManager.getInstance().sendPacketIO(exitRequestPacket);
-
         });
 
     }
