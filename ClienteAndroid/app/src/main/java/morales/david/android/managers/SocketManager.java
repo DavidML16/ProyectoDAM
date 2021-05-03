@@ -18,6 +18,7 @@ import java.util.List;
 
 import morales.david.android.R;
 import morales.david.android.activities.DashboardActivity;
+import morales.david.android.activities.DisconnectedActivity;
 import morales.david.android.models.Classroom;
 import morales.david.android.models.ClientSession;
 import morales.david.android.models.Course;
@@ -152,6 +153,35 @@ public class SocketManager extends Thread {
                             }
 
                             break;
+                        }
+
+                        case EXIT: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.EXIT.getConfirmation())) {
+
+                                close();
+                                opened = false;
+
+                                context.runOnUiThread(() -> {
+                                    Intent intent = new Intent(context, DisconnectedActivity.class);
+                                    context.startActivity(intent);
+                                });
+
+                                try {
+                                    sleep(2000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+
+                                closed[0] = true;
+
+                                context.finishAffinity();
+                                System.exit(0);
+
+                            }
+
+                            break;
+
                         }
 
                         case TEACHERS: {

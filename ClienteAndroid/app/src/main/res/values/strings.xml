@@ -10,4 +10,10 @@
     <string name="act_dashboard_message_courses">Cursos</string>
     <string name="act_dashboard_message_classrooms">Aulas</string>
     <string name="act_dashboard_message_schedules">Horarios</string>
+    <string name="act_dashboard_message_groups">Grupos</string>
+    <string name="act_dashboard_message_subjects">Asignaturas</string>
+    <string name="act_dashboard_message_name">I.E.S Fernando Aguilar Quignon</string>
+    <string name="act_dashboard_message_app">Sistema de gestión de horarios</string>
+    <string name="act_dashboard_message_exit">Desconexión</string>
+    <string name="act_dashboard_message_disconnected">Desconectándote del sistema...</string>
 </resources>

@@ -1,19 +1,26 @@
 package morales.david.android.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.Socket;
+
 import morales.david.android.R;
 import morales.david.android.managers.DataManager;
 import morales.david.android.managers.ScreenManager;
+import morales.david.android.managers.SocketManager;
+import morales.david.android.models.packets.Packet;
+import morales.david.android.models.packets.PacketBuilder;
+import morales.david.android.models.packets.PacketType;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    private TextView teachersTextView, coursesTextView, classroomsTextView;
+    private CardView teachersCard, coursesCard, groupsCard, subjectsCard, classroomsCard, schedulesCard, disconnectCard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,22 +28,23 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
+        getSupportActionBar().hide();
+
         ScreenManager.getInstance().setActivity(this);
 
-        teachersTextView = findViewById(R.id.act_dashboard_textview_teachers);
-        coursesTextView = findViewById(R.id.act_dashboard_textview_courses);
-        classroomsTextView = findViewById(R.id.act_dashboard_textview_classrooms);
+        teachersCard = findViewById(R.id.act_dashboard_cardview_teachers);
+        coursesCard = findViewById(R.id.act_dashboard_cardview_courses);
+        groupsCard = findViewById(R.id.act_dashboard_cardview_groups);
+        subjectsCard = findViewById(R.id.act_dashboard_cardview_subjects);
+        classroomsCard = findViewById(R.id.act_dashboard_cardview_classrooms);
+        schedulesCard = findViewById(R.id.act_dashboard_cardview_schedules);
+        disconnectCard = findViewById(R.id.act_dashboard_cardview_disconnect);
 
-        DataManager.getInstance().getTeachers().observe(this, teachers -> {
-            teachersTextView.setText(Integer.toString(teachers.size()));
-        });
+        disconnectCard.setOnClickListener((view) -> {
 
-        DataManager.getInstance().getClassrooms().observe(this, classrooms -> {
-            classroomsTextView.setText(Integer.toString(classrooms.size()));
-        });
+            Packet exitRequestPacket = new PacketBuilder().ofType(PacketType.EXIT.getRequest()).build();
+            SocketManager.getInstance().sendPacketIO(exitRequestPacket);
 
-        DataManager.getInstance().getCourses().observe(this, courses -> {
-            coursesTextView.setText(Integer.toString(courses.size()));
         });
 
     }

@@ -1,6 +1,7 @@
 package morales.david.android;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -18,7 +19,7 @@ import morales.david.android.utils.HashUtil;
 public class MainActivity extends AppCompatActivity {
 
     private EditText usernameInput, passwordInput;
-    private Button loginButton;
+    private CardView loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         screenManager.setActivity(this);
 
         SocketManager socketManager = SocketManager.getInstance();
+
         if(!socketManager.isOpened()) {
             socketManager.setDaemon(true);
             socketManager.start();
@@ -69,12 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
         SocketManager.getInstance().sendPacketIO(loginRequestPacket);
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        SocketManager.getInstance().closeSocket();
-        super.onDestroy();
     }
 
 }

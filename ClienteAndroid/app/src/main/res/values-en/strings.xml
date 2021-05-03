@@ -11,4 +11,10 @@
     <string name="act_dashboard_message_courses">Courses</string>
     <string name="act_dashboard_message_classrooms">Classrooms</string>
     <string name="act_dashboard_message_schedules">Schedules</string>
+    <string name="act_dashboard_message_groups">Groups</string>
+    <string name="act_dashboard_message_subjects">Subjects</string>
+    <string name="act_dashboard_message_name">I.E.S Fernando Aguilar Quignon</string>
+    <string name="act_dashboard_message_app">Schedules management system</string>
+    <string name="act_dashboard_message_exit">Disconnect</string>
+    <string name="act_dashboard_message_disconnected">Disconnecting from the system...</string>
 </resources>
