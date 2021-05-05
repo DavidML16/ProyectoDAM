@@ -9,16 +9,28 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import morales.david.android.R;
 import morales.david.android.adapters.TeachersAdapter;
 import morales.david.android.managers.DataManager;
+import morales.david.android.models.Teacher;
 
 public class TeachersActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
+
+    private AutoCompleteTextView departmentDropDown;
+    private ArrayAdapter<String> departmentsAdapter;
+    private ImageView unfilterImageView;
 
     private TeachersAdapter adapter;
 
@@ -36,6 +48,28 @@ public class TeachersActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
+        Set<String> departments = getDepartments();
+        String[] departmentsArray = new String[departments.size()];
+        departments.toArray(departmentsArray);
+
+        departmentsAdapter = new ArrayAdapter(this, R.layout.item_dropdown, departmentsArray);
+
+        departmentDropDown = findViewById(R.id.act_teachers_spinner_department);
+        departmentDropDown.setOnItemClickListener((parent, view, position, id) -> {
+            String selected = departmentsAdapter.getItem(position);
+            adapter.getDepartmentFilter().filter(selected);
+        });
+
+        departmentDropDown.setAdapter(departmentsAdapter);
+
+        unfilterImageView = findViewById(R.id.act_teachers_unfilter);
+        unfilterImageView.setOnClickListener(v -> {
+            adapter.getDepartmentFilter().filter(null);
+            adapter.getFilter().filter(null);
+            departmentDropDown.setText(null);
+            departmentDropDown.clearFocus();
+        });
+
         adapter = new TeachersAdapter(this);
 
         recyclerView.setAdapter(adapter);
@@ -43,6 +77,20 @@ public class TeachersActivity extends AppCompatActivity {
         DataManager.getInstance().getTeachers().observe(this, teachers -> {
             adapter.setTeachers(teachers);
         });
+
+    }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+        Set<String> departments = getDepartments();
+        String[] departmentsArray = new String[departments.size()];
+        departments.toArray(departmentsArray);
+
+        departmentsAdapter = new ArrayAdapter(this, R.layout.item_dropdown, departmentsArray);
+        departmentDropDown.setAdapter(departmentsAdapter);
 
     }
 
@@ -76,10 +124,23 @@ public class TeachersActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 adapter.getFilter().filter(newText);
+                departmentDropDown.setText(null);
+                departmentDropDown.clearFocus();
                 return false;
             }
         });
         return true;
+    }
+
+    private Set<String> getDepartments() {
+
+        Set<String> departments = new HashSet<>();
+
+        for(Teacher teacher : DataManager.getInstance().getTeachers().getValue())
+            departments.add(teacher.getDepartment());
+
+        return departments;
+
     }
 
 }

@@ -23,7 +23,7 @@ import morales.david.android.models.Teacher;
 /**
  * @author David Morales
  */
-public class TeachersAdapter extends RecyclerView.Adapter<TeachersAdapter.TeacherViewHolder> implements Filterable {
+public class TeachersAdapter extends RecyclerView.Adapter<TeachersAdapter.TeacherViewHolder> {
 
     private Context activity;
 
@@ -35,7 +35,7 @@ public class TeachersAdapter extends RecyclerView.Adapter<TeachersAdapter.Teache
     public TeachersAdapter(Activity activity) {
         this.activity = activity;
         this.inflater = LayoutInflater.from(activity);
-        this.teachers = DataManager.getInstance().getTeachers().getValue();
+        this.teachers = new ArrayList<>(DataManager.getInstance().getTeachers().getValue());
         this.teachersOriginal = new ArrayList<>(teachers);
     }
 
@@ -60,7 +60,7 @@ public class TeachersAdapter extends RecyclerView.Adapter<TeachersAdapter.Teache
     }
 
     public void setTeachers(List<Teacher> teachers) {
-        this.teachers = teachers;
+        this.teachers = new ArrayList<>(teachers);
         this.teachersOriginal = new ArrayList<>(teachers);
         notifyDataSetChanged();
     }
@@ -69,9 +69,12 @@ public class TeachersAdapter extends RecyclerView.Adapter<TeachersAdapter.Teache
         return teachers.get(position);
     }
 
-    @Override
     public Filter getFilter() {
         return teacherFilter;
+    }
+
+    public Filter getDepartmentFilter() {
+        return teacherDepartmentFilter;
     }
 
     private Filter teacherFilter = new Filter() {
@@ -88,6 +91,37 @@ public class TeachersAdapter extends RecyclerView.Adapter<TeachersAdapter.Teache
                     if (item.getName().toLowerCase().contains(filterPattern)
                             || item.getDepartment().toLowerCase().contains(filterPattern)
                             || item.getAbreviation().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            teachers.clear();
+            teachers.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
+
+    private Filter teacherDepartmentFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Teacher> filteredList = new ArrayList<>();
+
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(teachersOriginal);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+
+                for (Teacher item : teachersOriginal) {
+                    if (item.getDepartment().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }
                 }

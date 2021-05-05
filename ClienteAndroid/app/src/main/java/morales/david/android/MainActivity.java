@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import morales.david.android.interfaces.MessageListener;
+import morales.david.android.managers.DataManager;
+import morales.david.android.managers.EventManager;
 import morales.david.android.managers.ScreenManager;
 import morales.david.android.managers.SocketManager;
 import morales.david.android.models.packets.Packet;
@@ -44,8 +47,10 @@ public class MainActivity extends AppCompatActivity {
         passwordInput = findViewById(R.id.act_login_input_password);
         loginButton = findViewById(R.id.act_login_button_login);
 
-        loginButton.setOnClickListener(v -> {
-            login();
+        loginButton.setOnClickListener(v -> login());
+
+        EventManager.getInstance().subscribe("login", (eventType, message) -> {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         });
 
     }

@@ -21,4 +21,9 @@
     <string name="item_teacher_department">Departamento: <xliff:g example="-" id="department">%s</xliff:g></string>
     <string name="item_teacher_abreviation">Abreviación: <xliff:g example="-" id="abreviation">%s</xliff:g></string>
     <string name="act_teachers_title">Profesores</string>
+    <string name="act_teachers_department">Departamento</string>
+    <string name="item_classroom_name">Nombre: <xliff:g example="" id="name">%s</xliff:g></string>
+    <string name="item_classroom_floor">Planta: <xliff:g example="0" id="floor">%s</xliff:g></string>
+    <string name="act_classrooms_title">Aulas</string>
+    <string name="act_classrooms_floor">Planta</string>
 </resources>

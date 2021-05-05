@@ -58,6 +58,8 @@ public class SocketManager extends Thread {
 
         this.clientSession = new ClientSession();
 
+        EventManager.getInstance().addEventTypes("login");
+
     }
 
     public void openSocket() {
@@ -146,9 +148,7 @@ public class SocketManager extends Thread {
 
                             } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.LOGIN.LOGIN.getError())) {
 
-                                context.runOnUiThread(() -> {
-                                    Toast.makeText(context, context.getString(R.string.act_login_message_error_credentials), Toast.LENGTH_SHORT).show();
-                                });
+                                EventManager.getInstance().notify(context, "login", context.getString(R.string.act_login_message_error_credentials));
 
                             }
 

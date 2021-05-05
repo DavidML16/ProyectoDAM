@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primary_main"
-    tools:context=".activities.TeachersActivity">
+    tools:context=".activities.ClassroomsActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/act_teachers_recyclerview"
+        android:id="@+id/act_classrooms_recyclerview"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="125dp"
@@ -18,10 +18,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/item_teacher" />
+        tools:listitem="@layout/item_classroom" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/act_teachers_cardview_department"
+        android:id="@+id/act_classrooms_cardview_floor"
         android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="85dp"
@@ -40,7 +40,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:hint="@string/act_teachers_department"
+                android:hint="@string/act_classrooms_floor"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:paddingTop="10dp"
@@ -50,7 +50,7 @@
                 android:layout_height="match_parent">
 
                 <AutoCompleteTextView
-                    android:id="@+id/act_teachers_spinner_department"
+                    android:id="@+id/act_classrooms_spinner_floor"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="none"/>
@@ -58,7 +58,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <ImageView
-                android:id="@+id/act_teachers_unfilter"
+                android:id="@+id/act_classrooms_unfilter"
                 android:background="@color/primary_dark"
                 android:padding="10dp"
                 android:layout_width="60dp"
@@ -66,8 +66,6 @@
                 android:src="@drawable/ic_remove"/>
 
         </LinearLayout>
-
-
 
     </androidx.cardview.widget.CardView>
 
