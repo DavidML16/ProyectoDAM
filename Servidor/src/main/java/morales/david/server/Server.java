@@ -3,6 +3,7 @@ package morales.david.server;
 import com.google.gson.Gson;
 import morales.david.server.clients.ClientRepository;
 import morales.david.server.clients.ClientThread;
+import morales.david.server.managers.ClientsManager;
 import morales.david.server.managers.ImportManager;
 import morales.david.server.models.Course;
 import morales.david.server.models.Subject;
@@ -30,6 +31,10 @@ public class Server {
         clientRepository = new ClientRepository();
         importManager = new ImportManager(this);
         running = true;
+
+        ClientsManager clientsManager = new ClientsManager(this);
+        clientsManager.setDaemon(true);
+        clientsManager.start();
 
         System.out.println(String.format(Constants.LOG_SERVER_INIT, Constants.SERVER_PORT));
 

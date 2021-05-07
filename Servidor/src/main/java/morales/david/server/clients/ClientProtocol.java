@@ -908,8 +908,7 @@ public class ClientProtocol {
             clientThread.getOutput().newLine();
             clientThread.getOutput().flush();
         } catch (IOException e) {
-            System.out.println(Constants.LOG_SERVER_ERROR_IO_SEND);
-            e.printStackTrace();
+            clientThread.setConnected(false);
         }
     }
 

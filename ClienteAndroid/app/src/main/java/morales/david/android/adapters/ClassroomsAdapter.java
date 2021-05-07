@@ -148,7 +148,7 @@ public class ClassroomsAdapter extends RecyclerView.Adapter<ClassroomsAdapter.Cl
 
             super(itemView);
 
-            cardView = itemView.findViewById(R.id.item_teacher_cardview);
+            cardView = itemView.findViewById(R.id.item_classroom_cardview);
             nameTextView = itemView.findViewById(R.id.item_classroom_name);
             floorTextView = itemView.findViewById(R.id.item_classroom_floor);
 

@@ -22,7 +22,7 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/act_teachers_cardview_department"
-        android:background="@color/white"
+        android:backgroundTint="@color/white"
         android:layout_width="match_parent"
         android:layout_height="85dp"
         android:layout_marginStart="25dp"

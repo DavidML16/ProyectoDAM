@@ -26,4 +26,9 @@
     <string name="item_classroom_floor">Planta: <xliff:g example="0" id="floor">%s</xliff:g></string>
     <string name="act_classrooms_title">Aulas</string>
     <string name="act_classrooms_floor">Planta</string>
+    <string name="item_course_name"><xliff:g example="" id="level">%s</xliff:g>º <xliff:g example="" id="name">%s</xliff:g></string>
+    <string name="act_courses_title">Cursos</string>
+    <string name="act_groups_title">Grupos</string>
+    <string name="act_subjects_title">Asignaturas</string>
+    <string name="course_options_name">Grupos y asignaturas de <xliff:g example="" id="level">%s</xliff:g>º <xliff:g example="" id="name">%s</xliff:g></string>
 </resources>
