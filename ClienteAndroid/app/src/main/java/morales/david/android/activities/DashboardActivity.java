@@ -52,6 +52,11 @@ public class DashboardActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        subjectsCard.setOnClickListener((view) -> {
+            Intent intent = new Intent(this, SubjectsActivity.class);
+            startActivity(intent);
+        });
+
         classroomsCard.setOnClickListener((view) -> {
             Intent intent = new Intent(this, ClassroomsActivity.class);
             startActivity(intent);

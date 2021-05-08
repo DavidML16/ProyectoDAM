@@ -47,7 +47,7 @@ public class CourseOptionsDialogFragment extends BottomSheetDialogFragment imple
         View view = inflater.inflate(R.layout.fragment_course_options_dialog, container, false);
 
         TextView courseTextView = view.findViewById(R.id.option_course_textview);
-        courseTextView.setText(getString(R.string.course_options_name, Integer.toString(course.getLevel()), course.getName()));
+        courseTextView.setText(getString(R.string.course_options_name, course.toString()));
 
         view.findViewById(R.id.option_groups_cardview).setOnClickListener(this);
         view.findViewById(R.id.option_subjects_cardview).setOnClickListener(this);

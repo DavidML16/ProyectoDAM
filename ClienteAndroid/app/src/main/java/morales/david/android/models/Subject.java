@@ -2,10 +2,11 @@ package morales.david.android.models;
 
 import com.google.gson.internal.LinkedTreeMap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Subject {
+public class Subject implements Serializable {
 
     private int id;
     private int number;

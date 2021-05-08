@@ -18,7 +18,7 @@
     <string name="act_dashboard_message_exit">Desconexión</string>
     <string name="act_dashboard_message_disconnected">Desconectándote del sistema...</string>
     <string name="item_teacher_name">Nombre</string>
-    <string name="item_teacher_department">Departamento: <xliff:g example="-" id="department">%s</xliff:g></string>
+    <string name="item_teacher_department" translatable="false">Departamento: <xliff:g example="-" id="department">%s</xliff:g></string>
     <string name="item_teacher_abreviation">Abreviación: <xliff:g example="-" id="abreviation">%s</xliff:g></string>
     <string name="act_teachers_title">Profesores</string>
     <string name="act_teachers_department">Departamento</string>
@@ -26,9 +26,14 @@
     <string name="item_classroom_floor">Planta: <xliff:g example="0" id="floor">%s</xliff:g></string>
     <string name="act_classrooms_title">Aulas</string>
     <string name="act_classrooms_floor">Planta</string>
-    <string name="item_course_name"><xliff:g example="" id="level">%s</xliff:g>º <xliff:g example="" id="name">%s</xliff:g></string>
+    <string name="item_course_name"><xliff:g example="" id="course">%s</xliff:g></string>
     <string name="act_courses_title">Cursos</string>
     <string name="act_groups_title">Grupos</string>
     <string name="act_subjects_title">Asignaturas</string>
-    <string name="course_options_name">Grupos y asignaturas de <xliff:g example="" id="level">%s</xliff:g>º <xliff:g example="" id="name">%s</xliff:g></string>
+    <string name="course_options_name">Grupos y asignaturas de <xliff:g example="" id="course">%s</xliff:g></string>
+    <string name="item_subject_number">Número: <xliff:g example="-" id="number">%s</xliff:g></string>
+    <string name="item_subject_abreviation">Abreviación: <xliff:g example="-" id="abreviation">%s</xliff:g></string>
+    <string name="item_subject_courses">Cursos asignados: <xliff:g example="-" id="courses">%s</xliff:g></string>
+    <string name="act_subjects_course">Curso</string>
+    <string name="fragment_subjectcourses_info">Cursos asignados de la asignatura</string>
 </resources>
