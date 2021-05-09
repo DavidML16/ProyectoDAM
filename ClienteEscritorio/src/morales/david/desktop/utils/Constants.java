@@ -20,8 +20,8 @@ public class Constants {
     public static final String MESSAGES_CONFIRMATION_RECEIVEDFILE = "El archivo se ha recibido correctamente\nIniciando la importación...";
 
     public static final PacketType[] INIT_PACKETS = {
-        PacketType.CLASSROOMS, PacketType.TEACHERS, PacketType.CREDENTIALS, PacketType.COURSES,
-        PacketType.SUBJECTS, PacketType.DAYS, PacketType.HOURS
+        PacketType.DAYS, PacketType.HOURS, PacketType.CLASSROOMS, PacketType.TEACHERS,
+        PacketType.CREDENTIALS, PacketType.COURSES, PacketType.SUBJECTS,
     };
 
 }

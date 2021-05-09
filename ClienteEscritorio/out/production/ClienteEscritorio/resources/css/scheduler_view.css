@@ -1,0 +1,15 @@
+.mainPane {
+    -fx-background-color: #FFF;
+}
+
+.dayButton {
+    -fx-background-color: #3bad59;
+}
+
+.hourButton {
+    -fx-background-color: #00ada8;
+}
+
+.scheduleButton {
+    -fx-background-color: #f5f5f5;
+}

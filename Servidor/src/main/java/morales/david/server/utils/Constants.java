@@ -4,7 +4,7 @@ public class Constants {
 
     public static final int SERVER_PORT = 6565;
 
-    public static final long CLIENT_CONNECTION_CHECKING_INTERVAL = 2500;
+    public static final long CLIENT_CONNECTION_CHECKING_INTERVAL = 10000;
 
     public static final String LOG_SERVER_INIT = "(+) Servidor iniciado en el puerto '%d'";
     public static final String LOG_SERVER_ERROR = "(X) Se ha producido un error con el servidor";
@@ -13,5 +13,10 @@ public class Constants {
     public static final String LOG_SERVER_ERROR_IO_READ = "(X) Se ha producido un error al leer el mensaje por el flujo de entrada";
     public static final String LOG_SERVER_USER_CONNECTED = "(+) Nuevo usuario conectado";
     public static final String LOG_SERVER_USER_DISCONNECTED = "(+) Se ha desconectado un usuario";
+
+    public static final String PROFESORES_SHEET = "Prof";
+    public static final String ASIGNATURAS_SHEET = "NomAsg";
+    public static final String DIAS_SHEET = "numero_dia";
+    public static final String HORAS_SHEET = "numero_hora";
 
 }

@@ -96,59 +96,66 @@ public final class SocketManager extends Thread {
 
                     receivedPacket = readPacketIO();
 
-                    Platform.runLater(() -> {
-
                         PacketType packetType = PacketType.valueOf(PacketType.getIdentifier(receivedPacket.getType()));
 
                         switch (packetType) {
 
                             case LOGIN: {
 
-                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.LOGIN.getConfirmation())) {
+                                Platform.runLater(() -> {
 
-                                    clientSession.setId(((Double) receivedPacket.getArgument("id")).intValue());
-                                    clientSession.setName((String) receivedPacket.getArgument("name"));
-                                    clientSession.setRole((String) receivedPacket.getArgument("role"));
+                                    if(receivedPacket.getType().equalsIgnoreCase(PacketType.LOGIN.getConfirmation())) {
 
-                                    if (screenManager.getController() instanceof LoginController) {
+                                        clientSession.setId(((Double) receivedPacket.getArgument("id")).intValue());
+                                        clientSession.setName((String) receivedPacket.getArgument("name"));
+                                        clientSession.setRole((String) receivedPacket.getArgument("role"));
 
-                                        screenManager.openScene("dashboard.fxml", "Inicio" + Constants.WINDOW_TITLE);
+                                        if (screenManager.getController() instanceof LoginController) {
+
+                                            screenManager.openScene("dashboard.fxml", "Inicio" + Constants.WINDOW_TITLE);
+
+                                        }
+
+                                    } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.LOGIN.LOGIN.getError())) {
+
+                                        if (screenManager.getController() instanceof LoginController) {
+
+                                            LoginController loginController = (LoginController) screenManager.getController();
+
+                                            loginController.getMessageLabel().setText(Constants.MESSAGES_ERROR_LOGIN);
+                                            loginController.getMessageLabel().setTextFill(Color.TOMATO);
+
+                                        }
 
                                     }
 
-                                } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.LOGIN.LOGIN.getError())) {
-
-                                    if (screenManager.getController() instanceof LoginController) {
-
-                                        LoginController loginController = (LoginController) screenManager.getController();
-
-                                        loginController.getMessageLabel().setText(Constants.MESSAGES_ERROR_LOGIN);
-                                        loginController.getMessageLabel().setTextFill(Color.TOMATO);
-
-                                    }
-
-                                }
+                                    });
 
                                 break;
+
                             }
 
                             case DISCONNECT: {
 
-                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.DISCONNECT.getConfirmation())) {
+                                Platform.runLater(() -> {
 
-                                    clientSession.setId(-1);
-                                    clientSession.setName("");
-                                    clientSession.setRole("");
+                                    if (receivedPacket.getType().equalsIgnoreCase(PacketType.DISCONNECT.getConfirmation())) {
 
-                                    if (!(screenManager.getController() instanceof LoginController)) {
+                                        clientSession.setId(-1);
+                                        clientSession.setName("");
+                                        clientSession.setRole("");
 
-                                        openSocket();
+                                        if (!(screenManager.getController() instanceof LoginController)) {
 
-                                        screenManager.openScene("login.fxml", "Iniciar sesión" + Constants.WINDOW_TITLE);
+                                            openSocket();
+
+                                            screenManager.openScene("login.fxml", "Iniciar sesión" + Constants.WINDOW_TITLE);
+
+                                        }
 
                                     }
 
-                                }
+                                });
 
                                 break;
 
@@ -156,13 +163,17 @@ public final class SocketManager extends Thread {
 
                             case EXIT: {
 
-                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.EXIT.getConfirmation())) {
+                                Platform.runLater(() -> {
 
-                                    closed[0] = true;
-                                    close();
-                                    Platform.exit();
+                                    if (receivedPacket.getType().equalsIgnoreCase(PacketType.EXIT.getConfirmation())) {
 
-                                }
+                                        closed[0] = true;
+                                        close();
+                                        Platform.exit();
+
+                                    }
+
+                                });
 
                                 break;
 
@@ -170,28 +181,32 @@ public final class SocketManager extends Thread {
 
                             case SENDACCESSFILE: {
 
-                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.SENDACCESSFILE.getConfirmation())) {
+                                Platform.runLater(() -> {
 
-                                    if (screenManager.getController() instanceof ImportController) {
+                                    if (receivedPacket.getType().equalsIgnoreCase(PacketType.SENDACCESSFILE.getConfirmation())) {
 
-                                        ImportController importController = (ImportController) screenManager.getController();
+                                        if (screenManager.getController() instanceof ImportController) {
 
-                                        importController.receivedFile();
+                                            ImportController importController = (ImportController) screenManager.getController();
+
+                                            importController.receivedFile();
+
+                                        }
+
+                                    } else if (receivedPacket.getType().equalsIgnoreCase(PacketType.SENDACCESSFILE.getError())) {
+
+                                        if (screenManager.getController() instanceof ImportController) {
+
+                                            ImportController importController = (ImportController) screenManager.getController();
+
+                                            importController.getMessageLabel().setText(Constants.MESSAGES_ERROR_RECEIVEDFILE);
+                                            importController.getMessageLabel().setTextFill(Color.TOMATO);
+
+                                        }
 
                                     }
 
-                                } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.SENDACCESSFILE.getError())) {
-
-                                    if (screenManager.getController() instanceof ImportController) {
-
-                                        ImportController importController = (ImportController) screenManager.getController();
-
-                                        importController.getMessageLabel().setText(Constants.MESSAGES_ERROR_RECEIVEDFILE);
-                                        importController.getMessageLabel().setTextFill(Color.TOMATO);
-
-                                    }
-
-                                }
+                                });
 
                                 break;
 
@@ -317,8 +332,6 @@ public final class SocketManager extends Thread {
                             }
 
                         }
-
-                    });
 
                 }
 
