@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary_main">
+    android:background="?attr/primaryBackgroundColor">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -79,7 +79,7 @@
                 android:layout_columnWeight="1"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/secondary_main"
+                android:backgroundTint="?attr/dashboardItemCardBackgroundColor"
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardCornerRadius="15dp">
@@ -117,7 +117,7 @@
                 android:layout_columnWeight="1"
                 android:layout_marginLeft="10dp"
                 android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/secondary_main"
+                android:backgroundTint="?attr/dashboardItemCardBackgroundColor"
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardCornerRadius="15dp">
@@ -156,7 +156,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/secondary_main"
+                android:backgroundTint="?attr/dashboardItemCardBackgroundColor"
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardCornerRadius="15dp">
@@ -195,7 +195,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/secondary_main"
+                android:backgroundTint="?attr/dashboardItemCardBackgroundColor"
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardCornerRadius="15dp">
@@ -234,7 +234,7 @@
                 android:layout_columnWeight="1"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
-                android:backgroundTint="@color/secondary_main"
+                android:backgroundTint="?attr/dashboardItemCardBackgroundColor"
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardCornerRadius="15dp">
@@ -271,7 +271,7 @@
                 android:layout_columnWeight="1"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:backgroundTint="@color/secondary_main"
+                android:backgroundTint="?attr/dashboardItemCardBackgroundColor"
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardCornerRadius="15dp">

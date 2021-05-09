@@ -5,6 +5,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +17,9 @@ import morales.david.android.R;
 import morales.david.android.adapters.CoursesAdapter;
 import morales.david.android.interfaces.OptionClicked;
 import morales.david.android.managers.DataManager;
+import morales.david.android.models.Course;
+import morales.david.android.models.Subject;
+import morales.david.android.utils.ActionBarUtil;
 
 public class CoursesActivity extends AppCompatActivity implements OptionClicked {
 
@@ -32,6 +36,8 @@ public class CoursesActivity extends AppCompatActivity implements OptionClicked 
 
         getSupportActionBar().setTitle(getString(R.string.act_courses_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ActionBarUtil.changeStyle(this, getSupportActionBar());
 
         recyclerView = findViewById(R.id.act_courses_recyclerview);
         recyclerView.setHasFixedSize(true);
@@ -85,14 +91,20 @@ public class CoursesActivity extends AppCompatActivity implements OptionClicked 
     }
 
     @Override
-    public void onClick(View item) {
+    public void onClick(View item, Object argument) {
+
+        Course course = null;
+        if(argument != null)
+            course = (Course) argument;
 
         switch (item.getId()) {
             case R.id.option_groups_cardview:
 
                 break;
             case R.id.option_subjects_cardview:
-
+                Intent intent = new Intent(this, SubjectsActivity.class);
+                intent.putExtra("course", course);
+                startActivity(intent);
                 break;
         }
 

@@ -28,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
         setTheme(R.style.ClienteAndroid);
+        setContentView(R.layout.activity_login);
 
         getSupportActionBar().hide();
 

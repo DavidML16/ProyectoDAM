@@ -22,6 +22,7 @@ import morales.david.android.R;
 import morales.david.android.adapters.TeachersAdapter;
 import morales.david.android.managers.DataManager;
 import morales.david.android.models.Teacher;
+import morales.david.android.utils.ActionBarUtil;
 
 public class TeachersActivity extends AppCompatActivity {
 
@@ -42,6 +43,8 @@ public class TeachersActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle(getString(R.string.act_teachers_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ActionBarUtil.changeStyle(this, getSupportActionBar());
 
         recyclerView = findViewById(R.id.act_teachers_recyclerview);
         recyclerView.setHasFixedSize(true);

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary_main"
+    android:background="?attr/primaryBackgroundColor"
     tools:context=".activities.TeachersActivity">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -22,7 +22,7 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/act_teachers_cardview_department"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="?attr/listFilterCardBackgroundColor"
         android:layout_width="match_parent"
         android:layout_height="85dp"
         android:layout_marginStart="25dp"
@@ -47,6 +47,9 @@
                 android:paddingBottom="12dp"
                 android:layout_width="0dp"
                 android:layout_weight="1"
+                android:textColor="?attr/listFilterTextColor"
+                android:textColorHint="?attr/listFilterTextColor"
+                app:boxStrokeColor="?attr/listFilterTextColor"
                 android:layout_height="match_parent">
 
                 <AutoCompleteTextView

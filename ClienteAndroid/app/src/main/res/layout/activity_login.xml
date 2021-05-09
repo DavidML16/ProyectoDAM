@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity"
-    android:background="@color/primary_main">
+    android:background="?attr/primaryBackgroundColor">
 
     <ImageView
         android:id="@+id/act_login_imageview"
@@ -26,7 +25,7 @@
         android:layout_marginStart="50dp"
         android:layout_marginTop="75dp"
         android:layout_marginEnd="50dp"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="?attr/loginInputCardBackgroundColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/act_login_imageview"
@@ -43,7 +42,7 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                app:tint="#CBCBCB"
+                app:tint="?attr/loginInputHintColor"
                 android:src="@drawable/ic_teacher" />
 
             <EditText
@@ -52,9 +51,11 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:hint="@string/act_login_input_username"
-                android:background="@color/white"
+                android:background="?attr/loginInputCardBackgroundColor"
                 android:paddingTop="20dp"
                 android:paddingBottom="20dp"
+                android:textColorHint="?attr/loginInputHintColor"
+                android:textColor="?attr/loginInputTextColor"
                 android:paddingRight="20dp"
                 android:paddingLeft="10dp"
                 android:textSize="18sp"
@@ -75,7 +76,7 @@
         android:layout_marginTop="35dp"
         android:layout_marginEnd="50dp"
         app:cardCornerRadius="15dp"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="?attr/loginInputCardBackgroundColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/act_login_cardview_username">
@@ -90,7 +91,7 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                app:tint="#CBCBCB"
+                app:tint="?attr/loginInputHintColor"
                 android:padding="5dp"
                 android:src="@drawable/ic_password" />
 
@@ -100,10 +101,12 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:layout_marginTop="100dp"
-                android:background="@color/white"
+                android:background="?attr/loginInputCardBackgroundColor"
                 android:ems="10"
                 android:hint="@string/act_login_input_password"
                 android:inputType="textPassword"
+                android:textColorHint="?attr/loginInputHintColor"
+                android:textColor="?attr/loginInputTextColor"
                 android:paddingLeft="10dp"
                 android:paddingTop="20dp"
                 android:paddingRight="20dp"
@@ -125,7 +128,7 @@
         android:layout_marginEnd="50dp"
         android:layout_marginBottom="50dp"
         android:text="@string/act_login_button_login"
-        android:backgroundTint="@color/secondary_main"
+        android:backgroundTint="?attr/loginButtonBackgroundColor"
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
         app:cardCornerRadius="15dp"
@@ -138,7 +141,7 @@
             android:layout_height="match_parent"
             android:text="@string/act_login_button_login"
             android:textAllCaps="true"
-            android:textColor="@color/white"
+            android:textColor="?attr/onDarkTextColor"
             android:gravity="center"
             android:padding="20dp"
             android:textSize="18sp"

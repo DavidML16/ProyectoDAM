@@ -67,7 +67,7 @@ public class CourseOptionsDialogFragment extends BottomSheetDialogFragment imple
     @Override
     public void onClick(View v) {
 
-        callback.onClick(v);
+        callback.onClick(v, course);
 
     }
 

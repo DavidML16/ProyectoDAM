@@ -22,6 +22,7 @@ import morales.david.android.adapters.SubjectsAdapter;
 import morales.david.android.managers.DataManager;
 import morales.david.android.models.Classroom;
 import morales.david.android.models.Course;
+import morales.david.android.utils.ActionBarUtil;
 
 public class SubjectsActivity extends AppCompatActivity {
 
@@ -34,6 +35,8 @@ public class SubjectsActivity extends AppCompatActivity {
 
     private SubjectsAdapter adapter;
 
+    private Course intentCourse;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -43,10 +46,16 @@ public class SubjectsActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(getString(R.string.act_subjects_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        ActionBarUtil.changeStyle(this, getSupportActionBar());
+
         recyclerView = findViewById(R.id.act_subjects_recyclerview);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null)
+            intentCourse = (Course) extras.getSerializable("course");
 
         Set<String> courses = getCourses();
         String[] coursesArray = new String[courses.size()];
@@ -75,7 +84,14 @@ public class SubjectsActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         DataManager.getInstance().getSubjects().observe(this, subjects -> {
+
             adapter.setSubjects(subjects);
+
+            if(intentCourse != null) {
+                adapter.getCourseFilter().filter(intentCourse.toString());
+                courseDropDown.setText(intentCourse.toString());
+            }
+
         });
 
     }
