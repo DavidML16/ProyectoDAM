@@ -18,6 +18,8 @@ public class DBConnection {
 
     public void open() {
         try {
+            if(connection != null && !connection.isClosed())
+                return;
             connection = DriverManager.getConnection(DBConstants.DB_URL, DBConstants.DB_USER, DBConstants.DB_PASS);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -26,6 +28,8 @@ public class DBConnection {
 
     public void close() {
         try {
+            if(connection != null && connection.isClosed())
+                return;
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -153,8 +157,6 @@ public class DBConnection {
      */
     public Credential getCredential(int _id) {
 
-        open();
-
         Credential credential = null;
 
         PreparedStatement stm = null;
@@ -200,8 +202,6 @@ public class DBConnection {
                 }
             }
         }
-
-        close();
 
         return credential;
 
@@ -445,8 +445,6 @@ public class DBConnection {
      */
     public Teacher getTeacher(int _id) {
 
-        open();
-
         Teacher teacher = null;
 
         PreparedStatement stm = null;
@@ -491,8 +489,6 @@ public class DBConnection {
                 }
             }
         }
-
-        close();
 
         return teacher;
 
@@ -684,8 +680,6 @@ public class DBConnection {
      */
     public Classroom getClassroom(int _id) {
 
-        open();
-
         Classroom classroom = null;
 
         PreparedStatement stm = null;
@@ -726,8 +720,6 @@ public class DBConnection {
                 }
             }
         }
-
-        close();
 
         return classroom;
 
@@ -911,8 +903,6 @@ public class DBConnection {
      */
     public Course getCourse(int _id) {
 
-        open();
-
         Course course = null;
 
         PreparedStatement stm = null;
@@ -953,8 +943,6 @@ public class DBConnection {
                 }
             }
         }
-
-        close();
 
         return course;
 
@@ -1079,6 +1067,233 @@ public class DBConnection {
 
 
     /**
+     * Get groups from database
+     * @return list of groups
+     */
+    public List<Group> getGroups() {
+
+        open();
+
+        List<Group> groups = new ArrayList<>();
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_GROUPS);
+
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+
+                int id = rs.getInt("id_grupo");
+                int id_group = rs.getInt("curso");
+                String letter = rs.getString("letra");
+
+                Course course = getCourse(id_group);
+
+                groups.add(new Group(id, course, letter));
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return groups;
+
+    }
+
+    /**
+     * Get group from database by specified id
+     * @return group
+     */
+    public Group getGroup(int _id) {
+
+        Group group = null;
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_GROUP_BY_ID);
+            stm.setInt(1, _id);
+
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+
+                int id = rs.getInt("id_grupo");
+                int id_group = rs.getInt("curso");
+                String letter = rs.getString("letra");
+
+                Course course = getCourse(id_group);
+
+                group = new Group(id, course, letter);
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return group;
+
+    }
+
+    /**
+     * Add a new group to database
+     * @param group
+     * @return group added
+     */
+    public boolean addGroup(Group group) {
+
+        open();
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_ADDGROUP);
+
+            stm.setInt(1, group.getCourse().getId());
+            stm.setString(2, group.getLetter());
+
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return rs == 1;
+
+    }
+
+    /**
+     * Update group information from database
+     * @param group
+     * @return group updated
+     */
+    public boolean updateGroup(Group group) {
+
+        open();
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_UPDATEGROUP);
+
+            stm.setInt(1, group.getCourse().getId());
+            stm.setString(2, group.getLetter());
+            stm.setInt(3, group.getId());
+
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return rs == 1;
+
+    }
+
+    /**
+     * Remove group provided from the database
+     * @param group
+     * @return group deleted
+     */
+    public boolean removeGroup(Group group) {
+
+        open();
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_REMOVEGROUP);
+
+            stm.setInt(1, group.getId());
+
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        close();
+
+        return rs == 1;
+
+    }
+
+
+    /**
      * Get subjects from database
      * @return list of subjects
      */
@@ -1157,8 +1372,6 @@ public class DBConnection {
      */
     public Subject getSubject(int _id) {
 
-        open();
-
         Subject subject = null;
 
         PreparedStatement stm = null;
@@ -1219,8 +1432,6 @@ public class DBConnection {
                 }
             }
         }
-
-        close();
 
         return subject;
 

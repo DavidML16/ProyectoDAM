@@ -159,9 +159,10 @@ public class SubjectsController implements Initializable, Controller {
 
             subjectsTable.setItems(tableItems);
 
-            subjectsTable.setPlaceholder(new Label("No existe ninguna asignatura registrada"));
 
         });
+
+        subjectsTable.setPlaceholder(new Label("No existe ninguna asignatura registrada"));
 
     }
 

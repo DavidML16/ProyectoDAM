@@ -68,6 +68,17 @@ public final class DataManager {
     }
 
 
+    private ObservableList<Group> groups = FXCollections.observableArrayList();
+
+    public synchronized ObservableList<Group> getGroups() {
+        return groups;
+    }
+
+    public synchronized void setGroups(ObservableList<Group> groups) {
+        this.groups = groups;
+    }
+
+
     private ObservableList<Subject> subjects = FXCollections.observableArrayList();
 
     public synchronized ObservableList<Subject> getSubjects() {

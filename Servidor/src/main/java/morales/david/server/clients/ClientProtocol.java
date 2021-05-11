@@ -138,6 +138,22 @@ public class ClientProtocol {
                 removeSubject();
                 break;
 
+            case GROUPS:
+                groupsList();
+                break;
+
+            case ADDGROUP:
+                addGroup();
+                break;
+
+            case UPDATEGROUP:
+                updateGroup();
+                break;
+
+            case REMOVEGROUP:
+                removeGroup();
+                break;
+
             case DAYS:
                 daysList();
                 break;
@@ -802,6 +818,105 @@ public class ClientProtocol {
                     .build();
 
             sendPacketIO(removeSubjectErrorPacket);
+
+        }
+
+    }
+
+
+    /**
+     * Get groups list from database
+     * Send groups list packet to client
+     */
+    private void groupsList() {
+
+        List<Group> groups = clientThread.getDbConnection().getGroups();
+
+        Packet groupsConfirmationPacket = new PacketBuilder()
+                .ofType(PacketType.GROUPS.getConfirmation())
+                .addArgument("groups", groups)
+                .build();
+
+        sendPacketIO(groupsConfirmationPacket);
+
+    }
+
+    /**
+     * Get group data from packet
+     * Parse group data and return group object
+     * Add group to database, and send confirmation or error packet to client
+     */
+    private void addGroup() {
+
+        LinkedTreeMap groupMap = (LinkedTreeMap) lastPacket.getArgument("group");
+
+        Group group = Group.parse(groupMap);
+
+        if(clientThread.getDbConnection().addGroup(group)) {
+
+            groupsList();
+
+        } else {
+
+            Packet addGroupErrorPacket = new PacketBuilder()
+                    .ofType(PacketType.ADDGROUP.getError())
+                    .build();
+
+            sendPacketIO(addGroupErrorPacket);
+
+        }
+
+    }
+
+    /**
+     * Get group data from packet
+     * Parse group data and return group object
+     * Update group from database, and send confirmation or error packet to client
+     */
+    private void updateGroup() {
+
+        LinkedTreeMap groupMap = (LinkedTreeMap) lastPacket.getArgument("group");
+
+        Group group = Group.parse(groupMap);
+
+        if(clientThread.getDbConnection().updateGroup(group)) {
+
+            groupsList();
+
+        } else {
+
+            Packet updateGroupErrorPacket = new PacketBuilder()
+                    .ofType(PacketType.UPDATEGROUP.getError())
+                    .build();
+
+            sendPacketIO(updateGroupErrorPacket);
+
+        }
+
+    }
+
+    /**
+     * Get subject data from packet
+     * Parse subject data and return subject object
+     * Remove subject from database, and send confirmation or error packet to client
+     */
+    private void removeGroup() {
+
+        LinkedTreeMap groupMap = (LinkedTreeMap) lastPacket.getArgument("group");
+
+        Group group = Group.parse(groupMap);
+
+        if(clientThread.getDbConnection().removeGroup(group)) {
+
+            groupsList();
+
+        } else {
+
+            Packet removeGroupErrorPacket = new PacketBuilder()
+                    .ofType(PacketType.REMOVEGROUP.getError())
+                    .build();
+
+            sendPacketIO(removeGroupErrorPacket);
 
         }
 

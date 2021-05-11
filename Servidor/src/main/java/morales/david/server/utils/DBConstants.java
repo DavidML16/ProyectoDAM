@@ -35,6 +35,12 @@ public class DBConstants {
     public static final String DB_QUERY_UPDATECOURSE = "UPDATE curso SET `nivel` = ?, `nombre` = ? WHERE `id_curso` = ?";
     public static final String DB_QUERY_REMOVECOURSE = "DELETE FROM curso WHERE `id_curso` = ?";
 
+    public static final String DB_QUERY_GROUPS = "SELECT * FROM grupo";
+    public static final String DB_QUERY_GROUP_BY_ID = "SELECT * FROM grupo WHERE `id_grupo` = ?";
+    public static final String DB_QUERY_ADDGROUP = "INSERT INTO grupo (`curso`, `letra`) VALUES (?, ?)";
+    public static final String DB_QUERY_UPDATEGROUP = "UPDATE grupo SET `curso` = ?, `letra` = ? WHERE `id_grupo` = ?";
+    public static final String DB_QUERY_REMOVEGROUP = "DELETE FROM grupo WHERE `id_grupo` = ?";
+
     public static final String DB_QUERY_SUBJECTS = "SELECT * FROM asignatura";
     public static final String DB_QUERY_SUBJECT_BY_ID = "SELECT * FROM asignatura WHERE `id_asignatura` = ?";
     public static final String DB_QUERY_ADDSUBJECT = "INSERT INTO asignatura (`numero`, `abreviacion`, `nombre`) VALUES (?, ?, ?)";

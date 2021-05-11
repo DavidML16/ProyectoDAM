@@ -79,9 +79,7 @@ CREATE TABLE franja_horaria (
 CREATE TABLE grupo (
     id_grupo INTEGER(11) PRIMARY KEY AUTO_INCREMENT,
     curso INTEGER(11) NOT NULL,
-    letra CHAR NOT NULL,
-	dividido BOOLEAN NOT NULL DEFAULT false,
-	descripcion VARCHAR(150),
+    letra VARCHAR(10) NOT NULL,
 	CONSTRAINT grupo_fk FOREIGN KEY (curso) REFERENCES curso(id_curso)
 );
 

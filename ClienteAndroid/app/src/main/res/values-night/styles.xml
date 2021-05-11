@@ -26,7 +26,7 @@
 
         <item name="primaryBackgroundColor">@color/secondary_main</item>
         <item name="loginInputCardBackgroundColor">@color/white</item>
-        <item name="loginInputHintColor">#CBCBCB</item>
+        <item name="loginInputHintColor">#919191</item>
         <item name="loginInputTextColor">@color/black</item>
         <item name="loginButtonBackgroundColor">@color/primary_main</item>
         <item name="onDarkTextColor">@color/white</item>

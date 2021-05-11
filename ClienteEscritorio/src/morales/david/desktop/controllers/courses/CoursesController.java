@@ -148,9 +148,9 @@ public class CoursesController implements Initializable, Controller {
 
             coursesTable.setItems(tableItems);
 
-            coursesTable.setPlaceholder(new Label("No existe ningun curso registrado"));
-
         });
+
+        coursesTable.setPlaceholder(new Label("No existe ningun curso registrado"));
 
     }
 

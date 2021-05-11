@@ -280,6 +280,23 @@ public final class SocketManager extends Thread {
 
                             }
 
+                            case GROUPS: {
+
+                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.GROUPS.getConfirmation())) {
+
+                                    List<LinkedTreeMap> groups = (List<LinkedTreeMap>) receivedPacket.getArgument("groups");
+
+                                    DataManager.getInstance().getGroups().clear();
+
+                                    for (LinkedTreeMap groupMap : groups)
+                                        DataManager.getInstance().getGroups().add(Group.parse(groupMap));
+
+                                }
+
+                                break;
+
+                            }
+
                             case SUBJECTS: {
 
                                 if(receivedPacket.getType().equalsIgnoreCase(PacketType.SUBJECTS.getConfirmation())) {

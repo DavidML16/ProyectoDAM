@@ -146,9 +146,10 @@ public class ClassroomsController implements Initializable, Controller {
 
             classroomsTable.setItems(tableItems);
 
-            classroomsTable.setPlaceholder(new Label("No existe ninguna aula registrada"));
 
         });
+
+        classroomsTable.setPlaceholder(new Label("No existe ninguna aula registrada"));
 
     }
 
