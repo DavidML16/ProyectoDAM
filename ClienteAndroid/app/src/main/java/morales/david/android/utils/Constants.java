@@ -9,7 +9,7 @@ public class Constants {
 
     public static final PacketType[] INIT_PACKETS = {
             PacketType.CLASSROOMS, PacketType.TEACHERS, PacketType.CREDENTIALS, PacketType.COURSES,
-            PacketType.SUBJECTS, PacketType.DAYS, PacketType.HOURS
+            PacketType.GROUPS, PacketType.SUBJECTS, PacketType.DAYS, PacketType.HOURS
     };
 
 }

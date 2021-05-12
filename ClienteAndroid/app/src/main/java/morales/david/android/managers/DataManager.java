@@ -24,6 +24,7 @@ public final class DataManager {
     private MutableLiveData<List<Credential>> credentials;
     private MutableLiveData<List<Classroom>> classrooms;
     private MutableLiveData<List<Course>> courses;
+    private MutableLiveData<List<Group>> groups;
     private MutableLiveData<List<Subject>> subjects;
     private MutableLiveData<List<Day>> days;
     private MutableLiveData<List<Hour>> hours;
@@ -74,6 +75,18 @@ public final class DataManager {
 
     public synchronized void setCourses(List<Course> courses) {
         this.courses.setValue(courses);
+    }
+
+
+    public synchronized MutableLiveData<List<Group>> getGroups() {
+        if (groups == null) {
+            groups = new MutableLiveData<>();
+        }
+        return groups;
+    }
+
+    public synchronized void setGroups(List<Group> groups) {
+        this.groups.setValue(groups);
     }
 
 

@@ -36,4 +36,7 @@
     <string name="item_subject_courses">Cursos asignados: <xliff:g example="-" id="courses">%s</xliff:g></string>
     <string name="act_subjects_course">Curso</string>
     <string name="fragment_subjectcourses_info">Cursos asignados de la asignatura</string>
+    <string name="item_group_course">Curso: <xliff:g example="" id="course">%s</xliff:g></string>
+    <string name="item_group_letter">Letra: <xliff:g example="" id="letter">%s</xliff:g></string>
+    <string name="act_groups_course">Curso</string>
 </resources>

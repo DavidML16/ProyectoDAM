@@ -24,6 +24,7 @@ import morales.david.android.models.ClientSession;
 import morales.david.android.models.Course;
 import morales.david.android.models.Credential;
 import morales.david.android.models.Day;
+import morales.david.android.models.Group;
 import morales.david.android.models.Hour;
 import morales.david.android.models.Subject;
 import morales.david.android.models.Teacher;
@@ -139,6 +140,7 @@ public class SocketManager extends Thread {
 
                                 DataManager.getInstance().getTeachers();
                                 DataManager.getInstance().getClassrooms();
+                                DataManager.getInstance().getGroups();
                                 DataManager.getInstance().getSubjects();
                                 DataManager.getInstance().getCourses();
                                 DataManager.getInstance().getCredentials();
@@ -260,6 +262,27 @@ public class SocketManager extends Thread {
 
                                 context.runOnUiThread(() -> {
                                     DataManager.getInstance().setCourses(temp);
+                                });
+
+                            }
+
+                            break;
+
+                        }
+
+                        case GROUPS: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.GROUPS.getConfirmation())) {
+
+                                List<LinkedTreeMap> groups = (List<LinkedTreeMap>) receivedPacket.getArgument("groups");
+
+                                final List<Group> temp = new ArrayList<>();
+
+                                for (LinkedTreeMap groupMap : groups)
+                                    temp.add(Group.parse(groupMap));
+
+                                context.runOnUiThread(() -> {
+                                    DataManager.getInstance().setGroups(temp);
                                 });
 
                             }

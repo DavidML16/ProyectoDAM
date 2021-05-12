@@ -97,16 +97,20 @@ public class CoursesActivity extends AppCompatActivity implements OptionClicked 
         if(argument != null)
             course = (Course) argument;
 
+        Intent intent = null;
+
         switch (item.getId()) {
             case R.id.option_groups_cardview:
-
+                intent = new Intent(this, GroupsActivity.class);
+                intent.putExtra("course", course);
                 break;
             case R.id.option_subjects_cardview:
-                Intent intent = new Intent(this, SubjectsActivity.class);
+                intent = new Intent(this, SubjectsActivity.class);
                 intent.putExtra("course", course);
-                startActivity(intent);
                 break;
         }
+
+        startActivity(intent);
 
     }
 
