@@ -385,7 +385,9 @@ public final class SocketManager extends Thread {
             output.newLine();
             output.flush();
         } catch (IOException e) {
-            socketErrorAlert();
+            Platform.runLater(() -> {
+                socketErrorAlert();
+            });
         }
     }
 
@@ -394,7 +396,9 @@ public final class SocketManager extends Thread {
             String json = input.readLine();
             return Client.GSON.fromJson(json, Packet.class);
         } catch (IOException e) {
-            socketErrorAlert();
+            Platform.runLater(() -> {
+                socketErrorAlert();
+            });
         }
         return null;
     }

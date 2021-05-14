@@ -3,6 +3,7 @@ package morales.david.server.utils;
 public class Constants {
 
     public static final int SERVER_PORT = 6565;
+    public static final int SERVER_FILE_TRANSFER_PORT = SERVER_PORT + 1;
 
     public static final long CLIENT_CONNECTION_CHECKING_INTERVAL = 10000;
 

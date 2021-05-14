@@ -4,9 +4,8 @@ import com.google.gson.Gson;
 import morales.david.server.clients.ClientRepository;
 import morales.david.server.clients.ClientThread;
 import morales.david.server.managers.ClientsManager;
+import morales.david.server.ftp.FileTransferManager;
 import morales.david.server.managers.ImportManager;
-import morales.david.server.models.Course;
-import morales.david.server.models.Subject;
 import morales.david.server.utils.Constants;
 
 import java.io.IOException;
@@ -20,6 +19,7 @@ public class Server {
     private ClientRepository clientRepository;
 
     private ImportManager importManager;
+    private FileTransferManager fileTransferManager;
 
     private boolean running;
 
@@ -35,6 +35,10 @@ public class Server {
         ClientsManager clientsManager = new ClientsManager(this);
         clientsManager.setDaemon(true);
         clientsManager.start();
+
+        FileTransferManager fileTransferManager = new FileTransferManager(this);
+        fileTransferManager.setDaemon(true);
+        fileTransferManager.start();
 
         System.out.println(String.format(Constants.LOG_SERVER_INIT, Constants.SERVER_PORT));
 
@@ -57,6 +61,8 @@ public class Server {
     }
 
     public ImportManager getImportManager() { return importManager; }
+
+    public FileTransferManager getFileTransferManager() { return fileTransferManager; }
 
     public static void main(String[] args) {
 

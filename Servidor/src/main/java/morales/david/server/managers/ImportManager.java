@@ -1,14 +1,27 @@
 package morales.david.server.managers;
 
 import morales.david.server.Server;
+import morales.david.server.models.Day;
 import morales.david.server.models.packets.Packet;
 import morales.david.server.models.packets.PacketBuilder;
 import morales.david.server.models.packets.PacketType;
 import morales.david.server.utils.DBConnection;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ImportManager {
 
@@ -18,7 +31,6 @@ public class ImportManager {
 
     private DBConnection dbConnection;
 
-    private FileInputStream fileIn;
     private boolean isImporting;
 
     public ImportManager(Server server) {
@@ -43,24 +55,12 @@ public class ImportManager {
 
         try {
 
-            fileIn = new FileInputStream(file);
+            Connection conn = DriverManager.getConnection("jdbc:ucanaccess://" + file.getAbsolutePath() + ";memory=false");
 
-            StringBuilder asignaturasSB = getAsignaturas();
+            conn.close();
 
-            System.out.println(asignaturasSB.toString());
-
-            if(file.exists())
-                file.delete();
-
-        } catch (FileNotFoundException e) {
-
-            e.printStackTrace();
-
-            Packet importErrorPacket = new PacketBuilder()
-                    .ofType(PacketType.SENDACCESSFILE.getError())
-                    .addArgument("message", "Archivo no encontrado")
-                    .build();
-
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         } finally {
 
             if(file.exists())
@@ -70,11 +70,11 @@ public class ImportManager {
 
     }
 
-    private StringBuilder getAsignaturas() {
+    private List<Day> getDays() {
 
-        StringBuilder sb = new StringBuilder();
+        List<Day> days = new ArrayList<>();
 
-        return sb;
+        return days;
 
     }
 

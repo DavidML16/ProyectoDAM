@@ -19,8 +19,10 @@ import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.Constants;
+import morales.david.desktop.utils.FileTransferProcessor;
 
 import java.io.*;
+import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,6 +45,7 @@ public class ImportController implements Initializable, Controller {
     private Label dropLabel;
 
     private ObservableList<File> selectedFile;
+    private File fileToSend;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -63,10 +66,10 @@ public class ImportController implements Initializable, Controller {
             FileChooser fileChooser = new FileChooser();
 
             fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Microsoft Excel Files", "*.xlsx")
+                    new FileChooser.ExtensionFilter("Microsoft Access Files", "*.accdb")
             );
 
-            List<String> validExtensions = Arrays.asList("xlsx");
+            List<String> validExtensions = Arrays.asList("accdb");
 
             fileDrop.setOnMouseClicked(event -> {
 
@@ -114,7 +117,7 @@ public class ImportController implements Initializable, Controller {
             fileDrop.setOnDragExited(event -> {
 
                 if(selectedFile.size() == 0)
-                    dropLabel.setText("Arrastra o pulsa para elegir el fichero Excel");
+                    dropLabel.setText("Arrastra o pulsa para elegir el fichero Access");
                 else
                     dropLabel.setText(selectedFile.get(0).getName());
 
@@ -149,57 +152,45 @@ public class ImportController implements Initializable, Controller {
 
         if(event.getSource() == importButton) {
 
-            sendFile();
+            fileToSend = selectedFile.get(0);
+            prepareSendFile();
 
         }
 
     }
 
-    private void sendFile() {
+    public void prepareSendFile() {
 
         importButton.setDisable(true);
 
-        File file = selectedFile.get(0);
+        final String fileName = fileToSend.getName().replaceAll(" ", "");
 
-        Packet sendRequestPacket = new PacketBuilder()
-                .ofType(PacketType.SENDACCESSFILE.getRequest())
-                .addArgument("size", file.length())
-                .addArgument("name", file.getName().replaceAll(" ", ""))
-                .build();
+        Thread sendFileThread = new Thread(() -> {
 
-        SocketManager.getInstance().sendPacketIO(sendRequestPacket);
+            try {
 
-        int bytes = 0;
+                Socket socket = new Socket(Constants.SERVER_IP, Constants.SERVER_FILE_TRANSFER_PORT);
 
-        FileInputStream fileInputStream = null;
-        try {
-            fileInputStream = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+                BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                BufferedWriter output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
-        DataOutputStream dataOutputStream = null;
+                output.write(fileName + "\n");
+                output.flush();
 
-        try {
+                input.readLine();
 
-            dataOutputStream = new DataOutputStream(SocketManager.getInstance().getSocket().getOutputStream());
+                FileTransferProcessor ftp = new FileTransferProcessor(socket);
+                ftp.sendFile(fileToSend);
 
-            dataOutputStream.writeLong(file.length());
+                output.close();
+                socket.close();
 
-            byte[] buffer = new byte[4*1024];
-
-            while ( (bytes = fileInputStream.read(buffer)) != -1){
-
-                dataOutputStream.write(buffer,0,bytes);
-                dataOutputStream.flush();
-
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-            fileInputStream.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        });
+        sendFileThread.start();
 
     }
 

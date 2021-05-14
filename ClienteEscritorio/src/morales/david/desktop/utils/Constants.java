@@ -8,6 +8,7 @@ public class Constants {
 
     public static final String SERVER_IP = "localhost";
     public static final int SERVER_PORT = 6565;
+    public static final int SERVER_FILE_TRANSFER_PORT = SERVER_PORT + 1;
 
     public static final String LOG_SERVER_ERROR_IO = "(X) Se ha producido un error con el flujo de E/S";
     public static final String LOG_SERVER_ERROR_IO_SEND = "(X) Se ha producido un error al enviar el mensaje por el flujo de salida";

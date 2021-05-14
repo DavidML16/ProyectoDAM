@@ -9,6 +9,7 @@ import morales.david.server.models.packets.PacketBuilder;
 import morales.david.server.models.packets.PacketType;
 import morales.david.server.utils.Constants;
 import morales.david.server.utils.DBConnection;
+import morales.david.server.utils.FileTransferProcessor;
 
 import java.io.*;
 import java.net.SocketException;
@@ -52,10 +53,6 @@ public class ClientProtocol {
 
             case EXIT:
                 exit();
-                break;
-
-            case SENDACCESSFILE:
-                receiveFile();
                 break;
 
             case CREDENTIALS:
@@ -253,78 +250,6 @@ public class ClientProtocol {
 
         sendPacketIO(exitConfirmationPacket);
         clientThread.setConnected(false);
-
-    }
-
-    /**
-     * Receive file byte data from client's socket input
-     */
-    private void receiveFile() {
-
-        long fileSize = ((Double)lastPacket.getArgument("size")).longValue();
-        String fileName = (String) lastPacket.getArgument("name");
-
-        Packet sendErrorPacket = new PacketBuilder()
-                .ofType(PacketType.SENDACCESSFILE.getError())
-                .build();
-
-        int bytes = 0;
-        FileOutputStream fileOutputStream = null;
-        try {
-
-            File directory = new File("files");
-            if(!directory.exists())
-                directory.mkdir();
-
-            fileOutputStream = new FileOutputStream("files/" + fileName);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            sendPacketIO(sendErrorPacket);
-            return;
-        }
-
-        DataInputStream dataInputStream = null;
-        try {
-
-            dataInputStream = new DataInputStream(clientThread.getSocket().getInputStream());
-
-            byte[] buffer = new byte[4*1024];
-            while (fileSize > 0 && (bytes = dataInputStream.read(buffer, 0, (int)Math.min(buffer.length, fileSize))) != -1) {
-                fileOutputStream.write(buffer,0,bytes);
-                fileSize -= bytes;
-            }
-
-            fileOutputStream.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            sendPacketIO(sendErrorPacket);
-            return;
-        }
-
-        try {
-            int available = dataInputStream.available();
-            dataInputStream.skip(available);
-        } catch (IOException e) {
-            e.printStackTrace();
-            sendPacketIO(sendErrorPacket);
-            return;
-        }
-
-        clientThread.openIO();
-
-        Packet sendConfirmationPacket = new PacketBuilder()
-                .ofType(PacketType.SENDACCESSFILE.getConfirmation())
-                .build();
-
-        sendPacketIO(sendConfirmationPacket);
-
-        File dbfile = new File("files/" + fileName);
-        if(dbfile.exists() && !clientThread.getServer().getImportManager().isImporting()) {
-            clientThread.getServer().getImportManager().setFile(dbfile);
-            clientThread.getServer().getImportManager().importDatabase();
-        }
 
     }
 
