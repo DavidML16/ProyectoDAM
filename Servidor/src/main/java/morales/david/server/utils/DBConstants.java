@@ -51,10 +51,17 @@ public class DBConstants {
     public static final String DB_QUERY_SUBJECTS_COURSES = "SELECT * FROM curso WHERE id_curso IN ( SELECT curso FROM curso_asignatura WHERE asignatura = ? )";
 
     public static final String DB_QUERY_DAYS = "SELECT * FROM numero_dia";
+    public static final String DB_QUERY_ADDDAY = "INSERT INTO numero_dia VALUES (?, ?)";
     public static final String DB_QUERY_UPDATEDAY = "UPDATE numero_dia SET `dia` = ? WHERE `id_dia` = ?";
 
     public static final String DB_QUERY_HOURS = "SELECT * FROM numero_hora";
+    public static final String DB_QUERY_ADDHOUR = "INSERT INTO numero_hora VALUES (?, ?)";
     public static final String DB_QUERY_UPDATEHOUR = "UPDATE numero_hora SET `horas` = ? WHERE `id_hora` = ?";
 
+    public static final String DB_QUERY_CLEAR_DAYS = "DELETE FROM numero_dia";
+    public static final String DB_QUERY_CLEAR_HOURS = "DELETE FROM numero_hora";
+
+    public static final String DB_QUERY_INSERTSB_DAYS = "INSERT INTO numero_dia VALUES ";
+    public static final String DB_QUERY_INSERTSB_HOURS = "INSERT INTO numero_hora VALUES ";
 
 }

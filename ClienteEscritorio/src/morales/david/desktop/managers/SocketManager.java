@@ -96,259 +96,252 @@ public final class SocketManager extends Thread {
 
                     receivedPacket = readPacketIO();
 
-                        PacketType packetType = PacketType.valueOf(PacketType.getIdentifier(receivedPacket.getType()));
+                    PacketType packetType = PacketType.valueOf(PacketType.getIdentifier(receivedPacket.getType()));
 
-                        switch (packetType) {
+                    switch (packetType) {
 
-                            case LOGIN: {
+                        case LOGIN: {
 
-                                Platform.runLater(() -> {
+                            Platform.runLater(() -> {
 
-                                    if(receivedPacket.getType().equalsIgnoreCase(PacketType.LOGIN.getConfirmation())) {
+                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.LOGIN.getConfirmation())) {
 
-                                        clientSession.setId(((Double) receivedPacket.getArgument("id")).intValue());
-                                        clientSession.setName((String) receivedPacket.getArgument("name"));
-                                        clientSession.setRole((String) receivedPacket.getArgument("role"));
+                                    clientSession.setId(((Double) receivedPacket.getArgument("id")).intValue());
+                                    clientSession.setName((String) receivedPacket.getArgument("name"));
+                                    clientSession.setRole((String) receivedPacket.getArgument("role"));
 
-                                        if (screenManager.getController() instanceof LoginController) {
+                                    if (screenManager.getController() instanceof LoginController) {
 
-                                            screenManager.openScene("dashboard.fxml", "Inicio" + Constants.WINDOW_TITLE);
-
-                                        }
-
-                                    } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.LOGIN.LOGIN.getError())) {
-
-                                        if (screenManager.getController() instanceof LoginController) {
-
-                                            LoginController loginController = (LoginController) screenManager.getController();
-
-                                            loginController.getMessageLabel().setText(Constants.MESSAGES_ERROR_LOGIN);
-                                            loginController.getMessageLabel().setTextFill(Color.TOMATO);
-
-                                        }
+                                        screenManager.openScene("dashboard.fxml", "Inicio" + Constants.WINDOW_TITLE);
 
                                     }
 
-                                    });
+                                } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.LOGIN.LOGIN.getError())) {
 
-                                break;
+                                    if (screenManager.getController() instanceof LoginController) {
 
-                            }
+                                        LoginController loginController = (LoginController) screenManager.getController();
 
-                            case DISCONNECT: {
-
-                                Platform.runLater(() -> {
-
-                                    if (receivedPacket.getType().equalsIgnoreCase(PacketType.DISCONNECT.getConfirmation())) {
-
-                                        clientSession.setId(-1);
-                                        clientSession.setName("");
-                                        clientSession.setRole("");
-
-                                        if (!(screenManager.getController() instanceof LoginController)) {
-
-                                            openSocket();
-
-                                            screenManager.openScene("login.fxml", "Iniciar sesión" + Constants.WINDOW_TITLE);
-
-                                        }
+                                        loginController.getMessageLabel().setText(Constants.MESSAGES_ERROR_LOGIN);
+                                        loginController.getMessageLabel().setTextFill(Color.TOMATO);
 
                                     }
+
+                                }
 
                                 });
 
-                                break;
-
-                            }
-
-                            case EXIT: {
-
-                                Platform.runLater(() -> {
-
-                                    if (receivedPacket.getType().equalsIgnoreCase(PacketType.EXIT.getConfirmation())) {
-
-                                        closed[0] = true;
-                                        close();
-                                        Platform.exit();
-
-                                    }
-
-                                });
-
-                                break;
-
-                            }
-
-                            case SENDACCESSFILE: {
-
-                                Platform.runLater(() -> {
-
-                                    if (receivedPacket.getType().equalsIgnoreCase(PacketType.SENDACCESSFILE.getConfirmation())) {
-
-                                        if (screenManager.getController() instanceof ImportController) {
-
-                                            ImportController importController = (ImportController) screenManager.getController();
-
-                                            importController.receivedFile();
-
-                                        }
-
-                                    } else if (receivedPacket.getType().equalsIgnoreCase(PacketType.SENDACCESSFILE.getError())) {
-
-                                        if (screenManager.getController() instanceof ImportController) {
-
-                                            ImportController importController = (ImportController) screenManager.getController();
-
-                                            importController.getMessageLabel().setText(Constants.MESSAGES_ERROR_RECEIVEDFILE);
-                                            importController.getMessageLabel().setTextFill(Color.TOMATO);
-
-                                        }
-
-                                    }
-
-                                });
-
-                                break;
-
-                            }
-
-                            case TEACHERS: {
-
-                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.TEACHERS.getConfirmation())) {
-
-                                    List<LinkedTreeMap> teachers = (List<LinkedTreeMap>) receivedPacket.getArgument("teachers");
-
-                                    DataManager.getInstance().getTeachers().clear();
-
-                                    for (LinkedTreeMap teacherMap : teachers)
-                                        DataManager.getInstance().getTeachers().add(Teacher.parse(teacherMap));
-
-                                }
-
-                                break;
-
-                            }
-
-                            case CREDENTIALS: {
-
-                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.CREDENTIALS.getConfirmation())) {
-
-                                    List<LinkedTreeMap> credentials = (List<LinkedTreeMap>) receivedPacket.getArgument("credentials");
-
-                                    DataManager.getInstance().getCredentials().clear();
-
-                                    for (LinkedTreeMap credentialMap : credentials)
-                                        DataManager.getInstance().getCredentials().add(Credential.parse(credentialMap));
-
-                                }
-
-                                break;
-
-                            }
-
-                            case CLASSROOMS: {
-
-                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.CLASSROOMS.getConfirmation())) {
-
-                                    List<LinkedTreeMap> classrooms = (List<LinkedTreeMap>) receivedPacket.getArgument("classrooms");
-
-                                    DataManager.getInstance().getClassrooms().clear();
-
-                                    for (LinkedTreeMap classroomMap : classrooms)
-                                        DataManager.getInstance().getClassrooms().add(Classroom.parse(classroomMap));
-
-                                }
-
-                                break;
-
-                            }
-
-                            case COURSES: {
-
-                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.COURSES.getConfirmation())) {
-
-                                    List<LinkedTreeMap> courses = (List<LinkedTreeMap>) receivedPacket.getArgument("courses");
-
-                                    DataManager.getInstance().getCourses().clear();
-
-                                    for (LinkedTreeMap courseMap : courses)
-                                        DataManager.getInstance().getCourses().add(Course.parse(courseMap));
-
-                                }
-
-                                break;
-
-                            }
-
-                            case GROUPS: {
-
-                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.GROUPS.getConfirmation())) {
-
-                                    List<LinkedTreeMap> groups = (List<LinkedTreeMap>) receivedPacket.getArgument("groups");
-
-                                    DataManager.getInstance().getGroups().clear();
-
-                                    for (LinkedTreeMap groupMap : groups)
-                                        DataManager.getInstance().getGroups().add(Group.parse(groupMap));
-
-                                }
-
-                                break;
-
-                            }
-
-                            case SUBJECTS: {
-
-                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.SUBJECTS.getConfirmation())) {
-
-                                    List<LinkedTreeMap> subjects = (List<LinkedTreeMap>) receivedPacket.getArgument("subjects");
-
-                                    DataManager.getInstance().getSubjects().clear();
-
-                                    for (LinkedTreeMap subjectMap : subjects)
-                                        DataManager.getInstance().getSubjects().add(Subject.parse(subjectMap));
-
-                                }
-
-                                break;
-
-                            }
-
-                            case DAYS: {
-
-                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.DAYS.getConfirmation())) {
-
-                                    List<LinkedTreeMap> days = (List<LinkedTreeMap>) receivedPacket.getArgument("days");
-
-                                    DataManager.getInstance().getDays().clear();
-
-                                    for (LinkedTreeMap dayMap : days)
-                                        DataManager.getInstance().getDays().add(Day.parse(dayMap));
-
-                                }
-
-                                break;
-
-                            }
-
-                            case HOURS: {
-
-                                if(receivedPacket.getType().equalsIgnoreCase(PacketType.HOURS.getConfirmation())) {
-
-                                    List<LinkedTreeMap> hours = (List<LinkedTreeMap>) receivedPacket.getArgument("hours");
-
-                                    DataManager.getInstance().getHours().clear();
-
-                                    for (LinkedTreeMap hourMap : hours)
-                                        DataManager.getInstance().getHours().add(Hour.parse(hourMap));
-
-                                }
-
-                                break;
-
-                            }
+                            break;
 
                         }
+
+                        case DISCONNECT: {
+
+                            Platform.runLater(() -> {
+
+                                if (receivedPacket.getType().equalsIgnoreCase(PacketType.DISCONNECT.getConfirmation())) {
+
+                                    clientSession.setId(-1);
+                                    clientSession.setName("");
+                                    clientSession.setRole("");
+
+                                    if (!(screenManager.getController() instanceof LoginController)) {
+
+                                        openSocket();
+
+                                        screenManager.openScene("login.fxml", "Iniciar sesión" + Constants.WINDOW_TITLE);
+
+                                    }
+
+                                }
+
+                            });
+
+                            break;
+
+                        }
+
+                        case EXIT: {
+
+                            Platform.runLater(() -> {
+
+                                if (receivedPacket.getType().equalsIgnoreCase(PacketType.EXIT.getConfirmation())) {
+
+                                    closed[0] = true;
+                                    close();
+                                    Platform.exit();
+
+                                }
+
+                            });
+
+                            break;
+
+                        }
+
+                        case IMPORTSTATUS: {
+
+                            Platform.runLater(() -> {
+
+                                if (receivedPacket.getType().equalsIgnoreCase(PacketType.IMPORTSTATUS.getConfirmation())) {
+
+                                    final boolean importing = (boolean) receivedPacket.getArgument("importing");
+                                    final String message = (String) receivedPacket.getArgument("message");
+                                    final String type = (String) receivedPacket.getArgument("type");
+
+                                    if (screenManager.getController() instanceof ImportController) {
+
+                                        ImportController importController = (ImportController) screenManager.getController();
+
+                                        importController.updateStatus(importing, message, type);
+
+                                    }
+
+                                }
+
+                            });
+
+                            break;
+
+                        }
+
+                        case TEACHERS: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.TEACHERS.getConfirmation())) {
+
+                                List<LinkedTreeMap> teachers = (List<LinkedTreeMap>) receivedPacket.getArgument("teachers");
+
+                                DataManager.getInstance().getTeachers().clear();
+
+                                for (LinkedTreeMap teacherMap : teachers)
+                                    DataManager.getInstance().getTeachers().add(Teacher.parse(teacherMap));
+
+                            }
+
+                            break;
+
+                        }
+
+                        case CREDENTIALS: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.CREDENTIALS.getConfirmation())) {
+
+                                List<LinkedTreeMap> credentials = (List<LinkedTreeMap>) receivedPacket.getArgument("credentials");
+
+                                DataManager.getInstance().getCredentials().clear();
+
+                                for (LinkedTreeMap credentialMap : credentials)
+                                    DataManager.getInstance().getCredentials().add(Credential.parse(credentialMap));
+
+                            }
+
+                            break;
+
+                        }
+
+                        case CLASSROOMS: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.CLASSROOMS.getConfirmation())) {
+
+                                List<LinkedTreeMap> classrooms = (List<LinkedTreeMap>) receivedPacket.getArgument("classrooms");
+
+                                DataManager.getInstance().getClassrooms().clear();
+
+                                for (LinkedTreeMap classroomMap : classrooms)
+                                    DataManager.getInstance().getClassrooms().add(Classroom.parse(classroomMap));
+
+                            }
+
+                            break;
+
+                        }
+
+                        case COURSES: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.COURSES.getConfirmation())) {
+
+                                List<LinkedTreeMap> courses = (List<LinkedTreeMap>) receivedPacket.getArgument("courses");
+
+                                DataManager.getInstance().getCourses().clear();
+
+                                for (LinkedTreeMap courseMap : courses)
+                                    DataManager.getInstance().getCourses().add(Course.parse(courseMap));
+
+                            }
+
+                            break;
+
+                        }
+
+                        case GROUPS: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.GROUPS.getConfirmation())) {
+
+                                List<LinkedTreeMap> groups = (List<LinkedTreeMap>) receivedPacket.getArgument("groups");
+
+                                DataManager.getInstance().getGroups().clear();
+
+                                for (LinkedTreeMap groupMap : groups)
+                                    DataManager.getInstance().getGroups().add(Group.parse(groupMap));
+
+                            }
+
+                            break;
+
+                        }
+
+                        case SUBJECTS: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.SUBJECTS.getConfirmation())) {
+
+                                List<LinkedTreeMap> subjects = (List<LinkedTreeMap>) receivedPacket.getArgument("subjects");
+
+                                DataManager.getInstance().getSubjects().clear();
+
+                                for (LinkedTreeMap subjectMap : subjects)
+                                    DataManager.getInstance().getSubjects().add(Subject.parse(subjectMap));
+
+                            }
+
+                            break;
+
+                        }
+
+                        case DAYS: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.DAYS.getConfirmation())) {
+
+                                List<LinkedTreeMap> days = (List<LinkedTreeMap>) receivedPacket.getArgument("days");
+
+                                DataManager.getInstance().getDays().clear();
+
+                                for (LinkedTreeMap dayMap : days)
+                                    DataManager.getInstance().getDays().add(Day.parse(dayMap));
+
+                            }
+
+                            break;
+
+                        }
+
+                        case HOURS: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.HOURS.getConfirmation())) {
+
+                                List<LinkedTreeMap> hours = (List<LinkedTreeMap>) receivedPacket.getArgument("hours");
+
+                                DataManager.getInstance().getHours().clear();
+
+                                for (LinkedTreeMap hourMap : hours)
+                                    DataManager.getInstance().getHours().add(Hour.parse(hourMap));
+
+                            }
+
+                            break;
+
+                        }
+
+                    }
 
                 }
 

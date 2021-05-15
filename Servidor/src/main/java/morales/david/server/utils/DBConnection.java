@@ -1811,4 +1811,94 @@ public class DBConnection {
 
     }
 
+
+    public boolean clearAll() {
+
+        try {
+
+            Statement dayStm = connection.createStatement();
+            dayStm.execute(DBConstants.DB_QUERY_CLEAR_DAYS);
+            dayStm.close();
+
+            Statement hourStm = connection.createStatement();
+            hourStm.execute(DBConstants.DB_QUERY_CLEAR_HOURS);
+            hourStm.close();
+
+            return true;
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return false;
+
+    }
+
+
+    /**
+     * Add days information from database
+     * @param sb
+     * @return days added
+     */
+    public boolean insertDaysSB(StringBuilder sb) {
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_INSERTSB_DAYS + sb.toString());
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return rs == 1;
+
+    }
+
+    /**
+     * Add hours information from database
+     * @param sb
+     * @return hours added
+     */
+    public boolean insertHoursSB(StringBuilder sb) {
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_INSERTSB_HOURS + sb.toString());
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return rs == 1;
+
+    }
+
+
+
+
+
 }

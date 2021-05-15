@@ -8,6 +8,7 @@ import morales.david.server.ftp.FileTransferManager;
 import morales.david.server.managers.ImportManager;
 import morales.david.server.utils.Constants;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;

@@ -55,6 +55,10 @@ public class ClientProtocol {
                 exit();
                 break;
 
+            case IMPORTSTATUS:
+                getImportStatus();
+                break;
+
             case CREDENTIALS:
                 credentialsList();
                 break;
@@ -240,7 +244,7 @@ public class ClientProtocol {
 
     /**
      * Close client from server
-     * Send conformation or error logout packet to client
+     * Send confirmation or error logout packet to client
      */
     private void exit() {
 
@@ -250,6 +254,24 @@ public class ClientProtocol {
 
         sendPacketIO(exitConfirmationPacket);
         clientThread.setConnected(false);
+
+    }
+
+    /**
+     * Send if is a file already importing
+     */
+    private void getImportStatus() {
+
+        boolean importing = clientThread.getServer().getImportManager().isImporting();
+
+        Packet importStatusConfirmationPacket = new PacketBuilder()
+                .ofType(PacketType.IMPORTSTATUS.getConfirmation())
+                .addArgument("message", "")
+                .addArgument("type", "ping")
+                .addArgument("importing", importing)
+                .build();
+
+        clientThread.getServer().getClientRepository().broadcast(importStatusConfirmationPacket);
 
     }
 

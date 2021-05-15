@@ -56,19 +56,19 @@ CREATE TABLE curso_asignatura (
 
 
 CREATE TABLE numero_dia (
-	id_dia INTEGER(11) PRIMARY KEY AUTO_INCREMENT,
+	id_dia INTEGER(11) PRIMARY KEY,
     dia VARCHAR(150) NOT NULL
 );
 
 
 CREATE TABLE numero_hora (
-	id_hora INTEGER(11) PRIMARY KEY AUTO_INCREMENT,
+	id_hora INTEGER(11) PRIMARY KEY,
     horas VARCHAR(150) NOT NULL
 );
 
 
 CREATE TABLE franja_horaria (
-	id_franja INTEGER(11) PRIMARY KEY AUTO_INCREMENT,
+	id_franja INTEGER(11) PRIMARY KEY,
     dia INTEGER(11) NOT NULL,
     hora INTEGER(11) NOT NULL,
     CONSTRAINT franja_dia FOREIGN KEY (dia) REFERENCES numero_dia(id_dia),

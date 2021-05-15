@@ -32,3 +32,29 @@
     -fx-background-color: #B00A3A;
     -fx-text-fill: #FFF;
 }
+
+.messagePaneInit {
+    -fx-background-color: #4A76A0;
+}
+
+.messagePaneClear {
+    -fx-background-color: #910772;
+}
+
+.messagePaneStep {
+    -fx-background-color: #5DAB4C;
+}
+
+.messagePaneEnd {
+    -fx-background-color: #E59410;
+}
+
+.messagePaneError {
+    -fx-background-color: #FF0000;
+}
+
+.messageLabel {
+    -fx-text-fill: #FFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}

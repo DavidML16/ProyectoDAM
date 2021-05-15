@@ -6,11 +6,16 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.ScreenManager;
@@ -39,13 +44,15 @@ public class ImportController implements Initializable, Controller {
     private Button importButton;
 
     @FXML
-    private Label messageLabel;
+    private VBox messagesBox;
 
     @FXML
     private Label dropLabel;
 
     private ObservableList<File> selectedFile;
     private File fileToSend;
+
+    private boolean importing = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -54,11 +61,19 @@ public class ImportController implements Initializable, Controller {
 
         Platform.runLater(() -> {
 
+            Packet importStatusRequestPacket = new PacketBuilder()
+                    .ofType(PacketType.IMPORTSTATUS.getRequest())
+                    .build();
+
+            SocketManager.getInstance().sendPacketIO(importStatusRequestPacket);
+
             selectedFile.addListener((ListChangeListener) change -> {
 
                 if(change.next() && change.getAddedSize() > 0) {
                     dropLabel.setText(selectedFile.get(0).getName());
-                    importButton.setDisable(false);
+
+                    if(!importing)
+                        importButton.setDisable(false);
                 }
 
             });
@@ -152,8 +167,11 @@ public class ImportController implements Initializable, Controller {
 
         if(event.getSource() == importButton) {
 
-            fileToSend = selectedFile.get(0);
-            prepareSendFile();
+            if(!selectedFile.isEmpty()) {
+                fileToSend = selectedFile.get(0);
+                prepareSendFile();
+                messagesBox.getChildren().clear();
+            }
 
         }
 
@@ -194,6 +212,48 @@ public class ImportController implements Initializable, Controller {
 
     }
 
+    public void updateStatus(boolean importing, String message, String type) {
+
+        this.importing = importing;
+        importButton.setDisable(importing);
+
+        if(message == null || message.isEmpty())
+            return;
+
+        Pane mesagePane = new Pane();
+        mesagePane.setPrefWidth(267);
+        mesagePane.setMaxWidth(267);
+        mesagePane.setMaxWidth(267);
+        mesagePane.setPrefHeight(75);
+        mesagePane.setPadding(new Insets(10, 20, 10, 20));
+
+        if(type.equalsIgnoreCase("init"))
+            mesagePane.getStyleClass().add("messagePaneInit");
+        else if(type.equalsIgnoreCase("clear"))
+            mesagePane.getStyleClass().add("messagePaneClear");
+        else if(type.equalsIgnoreCase("import"))
+            mesagePane.getStyleClass().add("messagePaneStep");
+        else if(type.equalsIgnoreCase("end"))
+            mesagePane.getStyleClass().add("messagePaneEnd");
+        else if(type.equalsIgnoreCase("error"))
+            mesagePane.getStyleClass().add("messagePaneError");
+
+        Label messageLabel = new Label();
+        messageLabel.setText(message);
+        messageLabel.setPrefWidth(267);
+        messageLabel.setMaxWidth(267);
+        messageLabel.setWrapText(true);
+        messageLabel.setPrefHeight(75);
+        messageLabel.setTextAlignment(TextAlignment.CENTER);
+        messageLabel.setAlignment(Pos.CENTER);
+        messageLabel.getStyleClass().add("messageLabel");
+
+        mesagePane.getChildren().add(messageLabel);
+
+        messagesBox.getChildren().add(mesagePane);
+
+    }
+
 
     private String getExtension(String fileName){
         String extension = "";
@@ -201,17 +261,6 @@ public class ImportController implements Initializable, Controller {
         if (i > 0 && i < fileName.length() - 1)
             return fileName.substring(i + 1).toLowerCase();
         return extension;
-    }
-
-    public Label getMessageLabel() { return messageLabel; }
-
-    public void receivedFile() {
-
-        messageLabel.setText(Constants.MESSAGES_CONFIRMATION_RECEIVEDFILE);
-        messageLabel.setTextFill(Color.DARKGREEN);
-
-        selectedFile.clear();
-
     }
 
 }
