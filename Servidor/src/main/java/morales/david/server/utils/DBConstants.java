@@ -60,11 +60,13 @@ public class DBConstants {
 
     public static final String DB_QUERY_CLEAR_DAYS = "DELETE FROM numero_dia";
     public static final String DB_QUERY_CLEAR_HOURS = "DELETE FROM numero_hora";
+    public static final String DB_QUERY_CLEAR_TIMEZONE = "DELETE FROM franja_horaria";
     public static final String DB_QUERY_CLEAR_SUBJECTS = "DELETE FROM asignatura";
     public static final String DB_QUERY_CLEAR_TEACHERS = "DELETE FROM profesor";
 
     public static final String DB_QUERY_INSERTSB_DAYS = "INSERT INTO numero_dia VALUES ";
     public static final String DB_QUERY_INSERTSB_HOURS = "INSERT INTO numero_hora VALUES ";
+    public static final String DB_QUERY_INSERTSB_TIMEZONE = "INSERT INTO franja_horaria VALUES ";
     public static final String DB_QUERY_INSERTSB_SUBJECTS = "INSERT INTO asignatura VALUES ";
     public static final String DB_QUERY_INSERTSB_TEACHERS = "INSERT INTO profesor VALUES ";
 

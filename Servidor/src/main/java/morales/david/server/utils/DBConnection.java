@@ -1836,6 +1836,10 @@ public class DBConnection {
             hourStm.execute(DBConstants.DB_QUERY_CLEAR_HOURS);
             hourStm.close();
 
+            Statement timezoneStm = connection.createStatement();
+            timezoneStm.execute(DBConstants.DB_QUERY_CLEAR_TIMEZONE);
+            timezoneStm.close();
+
             Statement teacherStm = connection.createStatement();
             teacherStm.execute(DBConstants.DB_QUERY_CLEAR_TEACHERS);
             teacherStm.close();
@@ -1918,6 +1922,37 @@ public class DBConnection {
     }
 
     /**
+     * Insert timezones information to database
+     * @param sb
+     * @return timezones added
+     */
+    public boolean insertTimezoneSB(StringBuilder sb) {
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_INSERTSB_TIMEZONE + sb.toString());
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return rs == 1;
+
+    }
+
+    /**
      * Insert teachers information to database
      * @param sb
      * @return teachers added
@@ -1978,5 +2013,4 @@ public class DBConnection {
         return rs == 1;
 
     }
-
 }

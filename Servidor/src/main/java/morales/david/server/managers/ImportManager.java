@@ -9,7 +9,6 @@ import morales.david.server.models.packets.Packet;
 import morales.david.server.models.packets.PacketBuilder;
 import morales.david.server.models.packets.PacketType;
 import morales.david.server.utils.DBConnection;
-import morales.david.server.utils.DBConstants;
 
 import java.io.File;
 import java.sql.*;
@@ -74,9 +73,9 @@ public class ImportManager {
                 server.getClientRepository().broadcast(statusPacket);
 
                 // DAYS
+                List<Day> dayList = getDays();
                 {
 
-                    List<Day> dayList = getDays();
                     insertDays(dayList);
 
                     statusPacket = new PacketBuilder()
@@ -90,11 +89,10 @@ public class ImportManager {
                 }
 
                 // HOURS
+                List<Hour> hourList = getHours();
                 {
 
-                    List<Hour> hourList = getHours();
-                    insetHours(hourList);
-
+                    insertHours(hourList);
 
                     statusPacket = new PacketBuilder()
                             .ofType(PacketType.IMPORTSTATUS.getConfirmation())
@@ -106,10 +104,25 @@ public class ImportManager {
 
                 }
 
-                // TEACHERS
+                // TIMEZONES
                 {
 
-                    List<Teacher> teacherList = getTeachers();
+                    insertTimeZone(dayList, hourList);
+
+                    statusPacket = new PacketBuilder()
+                            .ofType(PacketType.IMPORTSTATUS.getConfirmation())
+                            .addArgument("importing", isImporting)
+                            .addArgument("type", "import")
+                            .addArgument("message", "Tabla de franjas horarias importada")
+                            .build();
+                    server.getClientRepository().broadcast(statusPacket);
+
+                }
+
+                // TEACHERS
+                List<Teacher> teacherList = getTeachers();
+                {
+
                     insertTeachers(teacherList);
 
                     statusPacket = new PacketBuilder()
@@ -123,9 +136,9 @@ public class ImportManager {
                 }
 
                 // SUBJECTS
+                List<Subject> subjectList = getSubjects();
                 {
 
-                    List<Subject> subjectList = getSubjects();
                     insertSubjects(subjectList);
 
                     statusPacket = new PacketBuilder()
@@ -300,7 +313,7 @@ public class ImportManager {
         return hourList;
 
     }
-    public void insetHours(List<Hour> hourList) {
+    public void insertHours(List<Hour> hourList) {
 
         StringBuilder insertString = new StringBuilder();
         for(Hour hour : hourList) {
@@ -316,6 +329,35 @@ public class ImportManager {
         }
 
         dbConnection.insertHoursSB(insertString);
+
+    }
+
+    private void insertTimeZone(List<Day> dayList, List<Hour> hourList) {
+
+        int i = 1;
+
+        StringBuilder insertString = new StringBuilder();
+        for(Day day : dayList) {
+
+            for(Hour hour : hourList) {
+
+                if (insertString.toString().equalsIgnoreCase("")) insertString.append("(");
+                else insertString.append(", (");
+
+                insertString.append(i)
+                        .append(",")
+                        .append(day.getId())
+                        .append(",")
+                        .append(hour.getId())
+                        .append(")");
+
+                i++;
+
+            }
+
+        }
+
+        dbConnection.insertTimezoneSB(insertString);
 
     }
 
