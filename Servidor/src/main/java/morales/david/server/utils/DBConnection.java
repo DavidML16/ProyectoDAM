@@ -1812,6 +1812,10 @@ public class DBConnection {
     }
 
 
+    /**
+     * Clear all table rows from database
+     * @return rows deleted
+     */
     public boolean clearAll() {
 
         try {
@@ -1823,6 +1827,10 @@ public class DBConnection {
             Statement hourStm = connection.createStatement();
             hourStm.execute(DBConstants.DB_QUERY_CLEAR_HOURS);
             hourStm.close();
+
+            Statement subjectStm = connection.createStatement();
+            subjectStm.execute(DBConstants.DB_QUERY_CLEAR_SUBJECTS);
+            subjectStm.close();
 
             return true;
 
@@ -1836,7 +1844,7 @@ public class DBConnection {
 
 
     /**
-     * Add days information from database
+     * Insert days information to database
      * @param sb
      * @return days added
      */
@@ -1867,7 +1875,7 @@ public class DBConnection {
     }
 
     /**
-     * Add hours information from database
+     * Insert hours information to database
      * @param sb
      * @return hours added
      */
@@ -1897,8 +1905,35 @@ public class DBConnection {
 
     }
 
+    /**
+     * Insert subjects information to database
+     * @param sb
+     * @return subjects added
+     */
+    public boolean insertSubjectsSB(StringBuilder sb) {
 
+        PreparedStatement stm = null;
+        int rs = 0;
 
+        try {
 
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_INSERTSB_SUBJECTS + sb.toString());
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return rs == 1;
+
+    }
 
 }

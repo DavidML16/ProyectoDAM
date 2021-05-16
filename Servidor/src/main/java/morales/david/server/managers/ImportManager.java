@@ -3,6 +3,7 @@ package morales.david.server.managers;
 import morales.david.server.Server;
 import morales.david.server.models.Day;
 import morales.david.server.models.Hour;
+import morales.david.server.models.Subject;
 import morales.david.server.models.packets.Packet;
 import morales.david.server.models.packets.PacketBuilder;
 import morales.david.server.models.packets.PacketType;
@@ -104,6 +105,22 @@ public class ImportManager {
 
                 }
 
+                // SUBJECTS
+                {
+
+                    List<Subject> subjectList = getSubjects();
+                    insertSubjects(subjectList);
+
+                    statusPacket = new PacketBuilder()
+                            .ofType(PacketType.IMPORTSTATUS.getConfirmation())
+                            .addArgument("importing", isImporting)
+                            .addArgument("type", "import")
+                            .addArgument("message", "Tabla asignaturas días importada")
+                            .build();
+                    server.getClientRepository().broadcast(statusPacket);
+
+                }
+
             }
 
             dbConnection.close();
@@ -141,6 +158,7 @@ public class ImportManager {
         }
 
     }
+
 
     public List<Day> getDays() {
 
@@ -191,8 +209,12 @@ public class ImportManager {
 
         StringBuilder insertString = new StringBuilder();
         for(Day day : dayList) {
-            if(insertString.toString().equalsIgnoreCase("")) insertString.append("(").append(day.getId()).append(",'").append(day.getName()).append("')");
-            else insertString.append(", (").append(day.getId()).append(",'").append(day.getName()).append("')");
+
+            if(insertString.toString().equalsIgnoreCase("")) insertString.append("(");
+            else insertString.append(", (");
+
+            insertString.append(day.getId()).append(",'").append(day.getName()).append("')");
+
         }
 
         dbConnection.insertDaysSB(insertString);
@@ -208,19 +230,32 @@ public class ImportManager {
 
         try {
 
-            stm = acon.prepareStatement("SELECT hora FROM `numero-hora`");
+            stm = acon.prepareStatement("SELECT * FROM `numero-hora`");
 
             rs = stm.executeQuery();
 
             int i = 1;
 
+            List<Hour> tempHour = new ArrayList<>();
+
             while (rs.next()) {
 
+                String numhora = Double.toString(rs.getDouble("numhora"));
                 String name = rs.getString("hora");
-                hourList.add(new Hour(i, name));
 
+                if(numhora.contains(".0")) {
+                    hourList.add(new Hour(i, name));
+                    i++;
+                } else {
+                    tempHour.add(new Hour(i, name));
+                }
+
+            }
+
+            for(Hour hour : tempHour) {
+                hour.setId(i);
+                hourList.add(hour);
                 i++;
-
             }
 
         } catch (SQLException throwables) {
@@ -249,11 +284,77 @@ public class ImportManager {
 
         StringBuilder insertString = new StringBuilder();
         for(Hour hour : hourList) {
-            if(insertString.toString().equalsIgnoreCase("")) insertString.append("(").append(hour.getId()).append(",'").append(hour.getName()).append("')");
-            else insertString.append(", (").append(hour.getId()).append(",'").append(hour.getName()).append("')");
+
+            if(insertString.toString().equalsIgnoreCase("")) insertString.append("(");
+            else insertString.append(", (");
+
+            insertString.append(hour.getId()).append(",'").append(hour.getName()).append("')");
+
         }
 
         dbConnection.insertHoursSB(insertString);
+
+    }
+
+    private List<Subject> getSubjects() {
+
+        List<Subject> subjectList = new ArrayList<>();
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            stm = acon.prepareStatement("SELECT ID, N, ABREV, NOMBRE FROM `NomAsg`");
+
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+
+                int id = rs.getInt("ID");
+                int number = rs.getInt("N");
+                String abreviation = rs.getString("ABREV");
+                String name = rs.getString("NOMBRE");
+                subjectList.add(new Subject(id, number, abreviation, name, new ArrayList<>()));
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return subjectList;
+
+    }
+    private void insertSubjects(List<Subject> subjectList) {
+
+        StringBuilder insertString = new StringBuilder();
+        for(Subject subject : subjectList) {
+
+            if(insertString.toString().equalsIgnoreCase("")) insertString.append("(");
+            else insertString.append(", (");
+
+            insertString.append(subject.getId()).append(",").append(subject.getNumber())
+                    .append(",'").append(subject.getAbreviation()).append("','").append(subject.getName()).append("')");
+
+        }
+
+        dbConnection.insertSubjectsSB(insertString);
 
     }
 
