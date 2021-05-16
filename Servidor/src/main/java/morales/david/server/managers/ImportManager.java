@@ -4,6 +4,7 @@ import morales.david.server.Server;
 import morales.david.server.models.Day;
 import morales.david.server.models.Hour;
 import morales.david.server.models.Subject;
+import morales.david.server.models.Teacher;
 import morales.david.server.models.packets.Packet;
 import morales.david.server.models.packets.PacketBuilder;
 import morales.david.server.models.packets.PacketType;
@@ -105,6 +106,22 @@ public class ImportManager {
 
                 }
 
+                // TEACHERS
+                {
+
+                    List<Teacher> teacherList = getTeachers();
+                    insertTeachers(teacherList);
+
+                    statusPacket = new PacketBuilder()
+                            .ofType(PacketType.IMPORTSTATUS.getConfirmation())
+                            .addArgument("importing", isImporting)
+                            .addArgument("type", "import")
+                            .addArgument("message", "Tabla de profesores importada")
+                            .build();
+                    server.getClientRepository().broadcast(statusPacket);
+
+                }
+
                 // SUBJECTS
                 {
 
@@ -115,7 +132,7 @@ public class ImportManager {
                             .ofType(PacketType.IMPORTSTATUS.getConfirmation())
                             .addArgument("importing", isImporting)
                             .addArgument("type", "import")
-                            .addArgument("message", "Tabla asignaturas días importada")
+                            .addArgument("message", "Tabla de asignaturas importada")
                             .build();
                     server.getClientRepository().broadcast(statusPacket);
 
@@ -213,7 +230,10 @@ public class ImportManager {
             if(insertString.toString().equalsIgnoreCase("")) insertString.append("(");
             else insertString.append(", (");
 
-            insertString.append(day.getId()).append(",'").append(day.getName()).append("')");
+            insertString.append(day.getId())
+                .append(",'")
+                .append(day.getName())
+                .append("')");
 
         }
 
@@ -288,7 +308,10 @@ public class ImportManager {
             if(insertString.toString().equalsIgnoreCase("")) insertString.append("(");
             else insertString.append(", (");
 
-            insertString.append(hour.getId()).append(",'").append(hour.getName()).append("')");
+            insertString.append(hour.getId())
+                .append(",'")
+                .append(hour.getName())
+                .append("')");
 
         }
 
@@ -349,12 +372,95 @@ public class ImportManager {
             if(insertString.toString().equalsIgnoreCase("")) insertString.append("(");
             else insertString.append(", (");
 
-            insertString.append(subject.getId()).append(",").append(subject.getNumber())
-                    .append(",'").append(subject.getAbreviation()).append("','").append(subject.getName()).append("')");
+            insertString.append(subject.getId())
+                .append(",")
+                .append(subject.getNumber())
+                .append(",'")
+                .append(subject.getAbreviation())
+                .append("','")
+                .append(subject.getName())
+                .append("')");
 
         }
 
         dbConnection.insertSubjectsSB(insertString);
+
+    }
+
+    private List<Teacher> getTeachers() {
+
+        List<Teacher> teacherList = new ArrayList<>();
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            stm = acon.prepareStatement("SELECT * FROM `Prof`");
+
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+
+                int id = rs.getInt("ID");
+                int number = rs.getInt("N");
+                String name = rs.getString("NOMBRE");
+                String abreviation = rs.getString("ABREV");
+                int mindayhours = rs.getInt("MINHDIA");
+                int maxdayhours = rs.getInt("MAXHDIA");
+                String department = rs.getString("DEPART");
+                teacherList.add(new Teacher(id, number, name, abreviation, mindayhours, maxdayhours, department));
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return teacherList;
+
+    }
+    private void insertTeachers(List<Teacher> teacherList) {
+
+        StringBuilder insertString = new StringBuilder();
+        for(Teacher teacher : teacherList) {
+
+            if(insertString.toString().equalsIgnoreCase("")) insertString.append("(");
+            else insertString.append(", (");
+
+            insertString.append(teacher.getId())
+                .append(",")
+                .append(teacher.getNumber())
+                .append(",'")
+                .append(teacher.getName())
+                .append("','")
+                .append(teacher.getAbreviation())
+                .append("',")
+                .append(teacher.getMinDayHours())
+                .append(",")
+                .append(teacher.getMaxDayHours())
+                .append(",'")
+                .append(teacher.getDepartment())
+                .append("')");
+
+        }
+
+        dbConnection.insertTeachersSB(insertString);
 
     }
 

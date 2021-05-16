@@ -52,3 +52,10 @@
 .cancelButton:pressed {
     -fx-background-color: #902626;
 }
+
+.removeTeacherButton {
+    -fx-background-color: #FF2323;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}

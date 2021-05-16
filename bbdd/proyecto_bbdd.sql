@@ -18,9 +18,9 @@ CREATE TABLE credencial (
     id_credencial INTEGER(11) PRIMARY KEY AUTO_INCREMENT,
     usuario VARCHAR(255) NOT NULL,
 	passwd_hash VARCHAR(255) NOT NULL,
-    profesor INTEGER(11) NOT NULL,
-    rol VARCHAR(50),
-    CONSTRAINT credencial_prof_fk FOREIGN KEY (profesor) REFERENCES profesor(id_profesor)
+    profesor INTEGER(11),
+    rol VARCHAR(50) NOT NULL,
+    CONSTRAINT credencial_prof_fk FOREIGN KEY (profesor) REFERENCES profesor(id_profesor) ON DELETE CASCADE
 );
 
 
@@ -50,8 +50,8 @@ CREATE TABLE curso_asignatura (
     curso INTEGER(11),
     asignatura INTEGER(11),
     CONSTRAINT c_s_pk PRIMARY KEY (curso, asignatura),
-    CONSTRAINT c_fk FOREIGN KEY (curso) REFERENCES curso(id_curso),
-    CONSTRAINT a_fk FOREIGN KEY (asignatura) REFERENCES asignatura(id_asignatura)
+    CONSTRAINT c_fk FOREIGN KEY (curso) REFERENCES curso(id_curso) ON DELETE CASCADE,
+    CONSTRAINT a_fk FOREIGN KEY (asignatura) REFERENCES asignatura(id_asignatura) ON DELETE CASCADE
 );
 
 
@@ -71,8 +71,8 @@ CREATE TABLE franja_horaria (
 	id_franja INTEGER(11) PRIMARY KEY,
     dia INTEGER(11) NOT NULL,
     hora INTEGER(11) NOT NULL,
-    CONSTRAINT franja_dia FOREIGN KEY (dia) REFERENCES numero_dia(id_dia),
-    CONSTRAINT franja_hora FOREIGN KEY (hora) REFERENCES numero_hora(id_hora)
+    CONSTRAINT franja_dia FOREIGN KEY (dia) REFERENCES numero_dia(id_dia) ON DELETE CASCADE,
+    CONSTRAINT franja_hora FOREIGN KEY (hora) REFERENCES numero_hora(id_hora) ON DELETE CASCADE
 );
 
 

@@ -120,7 +120,9 @@ public class DBConnection {
 
                 int id_teacher = rs.getInt("profesor");
 
-                Teacher teacher = getTeacher(id_teacher);
+                Teacher teacher = null;
+                if(id_teacher > 0)
+                    teacher = getTeacher(id_teacher);
 
                 credentials.add(new Credential(id, username, password, role, teacher));
 
@@ -225,7 +227,10 @@ public class DBConnection {
 
             stm.setString(1, credential.getUsername());
             stm.setString(2, credential.getPassword());
-            stm.setInt(3, credential.getTeacher().getId());
+            if(credential.getTeacher() != null)
+                stm.setInt(3, credential.getTeacher().getId());
+            else
+                stm.setNull(3, java.sql.Types.INTEGER);
             stm.setString(4, credential.getRole());
 
             rs = stm.executeUpdate();
@@ -266,7 +271,10 @@ public class DBConnection {
 
             stm.setString(1, credential.getUsername());
             stm.setString(2, credential.getPassword());
-            stm.setInt(3, credential.getTeacher().getId());
+            if(credential.getTeacher() != null)
+                stm.setInt(3, credential.getTeacher().getId());
+            else
+                stm.setNull(3, java.sql.Types.INTEGER);
             stm.setString(4, credential.getRole());
             stm.setInt(5, credential.getId());
 
@@ -1828,6 +1836,10 @@ public class DBConnection {
             hourStm.execute(DBConstants.DB_QUERY_CLEAR_HOURS);
             hourStm.close();
 
+            Statement teacherStm = connection.createStatement();
+            teacherStm.execute(DBConstants.DB_QUERY_CLEAR_TEACHERS);
+            teacherStm.close();
+
             Statement subjectStm = connection.createStatement();
             subjectStm.execute(DBConstants.DB_QUERY_CLEAR_SUBJECTS);
             subjectStm.close();
@@ -1887,6 +1899,37 @@ public class DBConnection {
         try {
 
             stm = connection.prepareStatement(DBConstants.DB_QUERY_INSERTSB_HOURS + sb.toString());
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return rs == 1;
+
+    }
+
+    /**
+     * Insert teachers information to database
+     * @param sb
+     * @return teachers added
+     */
+    public boolean insertTeachersSB(StringBuilder sb) {
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_INSERTSB_TEACHERS + sb.toString());
             rs = stm.executeUpdate();
 
         } catch (SQLException throwables) {

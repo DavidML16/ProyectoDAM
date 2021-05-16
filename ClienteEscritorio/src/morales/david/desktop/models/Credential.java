@@ -81,9 +81,12 @@ public class Credential {
         String password = (String) credentialMap.get("password");
         String role = (String) credentialMap.get("role");
 
-        LinkedTreeMap teacherMap = (LinkedTreeMap) credentialMap.get("teacher");
+        Teacher teacher = null;
 
-        Teacher teacher = Teacher.parse(teacherMap);
+        if(credentialMap.get("teacher") != null) {
+            LinkedTreeMap teacherMap = (LinkedTreeMap) credentialMap.get("teacher");
+            teacher = Teacher.parse(teacherMap);
+        }
 
         return new Credential(id, username, password, role, teacher);
 

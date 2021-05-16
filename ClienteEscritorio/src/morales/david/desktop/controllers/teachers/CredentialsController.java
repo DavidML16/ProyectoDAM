@@ -104,7 +104,7 @@ public class CredentialsController implements Initializable, Controller {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         roleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
-        teacherColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTeacher().getName()));
+        teacherColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTeacher() != null ? cellData.getValue().getTeacher().getName() : "No asignado"));
 
         credentialsTable.setItems(list);
 

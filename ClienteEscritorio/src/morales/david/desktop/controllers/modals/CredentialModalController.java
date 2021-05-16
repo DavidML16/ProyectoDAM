@@ -4,10 +4,12 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import morales.david.desktop.managers.DataManager;
 import morales.david.desktop.models.Course;
 import morales.david.desktop.models.Credential;
@@ -36,6 +38,9 @@ public class CredentialModalController implements Initializable {
     @FXML
     private CheckBox passwordCheckbox;
 
+    @FXML
+    private Button removeTeacherButton;
+
     private Credential credential;
 
     @Override
@@ -50,7 +55,11 @@ public class CredentialModalController implements Initializable {
             passwordCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> passwordField.setDisable(!newValue));
         }
 
-        new ComboBoxAutoComplete(teacherField);
+        //new ComboBoxAutoComplete(teacherField);
+
+        removeTeacherButton.setOnMouseClicked(event -> {
+           teacherField.getSelectionModel().clearSelection();
+        });
 
     }
 
@@ -63,13 +72,17 @@ public class CredentialModalController implements Initializable {
         usernameField.setText(credential.getUsername());
         roleField.getSelectionModel().select(Utils.capitalizeFirstLetter(credential.getRole()));
 
-        Teacher teacher = credential.getTeacher();
+        if(credential.getTeacher() != null) {
 
-        for(Teacher cachedTeacher : DataManager.getInstance().getTeachers()) {
-            if(cachedTeacher.getId() == teacher.getId()) {
-                teacherField.getSelectionModel().select(cachedTeacher);
-                break;
+            Teacher teacher = credential.getTeacher();
+
+            for (Teacher cachedTeacher : DataManager.getInstance().getTeachers()) {
+                if (cachedTeacher.getId() == teacher.getId()) {
+                    teacherField.getSelectionModel().select(cachedTeacher);
+                    break;
+                }
             }
+
         }
 
     }
@@ -82,7 +95,10 @@ public class CredentialModalController implements Initializable {
             if(passwordCheckbox.isSelected())
                 credential.setPassword(HashUtil.sha1(passwordField.getText()));
         credential.setRole(roleField.getSelectionModel().getSelectedItem().toLowerCase());
-        credential.setTeacher(teacherField.getSelectionModel().getSelectedItem());
+        if(teacherField.getSelectionModel().getSelectedItem() != null) {
+            credential.setTeacher(teacherField.getSelectionModel().getSelectedItem());
+        } else
+            credential.setTeacher(null);
         return credential;
     }
 
@@ -90,16 +106,18 @@ public class CredentialModalController implements Initializable {
 
         if(usernameField.getText().isEmpty())
             return false;
-        if(passwordCheckbox == null)
-            if(passwordField.getText().isEmpty())
+        if(passwordCheckbox == null) {
+            if (passwordField.getText().isEmpty()) {
                 return false;
-        else
-            if(passwordCheckbox.isSelected())
-                if(passwordField.getText().isEmpty())
+            }
+        } else {
+            if (passwordCheckbox.isSelected()) {
+                if (passwordField.getText().isEmpty()) {
                     return false;
+                }
+            }
+        }
         if(roleField.getSelectionModel().isEmpty())
-            return false;
-        if(teacherField.getSelectionModel().isEmpty())
             return false;
 
         return true;
