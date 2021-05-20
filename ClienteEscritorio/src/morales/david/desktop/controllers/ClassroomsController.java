@@ -41,9 +41,6 @@ public class ClassroomsController implements Initializable, Controller {
     private TableColumn<Classroom, String> nameColumn;
 
     @FXML
-    private TableColumn<Classroom, Integer> floorColumn;
-
-    @FXML
     private TextField filterField;
 
     @FXML
@@ -99,7 +96,6 @@ public class ClassroomsController implements Initializable, Controller {
 
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        floorColumn.setCellValueFactory(new PropertyValueFactory<>("floor"));
 
         classroomsTable.setItems(list);
 

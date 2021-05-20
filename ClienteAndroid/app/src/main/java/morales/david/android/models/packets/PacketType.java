@@ -4,7 +4,7 @@ public enum PacketType {
 
     PING, LOGIN, DISCONNECT, EXIT,
 
-    SENDACCESSFILE,
+    SENDACCESSFILE, IMPORTSTATUS,
 
     CREDENTIALS, ADDCREDENTIAL, UPDATECREDENTIAL, REMOVECREDENTIAL,
 
@@ -23,20 +23,20 @@ public enum PacketType {
     HOURS, UPDATEHOUR;
 
     public String getRequest() {
-        return "REQUEST_" + ordinal() + "_" + toString();
+        return "REQUEST_" + toString();
     }
 
     public String getConfirmation() {
-        return "CONFIRMATION_" + ordinal() + "_" + toString();
+        return "CONFIRMATION_" + toString();
     }
 
     public String getError() {
-        return "ERROR_" + ordinal() + "_" + toString();
+        return "ERROR_" + toString();
     }
 
     public static String getIdentifier(String formated) {
         String[] parts = formated.split("_");
-        return parts[2];
+        return parts[1];
     }
 
 }

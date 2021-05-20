@@ -50,7 +50,6 @@ public class ClassroomsAdapter extends RecyclerView.Adapter<ClassroomsAdapter.Cl
     public void onBindViewHolder(@NonNull ClassroomViewHolder holder, int position) {
         Classroom classroom = getClassroom(position);
         holder.nameTextView.setText(activity.getString(R.string.item_classroom_name, classroom.getName()));
-        holder.floorTextView.setText(activity.getString(R.string.item_classroom_floor, Integer.toString(classroom.getFloor())));
     }
 
     @Override
@@ -72,10 +71,6 @@ public class ClassroomsAdapter extends RecyclerView.Adapter<ClassroomsAdapter.Cl
         return classroomFilter;
     }
 
-    public Filter getFloorFilter() {
-        return classroomFloorFilter;
-    }
-
     private Filter classroomFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
@@ -87,39 +82,7 @@ public class ClassroomsAdapter extends RecyclerView.Adapter<ClassroomsAdapter.Cl
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
                 for (Classroom item : classroomsOriginal) {
-                    if (item.getName().toLowerCase().contains(filterPattern)
-                            || Integer.toString(item.getFloor()).toLowerCase().contains(filterPattern)) {
-                        filteredList.add(item);
-                    }
-                }
-            }
-
-            FilterResults results = new FilterResults();
-            results.values = filteredList;
-
-            return results;
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            classrooms.clear();
-            classrooms.addAll((List) results.values);
-            notifyDataSetChanged();
-        }
-    };
-
-    private Filter classroomFloorFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            List<Classroom> filteredList = new ArrayList<>();
-
-            if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(classroomsOriginal);
-            } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
-
-                for (Classroom item : classroomsOriginal) {
-                    if (Integer.toString(item.getFloor()).toLowerCase().contains(filterPattern)) {
+                    if (item.getName().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }
                 }
@@ -142,7 +105,7 @@ public class ClassroomsAdapter extends RecyclerView.Adapter<ClassroomsAdapter.Cl
     public class ClassroomViewHolder extends RecyclerView.ViewHolder {
 
         private CardView cardView;
-        private TextView nameTextView, floorTextView;
+        private TextView nameTextView;
 
         public ClassroomViewHolder(@NonNull View itemView) {
 
@@ -150,7 +113,6 @@ public class ClassroomsAdapter extends RecyclerView.Adapter<ClassroomsAdapter.Cl
 
             cardView = itemView.findViewById(R.id.item_classroom_cardview);
             nameTextView = itemView.findViewById(R.id.item_classroom_name);
-            floorTextView = itemView.findViewById(R.id.item_classroom_floor);
 
         }
 

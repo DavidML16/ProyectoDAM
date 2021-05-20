@@ -28,10 +28,6 @@ public class ClassroomsActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
 
-    private AutoCompleteTextView floorDropDown;
-    private ArrayAdapter<String> floorsAdapter;
-    private ImageView unfilterImageView;
-
     private ClassroomsAdapter adapter;
 
     @Override
@@ -50,28 +46,6 @@ public class ClassroomsActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        Set<String> floors = getFloors();
-        String[] floorsArray = new String[floors.size()];
-        floors.toArray(floorsArray);
-
-        floorsAdapter = new ArrayAdapter(this, R.layout.item_dropdown, floorsArray);
-
-        floorDropDown = findViewById(R.id.act_classrooms_spinner_floor);
-        floorDropDown.setOnItemClickListener((parent, view, position, id) -> {
-            String selected = floorsAdapter.getItem(position);
-            adapter.getFloorFilter().filter(selected);
-        });
-
-        floorDropDown.setAdapter(floorsAdapter);
-
-        unfilterImageView = findViewById(R.id.act_classrooms_unfilter);
-        unfilterImageView.setOnClickListener(v -> {
-            adapter.getFloorFilter().filter(null);
-            adapter.getFilter().filter(null);
-            floorDropDown.setText(null);
-            floorDropDown.clearFocus();
-        });
-
         adapter = new ClassroomsAdapter(this);
 
         recyclerView.setAdapter(adapter);
@@ -79,20 +53,6 @@ public class ClassroomsActivity extends AppCompatActivity {
         DataManager.getInstance().getClassrooms().observe(this, classrooms -> {
             adapter.setClassrooms(classrooms);
         });
-
-    }
-
-    @Override
-    protected void onResume() {
-
-        super.onResume();
-
-        Set<String> floors = getFloors();
-        String[] floorsArray = new String[floors.size()];
-        floors.toArray(floorsArray);
-
-        floorsAdapter = new ArrayAdapter(this, R.layout.item_dropdown, floorsArray);
-        floorDropDown.setAdapter(floorsAdapter);
 
     }
 
@@ -126,26 +86,10 @@ public class ClassroomsActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 adapter.getFilter().filter(newText);
-                floorDropDown.setText(null);
-                floorDropDown.clearFocus();
                 return false;
             }
         });
         return true;
-    }
-
-    private Set<String> getFloors() {
-
-        Set<String> floors = new HashSet<>();
-
-        if(DataManager.getInstance().getClassrooms().getValue() == null)
-            return floors;
-
-        for(Classroom classroom : DataManager.getInstance().getClassrooms().getValue())
-            floors.add(Integer.toString(classroom.getFloor()));
-
-        return floors;
-
     }
 
 }

@@ -52,7 +52,7 @@
                         </Label>
                      </children>
                   </GridPane>
-                  <ScrollPane hbarPolicy="NEVER" prefHeight="600.0" prefWidth="307.0" styleClass="mainPane">
+                  <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" prefHeight="600.0" prefWidth="320.0" styleClass="mainPane">
                      <content>
                         <VBox fx:id="messagesBox" prefWidth="299.0" spacing="15.0">
                            <padding>

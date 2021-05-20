@@ -48,8 +48,6 @@ public class DBConnection {
      */
     public boolean existsCredential(String username, String password) {
 
-        open();
-
         PreparedStatement stm = null;
         ResultSet rs = null;
 
@@ -86,8 +84,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return false;
 
     }
@@ -97,8 +93,6 @@ public class DBConnection {
      * @return list of credentials
      */
     public List<Credential> getCredentials() {
-
-        open();
 
         List<Credential> credentials = new ArrayList<>();
 
@@ -146,8 +140,6 @@ public class DBConnection {
                 }
             }
         }
-
-        close();
 
         return credentials;
 
@@ -216,8 +208,6 @@ public class DBConnection {
      */
     public boolean addCredential(Credential credential) {
 
-        open();
-
         PreparedStatement stm = null;
         int rs = 0;
 
@@ -247,8 +237,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return rs == 1;
 
     }
@@ -259,8 +247,6 @@ public class DBConnection {
      * @return credential updated
      */
     public boolean updateCredential(Credential credential) {
-
-        open();
 
         PreparedStatement stm = null;
         int rs = 0;
@@ -292,8 +278,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return rs == 1;
 
     }
@@ -304,8 +288,6 @@ public class DBConnection {
      * @return credential deleted
      */
     public boolean removeCredential(Credential credential) {
-
-        open();
 
         PreparedStatement stm = null;
         int rs = 0;
@@ -330,8 +312,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return rs == 1;
 
     }
@@ -343,8 +323,6 @@ public class DBConnection {
      * @param clientSession
      */
     public void getUserDetails(String username, ClientSession clientSession) {
-
-        open();
 
         PreparedStatement stm = null;
         ResultSet rs = null;
@@ -384,8 +362,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
     }
 
 
@@ -394,8 +370,6 @@ public class DBConnection {
      * @return list of teachers
      */
     public List<Teacher> getTeachers() {
-
-        open();
 
         List<Teacher> teachers = new ArrayList<>();
 
@@ -441,7 +415,6 @@ public class DBConnection {
             }
         }
 
-        close();
 
         return teachers;
 
@@ -509,8 +482,6 @@ public class DBConnection {
      */
     public boolean addTeacher(Teacher teacher) {
 
-        open();
-
         PreparedStatement stm = null;
         int rs = 0;
 
@@ -539,8 +510,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return rs == 1;
 
     }
@@ -551,8 +520,6 @@ public class DBConnection {
      * @return teacher updated
      */
     public boolean updateTeacher(Teacher teacher) {
-
-        open();
 
         PreparedStatement stm = null;
         int rs = 0;
@@ -583,8 +550,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return rs == 1;
 
     }
@@ -595,8 +560,6 @@ public class DBConnection {
      * @return teacher deleted
      */
     public boolean removeTeacher(Teacher teacher) {
-
-        open();
 
         PreparedStatement stm = null;
         int rs = 0;
@@ -621,8 +584,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return rs == 1;
 
     }
@@ -633,8 +594,6 @@ public class DBConnection {
      * @return list of classrooms
      */
     public List<Classroom> getClassrooms() {
-
-        open();
 
         List<Classroom> classrooms = new ArrayList<>();
 
@@ -651,9 +610,8 @@ public class DBConnection {
 
                 int id = rs.getInt("id_aula");
                 String name = rs.getString("nombre");
-                int floor = rs.getInt("planta");
 
-                classrooms.add(new Classroom(id, name, floor));
+                classrooms.add(new Classroom(id, name));
 
             }
 
@@ -675,8 +633,6 @@ public class DBConnection {
                 }
             }
         }
-
-        close();
 
         return classrooms;
 
@@ -704,9 +660,8 @@ public class DBConnection {
 
                 int id = rs.getInt("id_aula");
                 String name = rs.getString("nombre");
-                int floor = rs.getInt("planta");
 
-                classroom = new Classroom(id, name, floor);
+                classroom = new Classroom(id, name);
 
             }
 
@@ -740,8 +695,6 @@ public class DBConnection {
      */
     public boolean addClassroom(Classroom classroom) {
 
-        open();
-
         PreparedStatement stm = null;
         int rs = 0;
 
@@ -750,7 +703,6 @@ public class DBConnection {
             stm = connection.prepareStatement(DBConstants.DB_QUERY_ADDCLASSROOM);
 
             stm.setString(1, classroom.getName());
-            stm.setInt(2, classroom.getFloor());
 
             rs = stm.executeUpdate();
 
@@ -765,8 +717,6 @@ public class DBConnection {
                 }
             }
         }
-
-        close();
 
         return rs == 1;
 
@@ -779,8 +729,6 @@ public class DBConnection {
      */
     public boolean updateClassroom(Classroom classroom) {
 
-        open();
-
         PreparedStatement stm = null;
         int rs = 0;
 
@@ -789,8 +737,7 @@ public class DBConnection {
             stm = connection.prepareStatement(DBConstants.DB_QUERY_UPDATECLASSROOM);
 
             stm.setString(1, classroom.getName());
-            stm.setInt(2, classroom.getFloor());
-            stm.setInt(3, classroom.getId());
+            stm.setInt(2, classroom.getId());
 
             rs = stm.executeUpdate();
 
@@ -806,8 +753,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return rs == 1;
 
     }
@@ -818,8 +763,6 @@ public class DBConnection {
      * @return classroom deleted
      */
     public boolean removeClassroom(Classroom classroom) {
-
-        open();
 
         PreparedStatement stm = null;
         int rs = 0;
@@ -844,8 +787,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return rs == 1;
 
     }
@@ -856,8 +797,6 @@ public class DBConnection {
      * @return list of courses
      */
     public List<Course> getCourses() {
-
-        open();
 
         List<Course> courses = new ArrayList<>();
 
@@ -873,7 +812,7 @@ public class DBConnection {
             while (rs.next()) {
 
                 int id = rs.getInt("id_curso");
-                int level = rs.getInt("nivel");
+                String level = rs.getString("nivel");
                 String name = rs.getString("nombre");
 
                 courses.add(new Course(id, level, name));
@@ -898,8 +837,6 @@ public class DBConnection {
                 }
             }
         }
-
-        close();
 
         return courses;
 
@@ -926,7 +863,7 @@ public class DBConnection {
             while (rs.next()) {
 
                 int id = rs.getInt("id_curso");
-                int level = rs.getInt("nivel");
+                String level = rs.getString("nivel");
                 String name = rs.getString("nombre");
 
                 course = new Course(id, level, name);
@@ -963,8 +900,6 @@ public class DBConnection {
      */
     public boolean addCourse(Course course) {
 
-        open();
-
         PreparedStatement stm = null;
         int rs = 0;
 
@@ -972,7 +907,7 @@ public class DBConnection {
 
             stm = connection.prepareStatement(DBConstants.DB_QUERY_ADDCOURSE);
 
-            stm.setInt(1, course.getLevel());
+            stm.setString(1, course.getLevel());
             stm.setString(2, course.getName());
 
             rs = stm.executeUpdate();
@@ -989,8 +924,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return rs == 1;
 
     }
@@ -1002,8 +935,6 @@ public class DBConnection {
      */
     public boolean updateCourse(Course course) {
 
-        open();
-
         PreparedStatement stm = null;
         int rs = 0;
 
@@ -1011,7 +942,7 @@ public class DBConnection {
 
             stm = connection.prepareStatement(DBConstants.DB_QUERY_UPDATECOURSE);
 
-            stm.setInt(1, course.getLevel());
+            stm.setString(1, course.getLevel());
             stm.setString(2, course.getName());
             stm.setInt(3, course.getId());
 
@@ -1029,8 +960,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return rs == 1;
 
     }
@@ -1041,8 +970,6 @@ public class DBConnection {
      * @return course deleted
      */
     public boolean removeCourse(Course course) {
-
-        open();
 
         PreparedStatement stm = null;
         int rs = 0;
@@ -1067,8 +994,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return rs == 1;
 
     }
@@ -1079,8 +1004,6 @@ public class DBConnection {
      * @return list of groups
      */
     public List<Group> getGroups() {
-
-        open();
 
         List<Group> groups = new ArrayList<>();
 
@@ -1123,8 +1046,6 @@ public class DBConnection {
                 }
             }
         }
-
-        close();
 
         return groups;
 
@@ -1190,8 +1111,6 @@ public class DBConnection {
      */
     public boolean addGroup(Group group) {
 
-        open();
-
         PreparedStatement stm = null;
         int rs = 0;
 
@@ -1216,8 +1135,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return rs == 1;
 
     }
@@ -1228,8 +1145,6 @@ public class DBConnection {
      * @return group updated
      */
     public boolean updateGroup(Group group) {
-
-        open();
 
         PreparedStatement stm = null;
         int rs = 0;
@@ -1256,8 +1171,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return rs == 1;
 
     }
@@ -1268,8 +1181,6 @@ public class DBConnection {
      * @return group deleted
      */
     public boolean removeGroup(Group group) {
-
-        open();
 
         PreparedStatement stm = null;
         int rs = 0;
@@ -1294,8 +1205,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return rs == 1;
 
     }
@@ -1306,8 +1215,6 @@ public class DBConnection {
      * @return list of subjects
      */
     public List<Subject> getSubjects() {
-
-        open();
 
         List<Subject> subjects = new ArrayList<>();
 
@@ -1336,7 +1243,7 @@ public class DBConnection {
 
                 while (rs2.next()) {
                     int id_c = rs2.getInt("id_curso");
-                    int level_c = rs2.getInt("nivel");
+                    String level_c = rs2.getString("nivel");
                     String name_c = rs2.getString("nombre");
 
                     subjectCourses.add(new Course(id_c, level_c, name_c));
@@ -1367,8 +1274,6 @@ public class DBConnection {
                 }
             }
         }
-
-        close();
 
         return subjects;
 
@@ -1409,7 +1314,7 @@ public class DBConnection {
 
                 while (rs2.next()) {
                     int id_c = rs2.getInt("id_curso");
-                    int level_c = rs2.getInt("nivel");
+                    String level_c = rs2.getString("nivel");
                     String name_c = rs2.getString("nombre");
 
                     subjectCourses.add(new Course(id_c, level_c, name_c));
@@ -1452,8 +1357,6 @@ public class DBConnection {
      */
     public boolean addSubject(Subject subject) {
 
-        open();
-
         PreparedStatement stm = null;
         int rs = 0;
 
@@ -1479,8 +1382,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return rs == 1;
 
     }
@@ -1491,8 +1392,6 @@ public class DBConnection {
      * @return subject updated
      */
     public boolean updateSubject(Subject subject) {
-
-        open();
 
         PreparedStatement stm = null;
         int rs = 0;
@@ -1525,8 +1424,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return rs == 1;
 
     }
@@ -1537,8 +1434,6 @@ public class DBConnection {
      * @return subject deleted
      */
     public boolean removeSubject(Subject subject) {
-
-        open();
 
         removeAllSubjectRelation(subject);
 
@@ -1564,8 +1459,6 @@ public class DBConnection {
                 }
             }
         }
-
-        close();
 
         return rs == 1;
 
@@ -1640,8 +1533,6 @@ public class DBConnection {
      */
     public List<Day> getDays() {
 
-        open();
-
         List<Day> days = new ArrayList<>();
 
         PreparedStatement stm = null;
@@ -1681,8 +1572,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return days;
 
     }
@@ -1693,8 +1582,6 @@ public class DBConnection {
      * @return day updated
      */
     public boolean updateDay(Day day) {
-
-        open();
 
         PreparedStatement stm = null;
         int rs = 0;
@@ -1720,8 +1607,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return rs == 1;
 
     }
@@ -1732,8 +1617,6 @@ public class DBConnection {
      * @return list of hours
      */
     public List<Hour> getHours() {
-
-        open();
 
         List<Hour> hours = new ArrayList<>();
 
@@ -1774,8 +1657,6 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return hours;
 
     }
@@ -1786,8 +1667,6 @@ public class DBConnection {
      * @return hour updated
      */
     public boolean updateHour(Hour hour) {
-
-        open();
 
         PreparedStatement stm = null;
         int rs = 0;
@@ -1813,9 +1692,62 @@ public class DBConnection {
             }
         }
 
-        close();
-
         return rs == 1;
+
+    }
+
+
+    /**
+     * Get timezones from database
+     * @return list of timezones
+     */
+    public List<TimeZone> getTimeZones() {
+
+        List<TimeZone> timeZones = new ArrayList<>();
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_TIMEZONES);
+
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+
+                int idTimeZone = rs.getInt("idTimeZone");
+
+                int idDay = rs.getInt("idDay");
+                String dayString = rs.getString("dayString");
+
+                int idHour = rs.getInt("idHour");
+                String hourString = rs.getString("hourString");
+
+                timeZones.add(new TimeZone(idTimeZone, new Day(idDay, dayString), new Hour(idHour, hourString)));
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return timeZones;
 
     }
 
@@ -1828,6 +1760,14 @@ public class DBConnection {
 
         try {
 
+            Statement scheduleStm = connection.createStatement();
+            scheduleStm.execute(DBConstants.DB_QUERY_CLEAR_SCHEDULES);
+            scheduleStm.close();
+
+            Statement timezoneStm = connection.createStatement();
+            timezoneStm.execute(DBConstants.DB_QUERY_CLEAR_TIMEZONE);
+            timezoneStm.close();
+
             Statement dayStm = connection.createStatement();
             dayStm.execute(DBConstants.DB_QUERY_CLEAR_DAYS);
             dayStm.close();
@@ -1836,17 +1776,29 @@ public class DBConnection {
             hourStm.execute(DBConstants.DB_QUERY_CLEAR_HOURS);
             hourStm.close();
 
-            Statement timezoneStm = connection.createStatement();
-            timezoneStm.execute(DBConstants.DB_QUERY_CLEAR_TIMEZONE);
-            timezoneStm.close();
-
             Statement teacherStm = connection.createStatement();
             teacherStm.execute(DBConstants.DB_QUERY_CLEAR_TEACHERS);
             teacherStm.close();
 
+            Statement courseSubjectsStm = connection.createStatement();
+            courseSubjectsStm.execute(DBConstants.DB_QUERY_CLEAR_COURSE_SUBJECTS);
+            courseSubjectsStm.close();
+
             Statement subjectStm = connection.createStatement();
             subjectStm.execute(DBConstants.DB_QUERY_CLEAR_SUBJECTS);
             subjectStm.close();
+
+            Statement groupStm = connection.createStatement();
+            groupStm.execute(DBConstants.DB_QUERY_CLEAR_GROUPS);
+            groupStm.close();
+
+            Statement classroomStm = connection.createStatement();
+            classroomStm.execute(DBConstants.DB_QUERY_CLEAR_CLASSROOMS);
+            classroomStm.close();
+
+            Statement courseStm = connection.createStatement();
+            courseStm.execute(DBConstants.DB_QUERY_CLEAR_COURSES);
+            courseStm.close();
 
             return true;
 
@@ -2013,4 +1965,160 @@ public class DBConnection {
         return rs == 1;
 
     }
+
+    /**
+     * Insert classrooms information to database
+     * @param sb
+     * @return classrooms added
+     */
+    public boolean insertClassroomsSB(StringBuilder sb) {
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_INSERTSB_CLASSROOMS + sb.toString());
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return rs == 1;
+
+    }
+
+    /**
+     * Insert courses information to database
+     * @param sb
+     * @return courses added
+     */
+    public boolean insertCoursesSB(StringBuilder sb) {
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_INSERTSB_COURSES + sb.toString());
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return rs == 1;
+
+    }
+
+    /**
+     * Insert courses subjects information to database
+     * @param sb
+     * @return courses subjects added
+     */
+    public boolean insertCourseSubjectsSB(StringBuilder sb) {
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_INSERTSB_COURSE_SUBJECTS + sb.toString());
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return rs == 1;
+
+    }
+
+    /**
+     * Insert groups information to database
+     * @param sb
+     * @return groups added
+     */
+    public boolean insertGroupsSB(StringBuilder sb) {
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_INSERTSB_GROUPS + sb.toString());
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return rs == 1;
+
+    }
+
+    /**
+     * Insert schedules information to database
+     * @param sb
+     * @return schedules added
+     */
+    public boolean insertSchedulesSB(StringBuilder sb) {
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_INSERTSB_SCHEDULES + sb.toString());
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return rs == 1;
+
+    }
+
 }

@@ -10,6 +10,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -47,6 +48,9 @@ public class ImportController implements Initializable, Controller {
     private VBox messagesBox;
 
     @FXML
+    private ScrollPane scrollPane;
+
+    @FXML
     private Label dropLabel;
 
     private ObservableList<File> selectedFile;
@@ -58,6 +62,8 @@ public class ImportController implements Initializable, Controller {
     public void initialize(URL location, ResourceBundle resources) {
 
         selectedFile = FXCollections.observableList(new ArrayList<>());
+
+        scrollPane.vvalueProperty().bind(messagesBox.heightProperty());
 
         Platform.runLater(() -> {
 
@@ -169,8 +175,8 @@ public class ImportController implements Initializable, Controller {
 
             if(!selectedFile.isEmpty()) {
                 fileToSend = selectedFile.get(0);
-                prepareSendFile();
                 messagesBox.getChildren().clear();
+                prepareSendFile();
             }
 
         }
@@ -227,15 +233,21 @@ public class ImportController implements Initializable, Controller {
         mesagePane.setPrefHeight(75);
         mesagePane.setPadding(new Insets(10, 20, 10, 20));
 
-        if(type.equalsIgnoreCase("init"))
+        if(type.equalsIgnoreCase("init")) {
             mesagePane.getStyleClass().add("messagePaneInit");
-        else if(type.equalsIgnoreCase("clear"))
+            selectedFile.clear();
+            dropLabel.setText("Arrastra o pulsa para elegir el fichero Access");
+        } else if(type.equalsIgnoreCase("clear"))
             mesagePane.getStyleClass().add("messagePaneClear");
         else if(type.equalsIgnoreCase("import"))
             mesagePane.getStyleClass().add("messagePaneStep");
-        else if(type.equalsIgnoreCase("end"))
+        else if(type.equalsIgnoreCase("end")) {
             mesagePane.getStyleClass().add("messagePaneEnd");
-        else if(type.equalsIgnoreCase("error"))
+            for(PacketType packetType : Constants.INIT_PACKETS) {
+                Packet requestPacket = new PacketBuilder().ofType(packetType.getRequest()).build();
+                SocketManager.getInstance().sendPacketIO(requestPacket);
+            }
+        } else if(type.equalsIgnoreCase("error"))
             mesagePane.getStyleClass().add("messagePaneError");
 
         Label messageLabel = new Label();

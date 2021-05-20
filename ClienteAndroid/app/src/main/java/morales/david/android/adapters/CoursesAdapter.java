@@ -86,7 +86,7 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.CoursesV
 
                 for (Course item : coursesOriginal) {
                     if (item.getName().toLowerCase().contains(filterPattern)
-                            || Integer.toString(item.getLevel()).toLowerCase().contains(filterPattern)) {
+                            || item.getLevel().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }
                 }

@@ -25,8 +25,8 @@ public class DBConstants {
 
     public static final String DB_QUERY_CLASSROOMS = "SELECT * FROM aula";
     public static final String DB_QUERY_CLASSROOM_BY_ID = "SELECT * FROM aula WHERE `id_aula` = ?";
-    public static final String DB_QUERY_ADDCLASSROOM = "INSERT INTO aula (`nombre`, `planta`) VALUES (?, ?)";
-    public static final String DB_QUERY_UPDATECLASSROOM = "UPDATE aula SET `nombre` = ?, `planta` = ? WHERE `id_aula` = ?";
+    public static final String DB_QUERY_ADDCLASSROOM = "INSERT INTO aula (`nombre`) VALUES (?)";
+    public static final String DB_QUERY_UPDATECLASSROOM = "UPDATE aula SET `nombre` = ? WHERE `id_aula` = ?";
     public static final String DB_QUERY_REMOVECLASSROOM = "DELETE FROM aula WHERE `id_aula` = ?";
 
     public static final String DB_QUERY_COURSES = "SELECT * FROM curso";
@@ -58,16 +58,29 @@ public class DBConstants {
     public static final String DB_QUERY_ADDHOUR = "INSERT INTO numero_hora VALUES (?, ?)";
     public static final String DB_QUERY_UPDATEHOUR = "UPDATE numero_hora SET `horas` = ? WHERE `id_hora` = ?";
 
+    public static final String DB_QUERY_TIMEZONES = "SELECT TZ.id_franja idTimeZone, DN.id_dia idDay, DN.dia dayString, HN.id_hora idHour, HN.horas hourString " +
+            "FROM franja_horaria TZ, numero_dia DN, numero_hora HN WHERE TZ.dia = DN.id_dia AND TZ.hora = HN.id_hora";
+
     public static final String DB_QUERY_CLEAR_DAYS = "DELETE FROM numero_dia";
     public static final String DB_QUERY_CLEAR_HOURS = "DELETE FROM numero_hora";
     public static final String DB_QUERY_CLEAR_TIMEZONE = "DELETE FROM franja_horaria";
     public static final String DB_QUERY_CLEAR_SUBJECTS = "DELETE FROM asignatura";
+    public static final String DB_QUERY_CLEAR_CLASSROOMS = "DELETE FROM aula";
+    public static final String DB_QUERY_CLEAR_COURSES = "DELETE FROM curso";
+    public static final String DB_QUERY_CLEAR_GROUPS = "DELETE FROM grupo";
+    public static final String DB_QUERY_CLEAR_COURSE_SUBJECTS = "DELETE FROM curso_asignatura";
     public static final String DB_QUERY_CLEAR_TEACHERS = "DELETE FROM profesor";
+    public static final String DB_QUERY_CLEAR_SCHEDULES = "DELETE FROM imparte";
 
     public static final String DB_QUERY_INSERTSB_DAYS = "INSERT INTO numero_dia VALUES ";
     public static final String DB_QUERY_INSERTSB_HOURS = "INSERT INTO numero_hora VALUES ";
     public static final String DB_QUERY_INSERTSB_TIMEZONE = "INSERT INTO franja_horaria VALUES ";
     public static final String DB_QUERY_INSERTSB_SUBJECTS = "INSERT INTO asignatura VALUES ";
+    public static final String DB_QUERY_INSERTSB_CLASSROOMS = "INSERT INTO aula VALUES ";
+    public static final String DB_QUERY_INSERTSB_COURSES = "INSERT INTO curso VALUES ";
+    public static final String DB_QUERY_INSERTSB_GROUPS = "INSERT INTO grupo VALUES ";
+    public static final String DB_QUERY_INSERTSB_COURSE_SUBJECTS = "INSERT IGNORE INTO curso_asignatura VALUES ";
     public static final String DB_QUERY_INSERTSB_TEACHERS = "INSERT INTO profesor VALUES ";
+    public static final String DB_QUERY_INSERTSB_SCHEDULES = "INSERT IGNORE INTO imparte VALUES ";
 
 }

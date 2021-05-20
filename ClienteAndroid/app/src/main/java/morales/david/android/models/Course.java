@@ -7,14 +7,14 @@ import java.io.Serializable;
 public class Course implements Serializable {
 
     private int id;
-    private int level;
+    private String level;
     private String name;
 
     public Course() {
-        this(-1, -1, "");
+        this(-1, "", "");
     }
 
-    public Course(int id, int level, String name) {
+    public Course(int id, String level, String name) {
         this.id = id;
         this.level = level;
         this.name = name;
@@ -28,11 +28,11 @@ public class Course implements Serializable {
         this.id = id;
     }
 
-    public int getLevel() {
+    public String getLevel() {
         return level;
     }
 
-    public void setLevel(int level) {
+    public void setLevel(String level) {
         this.level = level;
     }
 
@@ -52,7 +52,7 @@ public class Course implements Serializable {
     public static Course parse(LinkedTreeMap courseMap) {
 
         int id = ((Double) courseMap.get("id")).intValue();
-        int level = ((Double) courseMap.get("level")).intValue();
+        String level = ((String) courseMap.get("level"));
         String name = (String) courseMap.get("name");
 
         return new Course(id, level, name);

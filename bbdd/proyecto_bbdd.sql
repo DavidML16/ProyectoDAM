@@ -26,14 +26,13 @@ CREATE TABLE credencial (
 
 CREATE TABLE aula (
     id_aula INTEGER(11) PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(150) NOT NULL,
-    planta INTEGER(3)
+    nombre VARCHAR(150) NOT NULL
 );
 
 
 CREATE TABLE curso (
     id_curso INTEGER(11) PRIMARY KEY AUTO_INCREMENT,
-    nivel INTEGER(3) NOT NULL,
+    nivel VARCHAR(10) NOT NULL,
     nombre VARCHAR(150) NOT NULL
 );
 

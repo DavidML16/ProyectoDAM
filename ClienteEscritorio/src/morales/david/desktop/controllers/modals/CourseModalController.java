@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 public class CourseModalController implements Initializable {
 
     @FXML
-    private Spinner<Integer> levelField;
+    private TextField levelField;
 
     @FXML
     private TextField nameField;
@@ -24,17 +24,7 @@ public class CourseModalController implements Initializable {
     private Course course;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-        levelField.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 99));
-        levelField.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-            if(!newValue.matches("\\d*")){
-                levelField.getEditor().setText(oldValue);
-            }
-            levelField.getValueFactory().setValue(Integer.parseInt(newValue));
-        });
-
-    }
+    public void initialize(URL location, ResourceBundle resources) { }
 
     public void setData(Course course, boolean edit) {
 
@@ -42,20 +32,20 @@ public class CourseModalController implements Initializable {
 
         if(!edit) return;
 
-        levelField.getValueFactory().setValue(course.getLevel());
+        levelField.setText(course.getLevel());
         nameField.setText(course.getName());
 
     }
 
     public Course getData() {
-        course.setLevel(levelField.getValue());
+        course.setLevel(levelField.getText());
         course.setName(nameField.getText());
         return course;
     }
 
     public boolean validateInputs() {
 
-        if(levelField.getValue() == null)
+        if(levelField.getText().isEmpty())
             return false;
         if(nameField.getText().isEmpty())
             return false;

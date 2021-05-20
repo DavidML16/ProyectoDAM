@@ -40,7 +40,7 @@ public class CoursesController implements Initializable, Controller {
     private TableColumn<Course, Integer> idColumn;
 
     @FXML
-    private TableColumn<Course, Integer> levelColumn;
+    private TableColumn<Course, String> levelColumn;
 
     @FXML
     private TableColumn<Course, String> nameColumn;

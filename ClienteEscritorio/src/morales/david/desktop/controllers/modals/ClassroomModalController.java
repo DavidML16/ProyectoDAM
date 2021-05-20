@@ -18,23 +18,10 @@ public class ClassroomModalController implements Initializable {
     @FXML
     private TextField nameField;
 
-    @FXML
-    private Spinner<Integer> floorField;
-
     private Classroom classroom;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-        floorField.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 3));
-        floorField.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-            if(!newValue.matches("\\d*")){
-                floorField.getEditor().setText(oldValue);
-            }
-            floorField.getValueFactory().setValue(Integer.parseInt(newValue));
-        });
-
-    }
+    public void initialize(URL location, ResourceBundle resources) { }
 
     public void setData(Classroom classroom, boolean edit) {
 
@@ -43,21 +30,17 @@ public class ClassroomModalController implements Initializable {
         if(!edit) return;
 
         nameField.setText(classroom.getName());
-        floorField.getValueFactory().setValue(classroom.getFloor());
 
     }
 
     public Classroom getData() {
         classroom.setName(nameField.getText());
-        classroom.setFloor(floorField.getValue());
         return classroom;
     }
 
     public boolean validateInputs() {
 
         if(nameField.getText().isEmpty())
-            return false;
-        if(floorField.getValue() == null)
             return false;
 
         return true;
