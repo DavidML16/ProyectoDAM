@@ -41,7 +41,7 @@ public class SchedulesMenuController implements Initializable, Controller {
 
         actualView = "";
 
-        Platform.runLater(() -> loadView("schedules/schedules.fxml", "Horarios", null));
+        Platform.runLater(() -> loadView("schedules/schedulesearch.fxml", "Horarios", null));
         schedulesNavigationButton.getStyleClass().add("buttonPressed");
 
         DataManager.getInstance().getDays().add(new Day(1, "Lunes"));
@@ -52,7 +52,7 @@ public class SchedulesMenuController implements Initializable, Controller {
     public void handleButtonAction(MouseEvent event) {
 
         if(event.getSource() == schedulesNavigationButton)
-            loadView("schedules/schedules.fxml", "Horarios", event);
+            loadView("schedules/schedulesearch.fxml", "Horarios", event);
         else if (event.getSource() == daysHoursNavigationButton)
             loadView("schedules/dayshoursmenu.fxml", "Días", event);
 

@@ -20,7 +20,11 @@ public enum PacketType {
 
     DAYS, UPDATEDAY,
 
-    HOURS, UPDATEHOUR;
+    HOURS, UPDATEHOUR,
+
+    TIMEZONES,
+
+    SCHEDULES;
 
     public String getRequest() {
         return "REQUEST_" + toString();
