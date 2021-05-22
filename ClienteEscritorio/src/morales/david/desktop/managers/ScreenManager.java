@@ -3,11 +3,16 @@ package morales.david.desktop.managers;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import morales.david.desktop.controllers.DashboardController;
+import morales.david.desktop.controllers.schedules.SchedulesController;
 import morales.david.desktop.interfaces.Controller;
+import morales.david.desktop.models.Schedule;
+import morales.david.desktop.utils.Utils;
 
 import java.io.IOException;
+import java.util.List;
 
 public final class ScreenManager {
 
@@ -61,7 +66,7 @@ public final class ScreenManager {
             controller = loader.getController();
 
             if(controller instanceof DashboardController)
-                dashboardController = controller;
+                setDashboardController(controller);
 
             scene = new Scene(parent);
             stage.setTitle(title);
@@ -69,6 +74,35 @@ public final class ScreenManager {
 
             if(!stage.isShowing())
                 stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public synchronized void openScheduleView(List<Schedule> scheduleList) {
+
+        try {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/views/schedules/schedules.fxml"));
+            Parent parent = loader.load();
+
+            SchedulesController controller = loader.getController();
+            controller.setSchedules(scheduleList);
+
+            Stage stage = new Stage();
+            stage.setTitle("HORARIO");
+            stage.setScene(new Scene(parent));
+
+            stage.getIcons().add(new Image("/resources/images/schedule-icon-inverted.png"));
+
+            stage.setWidth(948);
+            stage.setHeight(533);
+
+            stage.show();
+
+            Utils.centerWindow(stage);
 
         } catch (IOException e) {
             e.printStackTrace();

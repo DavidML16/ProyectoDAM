@@ -1,5 +1,7 @@
 package morales.david.desktop.models;
 
+import com.google.gson.internal.LinkedTreeMap;
+
 public class TimeZone {
 
     private int id;
@@ -38,6 +40,29 @@ public class TimeZone {
 
     public void setHour(Hour hour) {
         this.hour = hour;
+    }
+
+    public static TimeZone parse(LinkedTreeMap timeZoneMap) {
+
+        int id = ((Double) timeZoneMap.get("id")).intValue();
+
+        LinkedTreeMap dayMap = (LinkedTreeMap) timeZoneMap.get("day");
+        Day day = Day.parse(dayMap);
+
+        LinkedTreeMap hourMap = (LinkedTreeMap) timeZoneMap.get("hour");
+        Hour hour = Hour.parse(hourMap);
+
+        return new TimeZone(id, day, hour);
+
+    }
+
+    @Override
+    public String toString() {
+        return "TimeZone{" +
+                "id=" + id +
+                ", day=" + day +
+                ", hour=" + hour +
+                '}';
     }
 
 }

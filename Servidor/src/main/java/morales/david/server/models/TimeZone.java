@@ -1,6 +1,6 @@
 package morales.david.server.models;
 
-import java.sql.Time;
+import com.google.gson.internal.LinkedTreeMap;
 
 public class TimeZone {
 
@@ -42,6 +42,20 @@ public class TimeZone {
         this.hour = hour;
     }
 
+    public static TimeZone parse(LinkedTreeMap timeZoneMap) {
+
+        int id = ((Double) timeZoneMap.get("id")).intValue();
+
+        LinkedTreeMap dayMap = (LinkedTreeMap) timeZoneMap.get("day");
+        Day day = Day.parse(dayMap);
+
+        LinkedTreeMap hourMap = (LinkedTreeMap) timeZoneMap.get("hour");
+        Hour hour = Hour.parse(hourMap);
+
+        return new TimeZone(id, day, hour);
+
+    }
+
     @Override
     public String toString() {
         return "TimeZone{" +
@@ -50,4 +64,5 @@ public class TimeZone {
                 ", hour=" + hour +
                 '}';
     }
+
 }

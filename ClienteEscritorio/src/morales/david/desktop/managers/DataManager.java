@@ -111,4 +111,26 @@ public final class DataManager {
         this.hours = hours;
     }
 
+
+    private ObservableList<TimeZone> timeZones = FXCollections.observableArrayList();
+
+    public synchronized ObservableList<TimeZone> getTimeZones() {
+        return timeZones;
+    }
+
+    public synchronized void setTimeZones(ObservableList<TimeZone> timeZones) {
+        this.timeZones = timeZones;
+    }
+
+
+    private ObservableList<Schedule> schedules = FXCollections.observableArrayList();
+
+    public synchronized ObservableList<Schedule> getSchedules() {
+        return schedules;
+    }
+
+    public synchronized void setSchedules(ObservableList<Schedule> schedules) {
+        this.schedules = schedules;
+    }
+
 }

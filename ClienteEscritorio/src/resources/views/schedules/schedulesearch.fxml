@@ -11,7 +11,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane prefHeight="600.0" prefWidth="773.0" styleClass="mainPane" stylesheets="@../../css/schedule_search_view.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morales.david.desktop.controllers.schedules.ScheduleSearchController">
    <children>
       <HBox alignment="CENTER" prefWidth="812.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -170,7 +169,7 @@
                                     <Insets top="15.0" />
                                  </VBox.margin>
                               </StackPane>
-                              <Button fx:id="searchButton" mnemonicParsing="false" prefHeight="55.0" prefWidth="200.0" styleClass="searchButton" text="Buscar horario">
+                              <Button fx:id="searchButton" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="55.0" prefWidth="200.0" styleClass="searchButton" text="Buscar horario">
                                  <VBox.margin>
                                     <Insets top="30.0" />
                                  </VBox.margin>

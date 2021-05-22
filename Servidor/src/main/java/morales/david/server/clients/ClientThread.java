@@ -85,8 +85,6 @@ public class ClientThread extends Thread {
     @Override
     public void run() {
 
-        dbConnection.open();
-
         while(connected) {
 
             try {
@@ -107,8 +105,6 @@ public class ClientThread extends Thread {
             }
 
         }
-
-        dbConnection.close();
 
         System.out.println(Constants.LOG_SERVER_USER_DISCONNECTED);
         closeIO();

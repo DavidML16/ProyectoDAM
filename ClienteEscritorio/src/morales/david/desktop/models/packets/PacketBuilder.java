@@ -24,6 +24,10 @@ public class PacketBuilder {
         return this;
     }
 
+    public boolean hasArgument(String key) {
+        return arguments.containsKey(key);
+    }
+
     public Packet build() {
         return new Packet(type, arguments);
     }

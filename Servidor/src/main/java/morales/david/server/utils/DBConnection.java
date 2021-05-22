@@ -1,5 +1,6 @@
 package morales.david.server.utils;
 
+import morales.david.server.ScheduleSearcheable;
 import morales.david.server.clients.ClientSession;
 import morales.david.server.clients.ClientThread;
 import morales.david.server.models.*;
@@ -1751,6 +1752,61 @@ public class DBConnection {
 
     }
 
+    /**
+     * Get timezone from database by specified id
+     * @return timezone
+     */
+    public TimeZone getTimeZone(int _id) {
+
+        TimeZone timeZone = null;
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_TIMEZONE_BY_ID);
+            stm.setInt(1, _id);
+
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+
+                int idTimeZone = rs.getInt("idTimeZone");
+
+                int idDay = rs.getInt("idDay");
+                String dayString = rs.getString("dayString");
+
+                int idHour = rs.getInt("idHour");
+                String hourString = rs.getString("hourString");
+
+                timeZone = new TimeZone(idTimeZone, new Day(idDay, dayString), new Hour(idHour, hourString));
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return timeZone;
+
+    }
+
 
     /**
      * Clear all table rows from database
@@ -2120,5 +2176,90 @@ public class DBConnection {
         return rs == 1;
 
     }
+
+    /**
+     * Get schedules from database
+     * @return list of schedules
+     */
+    public List<Schedule> searchSchedule(ScheduleSearcheable item) {
+
+        List<Schedule> schedules = new ArrayList<>();
+
+        String sqlSearch = "";
+
+        if(item instanceof Teacher) {
+            Teacher teacher = (Teacher) item;
+            sqlSearch = "profesor = " + teacher.getId();
+        } else if(item instanceof Group) {
+            Group group = (Group) item;
+            sqlSearch = "grupo = " + group.getId();
+        } else if(item instanceof Classroom) {
+            Classroom classroom = (Classroom) item;
+            sqlSearch = "aula = " + classroom.getId();
+        }
+
+        schedules = getSchedule(sqlSearch);
+
+        return schedules;
+
+    }
+    private List<Schedule> getSchedule(String params) {
+
+        List<Schedule> schedules = new ArrayList<>();
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_SEARCH_SCHEDULE + params + " ORDER BY franja");
+
+            rs = stm.executeQuery();
+
+            int i = 1;
+
+            while (rs.next()) {
+
+                int id_teacher = rs.getInt("profesor");
+                int id_subject = rs.getInt("asignatura");
+                int id_group = rs.getInt("grupo");
+                int id_classroom = rs.getInt("aula");
+                int id_timezone = rs.getInt("franja");
+
+                Teacher teacher = getTeacher(id_teacher);
+                Subject subject = getSubject(id_subject);
+                Group group = getGroup(id_group);
+                Classroom classroom = getClassroom(id_classroom);
+                TimeZone timeZone = getTimeZone(id_timezone);
+
+                schedules.add(new Schedule(i, teacher, subject, group, classroom, timeZone));
+
+                i++;
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return schedules;
+
+    }
+
 
 }

@@ -1,5 +1,7 @@
 package morales.david.server.models;
 
+import com.google.gson.internal.LinkedTreeMap;
+
 public class Schedule {
 
     private int id;
@@ -68,6 +70,41 @@ public class Schedule {
 
     public void setTimeZone(TimeZone timeZone) {
         this.timeZone = timeZone;
+    }
+
+    public static Schedule parse(LinkedTreeMap scheduleMap) {
+
+        int id = ((Double) scheduleMap.get("id")).intValue();
+
+        LinkedTreeMap teacherMap = (LinkedTreeMap) scheduleMap.get("teacher");
+        Teacher teacher = Teacher.parse(teacherMap);
+
+        LinkedTreeMap subjectMap = (LinkedTreeMap) scheduleMap.get("subject");
+        Subject subject = Subject.parse(subjectMap);
+
+        LinkedTreeMap groupMap = (LinkedTreeMap) scheduleMap.get("group");
+        Group group = Group.parse(groupMap);
+
+        LinkedTreeMap classroomMap = (LinkedTreeMap) scheduleMap.get("classroom");
+        Classroom classroom = Classroom.parse(classroomMap);
+
+        LinkedTreeMap timeZoneMap = (LinkedTreeMap) scheduleMap.get("timeZone");
+        TimeZone timeZone = TimeZone.parse(timeZoneMap);
+
+        return new Schedule(id, teacher, subject, group, classroom, timeZone);
+
+    }
+
+    @Override
+    public String toString() {
+        return "Schedule{" +
+                "id=" + id +
+                ", teacher=" + teacher +
+                ", subject=" + subject +
+                ", group=" + group +
+                ", classroom=" + classroom +
+                ", timeZone=" + timeZone +
+                '}';
     }
 
 }

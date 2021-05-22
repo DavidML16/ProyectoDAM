@@ -44,11 +44,7 @@ public class Group {
 
     @Override
     public String toString() {
-        return "Group{" +
-                "id=" + id +
-                ", course=" + course +
-                ", letter='" + letter + '\'' +
-                '}';
+        return course.toString() + " " + letter;
     }
 
     public static Group parse(LinkedTreeMap subjectMap) {

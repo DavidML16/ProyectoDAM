@@ -2,6 +2,7 @@ package morales.david.server.clients;
 
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.LinkedTreeMap;
+import morales.david.server.ScheduleSearcheable;
 import morales.david.server.Server;
 import morales.david.server.models.*;
 import morales.david.server.models.packets.Packet;
@@ -40,6 +41,8 @@ public class ClientProtocol {
         lastPacket = packet;
 
         PacketType packetType = PacketType.valueOf(PacketType.getIdentifier(lastPacket.getType()));
+
+        clientThread.getDbConnection().open();
 
         switch (packetType) {
 
@@ -171,7 +174,17 @@ public class ClientProtocol {
                 updateHour();
                 break;
 
+            case TIMEZONES:
+                timeZoneList();
+                break;
+
+            case SCHEDULES:
+                searchSchedule();
+                break;
+
         }
+
+        clientThread.getDbConnection().close();
 
     }
 
@@ -954,6 +967,70 @@ public class ClientProtocol {
                     .build();
 
             sendPacketIO(updateHourErrorPacket);
+
+        }
+
+    }
+
+
+    /**
+     * Get timezone list from database
+     * Send timezone list packet to client
+     */
+    private void timeZoneList() {
+
+        List<TimeZone> timeZones = clientThread.getDbConnection().getTimeZones();
+
+        Packet timeZonesConfirmationPacket = new PacketBuilder()
+                .ofType(PacketType.TIMEZONES.getConfirmation())
+                .addArgument("timeZones", timeZones)
+                .build();
+
+        sendPacketIO(timeZonesConfirmationPacket);
+
+    }
+
+
+    /**
+     * Get schedule data from database
+     * Search schedule by packet arguments
+     */
+    private void searchSchedule() {
+
+        String searchType = (String) lastPacket.getArgument("type");
+
+        ScheduleSearcheable scheduleSearcheable = null;
+
+        if(searchType.equalsIgnoreCase("TEACHER")) {
+
+            LinkedTreeMap teacherMap = (LinkedTreeMap) lastPacket.getArgument("item");
+
+            scheduleSearcheable = Teacher.parse(teacherMap);
+
+        } else if(searchType.equalsIgnoreCase("GROUP")) {
+
+            LinkedTreeMap groupMap = (LinkedTreeMap) lastPacket.getArgument("item");
+
+            scheduleSearcheable = Group.parse(groupMap);
+
+        } else if(searchType.equalsIgnoreCase("CLASSROOM")) {
+
+            LinkedTreeMap classroomMap = (LinkedTreeMap) lastPacket.getArgument("item");
+
+            scheduleSearcheable = Classroom.parse(classroomMap);
+
+        }
+
+        if(scheduleSearcheable != null) {
+
+            List<Schedule> schedules = clientThread.getDbConnection().searchSchedule(scheduleSearcheable);
+
+            Packet schedulesConfirmationPacket = new PacketBuilder()
+                    .ofType(PacketType.SCHEDULES.getConfirmation())
+                    .addArgument("schedules", schedules)
+                    .build();
+
+            sendPacketIO(schedulesConfirmationPacket);
 
         }
 

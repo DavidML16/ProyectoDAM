@@ -1,11 +1,12 @@
 package morales.david.server.models;
 
 import com.google.gson.internal.LinkedTreeMap;
+import morales.david.server.ScheduleSearcheable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Group {
+public class Group implements ScheduleSearcheable {
 
     private int id;
     private Course course;

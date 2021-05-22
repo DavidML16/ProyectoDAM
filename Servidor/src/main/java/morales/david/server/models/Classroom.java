@@ -1,8 +1,9 @@
 package morales.david.server.models;
 
 import com.google.gson.internal.LinkedTreeMap;
+import morales.david.server.ScheduleSearcheable;
 
-public class Classroom {
+public class Classroom implements ScheduleSearcheable {
 
     private int id;
     private String name;

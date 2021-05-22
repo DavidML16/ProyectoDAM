@@ -34,10 +34,7 @@ public class Classroom {
 
     @Override
     public String toString() {
-        return "Classroom{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+        return name;
     }
 
     public static Classroom parse(LinkedTreeMap teacherMap) {

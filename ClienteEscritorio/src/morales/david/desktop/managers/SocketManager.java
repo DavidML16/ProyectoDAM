@@ -14,6 +14,7 @@ import morales.david.desktop.utils.Constants;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 public final class SocketManager extends Thread {
@@ -56,7 +57,7 @@ public final class SocketManager extends Thread {
 
         } catch (IOException e) {
 
-            e.printStackTrace();
+            socketErrorAlert();
 
         }
 
@@ -65,18 +66,21 @@ public final class SocketManager extends Thread {
     private void close() {
 
         try {
-            output.close();
+            if(output != null)
+                output.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
-            input.close();
+            if(input != null)
+                input.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         try {
-            socket.close();
+            if(socket != null && !socket.isClosed())
+                socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -341,6 +345,44 @@ public final class SocketManager extends Thread {
 
                         }
 
+                        case TIMEZONES: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.TIMEZONES.getConfirmation())) {
+
+                                List<LinkedTreeMap> timeZones = (List<LinkedTreeMap>) receivedPacket.getArgument("timeZones");
+
+                                DataManager.getInstance().getTimeZones().clear();
+
+                                for (LinkedTreeMap timeZoneMap : timeZones)
+                                    DataManager.getInstance().getTimeZones().add(TimeZone.parse(timeZoneMap));
+
+                            }
+
+                            break;
+
+                        }
+
+                        case SCHEDULES: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.SCHEDULES.getConfirmation())) {
+
+                                List<LinkedTreeMap> schedules = (List<LinkedTreeMap>) receivedPacket.getArgument("schedules");
+
+                                final List<Schedule> scheduleList = new ArrayList<>();
+
+                                for (LinkedTreeMap scheduleMap : schedules)
+                                    scheduleList.add(Schedule.parse(scheduleMap));
+
+                                Platform.runLater(() -> {
+                                    ScreenManager.getInstance().openScheduleView(scheduleList);
+                                });
+
+                            }
+
+                            break;
+
+                        }
+
                     }
 
                 }
@@ -377,7 +419,7 @@ public final class SocketManager extends Thread {
             output.write(packet.toString());
             output.newLine();
             output.flush();
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             Platform.runLater(() -> {
                 socketErrorAlert();
             });
