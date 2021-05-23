@@ -97,8 +97,11 @@ public final class ScreenManager {
 
             stage.getIcons().add(new Image("/resources/images/schedule-icon-inverted.png"));
 
-            stage.setWidth(948);
-            stage.setHeight(533);
+            stage.setWidth(1280);
+            stage.setHeight(720);
+
+            stage.setMinWidth(1280);
+            stage.setMinHeight(720);
 
             stage.show();
 

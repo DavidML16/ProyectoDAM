@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
 import morales.david.desktop.controllers.schedules.scheduler.SchedulerGUI;
+import morales.david.desktop.controllers.schedules.scheduler.TimetableManager;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.ScreenManager;
 import morales.david.desktop.models.Schedule;
@@ -23,16 +24,7 @@ public class SchedulesController implements Initializable, Controller {
     private List<Schedule> schedules;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-        schedulerGui = new SchedulerGUI(anchorPane);
-
-        Platform.runLater(() -> {
-            schedulerGui.init();
-            schedulerGui.displayCurrentTimetable();
-        });
-
-    }
+    public void initialize(URL location, ResourceBundle resources) { }
 
     public void resized() {
         schedulerGui.resize();
@@ -43,7 +35,18 @@ public class SchedulesController implements Initializable, Controller {
     }
 
     public void setSchedules(List<Schedule> schedules) {
+
         this.schedules = schedules;
+
+        TimetableManager timetableManager = new TimetableManager(schedules);
+
+        schedulerGui = new SchedulerGUI(anchorPane, timetableManager);
+
+        Platform.runLater(() -> {
+            schedulerGui.init();
+            schedulerGui.displayCurrentTimetable();
+        });
+
     }
 
 }

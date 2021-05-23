@@ -3,14 +3,21 @@ package morales.david.desktop.controllers.schedules.scheduler;
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import morales.david.desktop.managers.DataManager;
 import morales.david.desktop.models.Day;
 import morales.david.desktop.models.Hour;
+import morales.david.desktop.models.Schedule;
 
 import java.util.List;
 
@@ -19,23 +26,34 @@ public class SchedulerGUI {
     private static final int ANIMATION_DURATION = 200;
     private final int ANIMATION_DISTANCE = 50;
     private static final double FOCUS_ANIMATION_OFFSET_FACTOR = 0.6;
-    private static final double GAP_SIZE = 10;
+    private static final double GAP_SIZE = 5;
     private static final double FONT_FACTOR = 0.22;
 
     private static final int DAY_LENGTH = 5;
-    private static final int HOURS_LENGTH = 6;
+    private static final int HOURS_LENGTH = 7;
 
     private AnchorPane background;
     private GridPane subjectGrid;
+
+    private TimetableManager timetableManager;
+
+    private EventHandler<ActionEvent> scheduleActionEvent;
+    private EventHandler<MouseEvent> schedulePressedEvent;
+    private EventHandler<MouseEvent> scheduleDraggedEvent;
+    private EventHandler<MouseEvent>scheduleReleasedEvent;
+    private EventHandler<KeyEvent> scheduleKeyReleasedEvent;
+
+    private HBox tabBox;
+    private Label tabA;
+    private Label tabB;
 
     private JFXButton[] days;
     private JFXButton[] hours;
     private JFXButton[][] schedules;
 
-    public SchedulerGUI(AnchorPane anchorPane) {
-
+    public SchedulerGUI(AnchorPane anchorPane, TimetableManager timetableManager) {
         this.background = anchorPane;
-
+        this.timetableManager = timetableManager;
     }
 
     public void init() {
@@ -45,22 +63,24 @@ public class SchedulerGUI {
         subjectGrid.setHgap(GAP_SIZE);
         if(background.getChildren().size() > 1)
             background.getChildren().remove(0);
+        background.setPrefSize(900, 600);
         background.getChildren().add(subjectGrid);
-        background.setTopAnchor(subjectGrid, GAP_SIZE);
-        background.setRightAnchor(subjectGrid, GAP_SIZE);
-        background.setBottomAnchor(subjectGrid, GAP_SIZE);
-        background.setLeftAnchor(subjectGrid, GAP_SIZE);
+        background.getStyleClass().clear();
+        background.getStyleClass().add("mainPane");
+        background.setTopAnchor(subjectGrid, GAP_SIZE * 4);
+        background.setRightAnchor(subjectGrid, GAP_SIZE * 4);
+        background.setBottomAnchor(subjectGrid, GAP_SIZE * 4);
+        background.setLeftAnchor(subjectGrid, GAP_SIZE * 4);
+
+        initControlArrays();
 
         days = new JFXButton[DAY_LENGTH];
-        List<Day> dayList = DataManager.getInstance().getDays();
         for (int i = 0; i < days.length; i++) {
-            if(dayList.get(i) != null) {
-                JFXButton day = new JFXButton(dayList.get(i).getName());
-                day.getStyleClass().add("dayButton");
-                day.setMinSize(100, 40);
-                day.setPrefSize(500, 500);
-                days[i] = day;
-            }
+            JFXButton day = new JFXButton();
+            day.getStyleClass().add("dayButton");
+            day.setMinSize(100, 40);
+            day.setPrefSize(500, 500);
+            days[i] = day;
         }
 
         hours = new JFXButton[HOURS_LENGTH];
@@ -72,26 +92,103 @@ public class SchedulerGUI {
             hours[i] = hour;
         }
 
-        schedules = new JFXButton[DAY_LENGTH][HOURS_LENGTH];
+        selectMorningTurn();
+
+    }
+
+    public void initControlArrays() {
+
+        tabBox = new HBox();
+        tabBox.getStyleClass().add("mainPane");
+        tabBox.setSpacing(GAP_SIZE);
+
+        tabA = new Label("TURNO DE MAÑANA");
+        tabA.setAlignment(Pos.CENTER);
+        tabA.setMinSize(0, 0);
+        tabA.setPrefSize(1000, 110);
+        tabA.getStyleClass().add("schedulerTabButton");
+        tabA.setOnMousePressed(event -> {
+            selectMorningTurn();
+        });
+
+        tabB = new Label("TURNO DE TARDE");
+        tabB.setAlignment(Pos.CENTER);
+        tabB.setMinSize(0, 0);
+        tabB.setPrefSize(1000, 110);
+        tabB.getStyleClass().add("schedulerTabButton");
+        tabB.setOnMousePressed(event -> {
+            selectAfternoonTurn();
+        });
+
+        tabBox.getChildren().addAll(tabA, tabB);
+
+        scheduleActionEvent = (ActionEvent event) -> {
+            scheduleMenu(event);
+        };
+        schedulePressedEvent = (MouseEvent event) -> {
+            schedulePressed(event);
+        };
+        scheduleDraggedEvent = (MouseEvent event) -> {
+            scheduleDragged(event);
+        };
+        scheduleReleasedEvent = (MouseEvent event) -> {
+            scheduleReleased(event);
+        };
+        scheduleKeyReleasedEvent = (KeyEvent event) -> {
+            scheduleKeyReleased(event);
+        };
+
+        schedules = new JFXButton[DAY_LENGTH][HOURS_LENGTH - 1];
         for (int i = 0; i < schedules.length; i++) {
             for (int j = 0; j < schedules[0].length; j++) {
                 JFXButton schedule = new JFXButton();
                 schedule.getStyleClass().add("scheduleButton");
+                schedule.setTextAlignment(TextAlignment.CENTER);
                 schedule.setMinSize(100, 40);
                 schedule.setPrefSize(500, 500);
+                schedule.setOnAction(scheduleActionEvent);
+                schedule.setOnMousePressed(schedulePressedEvent);
+                schedule.setOnMouseDragged(scheduleDraggedEvent);
+                schedule.setOnMouseReleased(scheduleReleasedEvent);
+                schedule.setOnKeyReleased(scheduleKeyReleasedEvent);
                 schedules[i][j] = schedule;
             }
         }
 
-        displayCurrentTimetable();
+    }
 
+    private void selectMorningTurn() {
+        timetableManager.setMorning(true);
+        tabA.getStyleClass().removeIf(s -> (s == "selectedSchedulerTabButton"));
+        tabB.getStyleClass().add("selectedSchedulerTabButton");
+        displayCurrentTimetable();
+    }
+
+    private void selectAfternoonTurn() {
+        timetableManager.setMorning(false);
+        tabB.getStyleClass().removeIf(s -> (s == "selectedSchedulerTabButton"));
+        tabA.getStyleClass().add("selectedSchedulerTabButton");
+        displayCurrentTimetable();
+    }
+
+    private void scheduleKeyReleased(KeyEvent event) {
+    }
+
+    private void scheduleReleased(MouseEvent event) {
+    }
+
+    private void scheduleDragged(MouseEvent event) {
+    }
+
+    private void schedulePressed(MouseEvent event) {
+    }
+
+    private void scheduleMenu(ActionEvent event) {
     }
 
     public void resize() {
 
-        new Timeline(
-                new KeyFrame(Duration.millis(5), event -> resizeFonts())
-        ).play();
+        new Timeline(new KeyFrame(Duration.millis(5), event -> resizeFonts())).play();
 
     }
 
@@ -102,7 +199,7 @@ public class SchedulerGUI {
 
         Font font1 = new Font((h + w) * 0.09);
         Font font2 = new Font(h * 0.3);
-        Font font3 = new Font(h * 0.25);
+        Font font3 = new Font(h * 0.20);
 
         for (JFXButton b : days)
             b.setFont(font1);
@@ -119,31 +216,54 @@ public class SchedulerGUI {
     public void displayCurrentTimetable() {
 
         subjectGrid.getChildren().removeIf(node -> (node.getClass() == JFXButton.class));
+        subjectGrid.getChildren().remove(tabBox);
         subjectGrid.getRowConstraints().clear();
         RowConstraints rc = new RowConstraints();
-        rc.setPercentHeight(5);
+        rc.setPercentHeight(10);
         subjectGrid.getRowConstraints().add(rc);
+        subjectGrid.add(tabBox, 1, 0, 5, 1);
 
         int pos = 0;
+        Day[] dayArray = timetableManager.getCurrentTable().getDays();
         for (int i = 0; i < days.length; i++) {
             subjectGrid.add(days[i], pos + 1, 1, 1, 1);
+            if(dayArray[i] != null)
+                days[i].setText(dayArray[i].getName());
             pos++;
         }
 
-        List<Hour> hourList = DataManager.getInstance().getHours();
+        Hour[] hourArray = timetableManager.getCurrentTable().getHours();
         for (int i = 0; i < hours.length; i++) {
             subjectGrid.add(hours[i], 0, i + 2, 1, 1);
-            if(hourList.get(i) != null)
-                hours[i].setText(hourList.get(i).getName());
+            if(hourArray[i] != null)
+                hours[i].setText(hourArray[i].getName());
         }
 
         pos = 0;
+        Schedule[][] scheduleArray = timetableManager.getCurrentTable().getSchedules();
         for (int i = 0; i < schedules.length; i++) {
             for (int j = 0; j < schedules[0].length; j++) {
-                int height = 1;
-                subjectGrid.add(schedules[i][j], pos + 1, j + 2, 1, 1);
-                schedules[i][j].setText(i + " " + j);
-                j += height - 1;
+
+                if(i == 0 && j == 3) {
+                    JFXButton breakTime = new JFXButton();
+                    breakTime.setText("R  E  C  R  E  O");
+                    breakTime.getStyleClass().add("breakTimeButton");
+                    breakTime.setTextAlignment(TextAlignment.CENTER);
+                    breakTime.setAlignment(Pos.CENTER);
+                    breakTime.setMinSize(0, 0);
+                    breakTime.setPrefSize(2000, 110);
+                    subjectGrid.add(breakTime, pos + 1, 5, 5, 1);
+                }
+
+                subjectGrid.add(schedules[i][j], pos + 1, j + (j >= 3 ? 3 : 2), 1, 1);
+
+                Schedule schedule = scheduleArray[i][j];
+
+                if(schedule != null)
+                    schedules[i][j].setText(schedule.getTeacher().getName() + "\n" + schedule.getSubject().getAbreviation() + "     " + schedule.getGroup().toString() + "\n" + schedule.getClassroom().toString());
+                else
+                    schedules[i][j].setText("");
+
             }
             pos++;
         }

@@ -2,4 +2,5 @@
 
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="600.0" prefWidth="660.0" styleClass="mainPane" stylesheets="/css/scheduler_view.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morales.david.desktop.controllers.schedules.SchedulesController" />
+
+<AnchorPane fx:id="anchorPane" stylesheets="@../../css/scheduler_view.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morales.david.desktop.controllers.schedules.SchedulesController" />

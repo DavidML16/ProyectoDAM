@@ -8,6 +8,8 @@ import morales.david.server.models.packets.PacketBuilder;
 import morales.david.server.models.packets.PacketType;
 import morales.david.server.utils.Constants;
 
+import java.util.ConcurrentModificationException;
+
 public class ClientsManager extends Thread {
 
     private Server server;
@@ -31,8 +33,10 @@ public class ClientsManager extends Thread {
 
             Packet pingPacket = new PacketBuilder().ofType(PacketType.PING.getRequest()).build();
 
-            for(ClientThread clientThread : clientRepository.getClients())
-                clientThread.getClientProtocol().sendPacketIO(pingPacket);
+            try {
+                for(ClientThread clientThread : clientRepository.getClients())
+                    clientThread.getClientProtocol().sendPacketIO(pingPacket);
+            } catch (ConcurrentModificationException ignored) {}
 
         }
 
