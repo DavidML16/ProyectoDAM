@@ -42,9 +42,14 @@ public class SchedulesController implements Initializable, Controller {
 
         schedulerGui = new SchedulerGUI(anchorPane, timetableManager);
 
-        Platform.runLater(() -> {
-            schedulerGui.init();
-            schedulerGui.displayCurrentTimetable();
+        schedulerGui.init();
+        schedulerGui.displayCurrentTimetable();
+
+        anchorPane.widthProperty().addListener(event -> {
+            resized();
+        });
+        anchorPane.heightProperty().addListener(event -> {
+            resized();
         });
 
     }

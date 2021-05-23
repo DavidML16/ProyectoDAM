@@ -6,20 +6,17 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
-import morales.david.desktop.managers.DataManager;
 import morales.david.desktop.models.Day;
 import morales.david.desktop.models.Hour;
 import morales.david.desktop.models.Schedule;
-
-import java.util.List;
 
 public class SchedulerGUI {
 
@@ -44,8 +41,8 @@ public class SchedulerGUI {
     private EventHandler<KeyEvent> scheduleKeyReleasedEvent;
 
     private HBox tabBox;
-    private Label tabA;
-    private Label tabB;
+    private Label tabMorning;
+    private Label tabAfternoon;
 
     private JFXButton[] days;
     private JFXButton[] hours;
@@ -94,6 +91,8 @@ public class SchedulerGUI {
 
         selectMorningTurn();
 
+        resize();
+
     }
 
     public void initControlArrays() {
@@ -102,25 +101,25 @@ public class SchedulerGUI {
         tabBox.getStyleClass().add("mainPane");
         tabBox.setSpacing(GAP_SIZE);
 
-        tabA = new Label("TURNO DE MAÑANA");
-        tabA.setAlignment(Pos.CENTER);
-        tabA.setMinSize(0, 0);
-        tabA.setPrefSize(1000, 110);
-        tabA.getStyleClass().add("schedulerTabButton");
-        tabA.setOnMousePressed(event -> {
+        tabMorning = new Label("TURNO DE MAÑANA");
+        tabMorning.setAlignment(Pos.CENTER);
+        tabMorning.setMinSize(0, 0);
+        tabMorning.setPrefSize(1000, 110);
+        tabMorning.getStyleClass().add("schedulerTabButton");
+        tabMorning.setOnMousePressed(event -> {
             selectMorningTurn();
         });
 
-        tabB = new Label("TURNO DE TARDE");
-        tabB.setAlignment(Pos.CENTER);
-        tabB.setMinSize(0, 0);
-        tabB.setPrefSize(1000, 110);
-        tabB.getStyleClass().add("schedulerTabButton");
-        tabB.setOnMousePressed(event -> {
+        tabAfternoon = new Label("TURNO DE TARDE");
+        tabAfternoon.setAlignment(Pos.CENTER);
+        tabAfternoon.setMinSize(0, 0);
+        tabAfternoon.setPrefSize(1000, 110);
+        tabAfternoon.getStyleClass().add("schedulerTabButton");
+        tabAfternoon.setOnMousePressed(event -> {
             selectAfternoonTurn();
         });
 
-        tabBox.getChildren().addAll(tabA, tabB);
+        tabBox.getChildren().addAll(tabMorning, tabAfternoon);
 
         scheduleActionEvent = (ActionEvent event) -> {
             scheduleMenu(event);
@@ -159,15 +158,15 @@ public class SchedulerGUI {
 
     private void selectMorningTurn() {
         timetableManager.setMorning(true);
-        tabA.getStyleClass().removeIf(s -> (s == "selectedSchedulerTabButton"));
-        tabB.getStyleClass().add("selectedSchedulerTabButton");
+        tabMorning.getStyleClass().removeIf(s -> (s == "selectedSchedulerTabButton"));
+        tabAfternoon.getStyleClass().add("selectedSchedulerTabButton");
         displayCurrentTimetable();
     }
 
     private void selectAfternoonTurn() {
         timetableManager.setMorning(false);
-        tabB.getStyleClass().removeIf(s -> (s == "selectedSchedulerTabButton"));
-        tabA.getStyleClass().add("selectedSchedulerTabButton");
+        tabAfternoon.getStyleClass().removeIf(s -> (s == "selectedSchedulerTabButton"));
+        tabMorning.getStyleClass().add("selectedSchedulerTabButton");
         displayCurrentTimetable();
     }
 
@@ -197,8 +196,8 @@ public class SchedulerGUI {
         double w = hours[0].getWidth();
         double h = hours[0].getHeight();
 
-        Font font1 = new Font((h + w) * 0.09);
-        Font font2 = new Font(h * 0.3);
+        Font font1 = Font.font("Arial", FontWeight.BOLD, (h + w) * 0.09);
+        Font font2 = Font.font("Arial", FontWeight.BOLD, h * 0.3);
         Font font3 = new Font(h * 0.20);
 
         for (JFXButton b : days)
@@ -210,6 +209,7 @@ public class SchedulerGUI {
         for (JFXButton[] ba : schedules)
             for (JFXButton b : ba)
                 b.setFont(font3);
+
 
     }
 

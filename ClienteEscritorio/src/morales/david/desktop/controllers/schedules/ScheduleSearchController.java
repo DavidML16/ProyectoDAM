@@ -45,6 +45,8 @@ public class ScheduleSearchController implements Initializable, Controller {
 
     private String searchType;
 
+    private SchedulesMenuController parentController;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -131,6 +133,14 @@ public class ScheduleSearchController implements Initializable, Controller {
 
         }
 
+    }
+
+    public SchedulesMenuController getParentController() {
+        return parentController;
+    }
+
+    public void setParentController(SchedulesMenuController parentController) {
+        this.parentController = parentController;
     }
 
 }

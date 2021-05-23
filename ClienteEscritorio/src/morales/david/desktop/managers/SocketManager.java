@@ -7,6 +7,7 @@ import javafx.scene.paint.Color;
 import morales.david.desktop.Client;
 import morales.david.desktop.controllers.ImportController;
 import morales.david.desktop.controllers.LoginController;
+import morales.david.desktop.controllers.schedules.ScheduleSearchController;
 import morales.david.desktop.models.*;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketType;
@@ -374,7 +375,11 @@ public final class SocketManager extends Thread {
                                     scheduleList.add(Schedule.parse(scheduleMap));
 
                                 Platform.runLater(() -> {
-                                    ScreenManager.getInstance().openScheduleView(scheduleList);
+                                    if(ScreenManager.getInstance().getController() instanceof ScheduleSearchController) {
+                                        ((ScheduleSearchController) ScreenManager.getInstance().getController()).getParentController().loadScheduleGui(scheduleList);
+                                    } else {
+                                        ScreenManager.getInstance().openScheduleView(scheduleList);
+                                    }
                                 });
 
                             }
