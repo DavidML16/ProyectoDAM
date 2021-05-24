@@ -11,8 +11,8 @@ public class TimetableManager {
 
     private boolean isMorning;
 
-    public TimetableManager(List<Schedule> subjectList) {
-        currentTimetable = new TimetablePair(subjectList);
+    public TimetableManager(List<Schedule> scheduleList) {
+        currentTimetable = new TimetablePair(scheduleList);
     }
 
     public TimetablePair getCurrentTimetable() {

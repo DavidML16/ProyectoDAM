@@ -2,7 +2,7 @@ package morales.david.server.clients;
 
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.LinkedTreeMap;
-import morales.david.server.ScheduleSearcheable;
+import morales.david.server.interfaces.ScheduleSearcheable;
 import morales.david.server.Server;
 import morales.david.server.models.*;
 import morales.david.server.models.packets.Packet;
@@ -10,13 +10,9 @@ import morales.david.server.models.packets.PacketBuilder;
 import morales.david.server.models.packets.PacketType;
 import morales.david.server.utils.Constants;
 import morales.david.server.utils.DBConnection;
-import morales.david.server.utils.FileTransferProcessor;
 
 import java.io.*;
-import java.net.SocketException;
 import java.util.List;
-
-import static morales.david.server.models.packets.PacketType.LOGIN;
 
 public class ClientProtocol {
 

@@ -36,7 +36,9 @@ public class ClientsManager extends Thread {
             try {
                 for(ClientThread clientThread : clientRepository.getClients())
                     clientThread.getClientProtocol().sendPacketIO(pingPacket);
-            } catch (ConcurrentModificationException ignored) {}
+            } catch (ConcurrentModificationException e) {
+                e.printStackTrace();
+            }
 
         }
 

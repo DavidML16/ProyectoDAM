@@ -1,3 +1,3 @@
-package morales.david.server;
+package morales.david.server.interfaces;
 
 public interface ScheduleSearcheable {}

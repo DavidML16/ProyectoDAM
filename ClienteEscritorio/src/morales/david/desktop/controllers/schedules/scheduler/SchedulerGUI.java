@@ -259,10 +259,22 @@ public class SchedulerGUI {
 
                 Schedule schedule = scheduleArray[i][j];
 
-                if(schedule != null)
-                    schedules[i][j].setText(schedule.getTeacher().getName() + "\n" + schedule.getSubject().getAbreviation() + "     " + schedule.getGroup().toString() + "\n" + schedule.getClassroom().toString());
-                else
+                if(schedule != null) {
+
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(schedule.getTeacher().getName());
+                    sb.append("\n");
+                    sb.append(schedule.getSubject().getAbreviation() + "     " + schedule.getClassroom().toString());
+                    sb.append("\n");
+                    sb.append(schedule.getGroup().toString());
+
+                    schedules[i][j].setText(sb.toString());
+
+                } else {
+
                     schedules[i][j].setText("");
+
+                }
 
             }
             pos++;

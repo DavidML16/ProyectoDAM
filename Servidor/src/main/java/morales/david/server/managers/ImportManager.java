@@ -919,6 +919,12 @@ public class ImportManager {
         PreparedStatement stm = null;
         ResultSet rs = null;
 
+        List<Subject> asignaturas = dbConnection.getSubjects();
+        List<Teacher> profesores = dbConnection.getTeachers();
+        List<Group> grupos = dbConnection.getGroups();
+        List<Classroom> aulas = dbConnection.getClassrooms();
+        List<TimeZone> zonashorarias = dbConnection.getTimeZones();
+
         try {
 
             String[] tables = {"Soluc fp", "Soluc1 fpbasica", "Soluc inf", "Soluc esoycam", "solucion total"};
@@ -941,11 +947,11 @@ public class ImportManager {
                     int dia = rs.getInt("DIA");
                     int hora = rs.getInt("HORA");
 
-                    Subject subject = getSubjectBy(subjectList, asig);
-                    Teacher teacher = getTeacherBy(teacherList, prof);
-                    Group group = getGroupBy(groupList, curso, nivel, grupo);
-                    Classroom classroom = getClassroomBy(classroomList, aula);
-                    TimeZone timeZone = getTimeZoneBy(timeZoneList, dia, hora);
+                    Subject subject = getSubjectBy(asignaturas, asig);
+                    Teacher teacher = getTeacherBy(profesores, prof);
+                    Group group = getGroupBy(grupos, curso, nivel, grupo);
+                    Classroom classroom = getClassroomBy(aulas, aula);
+                    TimeZone timeZone = getTimeZoneBy(zonashorarias, dia, hora);
 
                     if(subject != null && teacher != null && group != null && classroom != null && timeZone != null) {
                         scheduleList.add(new Schedule(i, teacher, subject, group, classroom, timeZone));
