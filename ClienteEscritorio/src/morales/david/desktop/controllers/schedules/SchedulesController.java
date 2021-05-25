@@ -24,7 +24,23 @@ public class SchedulesController implements Initializable, Controller {
     private List<Schedule> schedules;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) { }
+    public void initialize(URL location, ResourceBundle resources) {
+
+        Platform.runLater(() -> {
+            anchorPane.getScene().setOnKeyPressed(event -> {
+                if (schedulerGui != null && event.isControlDown()) {
+                    schedulerGui.controlDown = true;
+                }
+            });
+
+            anchorPane.getScene().setOnKeyReleased(event -> {
+                if (schedulerGui != null && !event.isControlDown()) {
+                    schedulerGui.controlDown = false;
+                }
+            });
+        });
+
+    }
 
     public void resized() {
         schedulerGui.resize();
@@ -51,6 +67,8 @@ public class SchedulesController implements Initializable, Controller {
         anchorPane.heightProperty().addListener(event -> {
             resized();
         });
+
+        Platform.runLater(() -> resized());
 
     }
 

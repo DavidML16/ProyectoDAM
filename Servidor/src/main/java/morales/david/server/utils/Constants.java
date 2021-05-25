@@ -15,9 +15,4 @@ public class Constants {
     public static final String LOG_SERVER_USER_CONNECTED = "(+) Nuevo usuario conectado";
     public static final String LOG_SERVER_USER_DISCONNECTED = "(+) Se ha desconectado un usuario";
 
-    public static final String PROFESORES_SHEET = "Prof";
-    public static final String ASIGNATURAS_SHEET = "NomAsg";
-    public static final String DIAS_SHEET = "numero_dia";
-    public static final String HORAS_SHEET = "numero_hora";
-
 }

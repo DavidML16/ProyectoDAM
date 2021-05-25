@@ -375,11 +375,12 @@ public final class SocketManager extends Thread {
                                     scheduleList.add(Schedule.parse(scheduleMap));
 
                                 Platform.runLater(() -> {
-                                    if(ScreenManager.getInstance().getController() instanceof ScheduleSearchController) {
-                                        ((ScheduleSearchController) ScreenManager.getInstance().getController()).getParentController().loadScheduleGui(scheduleList);
-                                    } else {
-                                        ScreenManager.getInstance().openScheduleView(scheduleList);
-                                    }
+                                    ScreenManager.getInstance().openScheduleView(scheduleList);
+//                                    if(ScreenManager.getInstance().getController() instanceof ScheduleSearchController) {
+//                                        ((ScheduleSearchController) ScreenManager.getInstance().getController()).getParentController().loadScheduleGui(scheduleList);
+//                                    } else {
+//                                        ScreenManager.getInstance().openScheduleView(scheduleList);
+//                                    }
                                 });
 
                             }

@@ -5,10 +5,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.util.StringConverter;
 import morales.david.desktop.managers.DataManager;
 import morales.david.desktop.models.Course;
 import morales.david.desktop.models.Group;
-import morales.david.desktop.utils.ComboBoxAutoComplete;
+import morales.david.desktop.models.Teacher;
+import morales.david.desktop.utils.FxUtilTest;
 import morales.david.desktop.utils.Utils;
 
 import java.net.URL;
@@ -28,6 +30,20 @@ public class GroupModalController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         courseField.setItems(DataManager.getInstance().getCourses());
+
+        courseField.setConverter(new StringConverter<Course>() {
+            @Override
+            public String toString(Course object) {
+                return object != null ? object.toString() : "";
+            }
+
+            @Override
+            public Course fromString(String string) {
+                return courseField.getItems().stream().filter(object ->
+                        object.toString().equals(string)).findFirst().orElse(null);
+            }
+        });
+        FxUtilTest.autoCompleteComboBoxPlus(courseField, (typedText, itemToCompare) -> itemToCompare.toString().toLowerCase().contains(typedText.toLowerCase()));
 
     }
 

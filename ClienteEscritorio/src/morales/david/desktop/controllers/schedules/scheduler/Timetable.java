@@ -86,6 +86,12 @@ public class Timetable {
 
     }
 
+    public void switchSchedule(int i1, int j1, int i2, int j2) {
+        Schedule temp = schedules[i1][j1];
+        schedules[i1][j1] = schedules[i2][j2];
+        schedules[i2][j2] = temp;
+    }
+
     private Schedule findSchedule(int day, int hour) {
         int displacement = isMorning ? 0 : 6;
         for(Schedule schedule : parentPair.getScheduleList()) {
@@ -106,6 +112,36 @@ public class Timetable {
 
     public Schedule[][] getSchedules() {
         return schedules;
+    }
+
+    public Schedule getSchedule(int day, int hour) {
+        return schedules[day][hour];
+    }
+
+    public String getScheduleText(int day, int hour) {
+
+        Schedule schedule = schedules[day][hour];
+
+        if(schedule == null || schedule.getTeacher() == null || schedule.getSubject() == null || schedule.getGroup() == null)
+            return "";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(schedule.getTeacher().getName());
+        sb.append("\n");
+        sb.append(schedule.getSubject().getAbreviation() + "     " + schedule.getClassroom().toString());
+        sb.append("\n");
+        sb.append(schedule.getGroup().toString());
+
+        return sb.toString();
+
+    }
+
+    public void setSchedule(Schedule schedule, int day, int hour) {
+        schedules[day][hour] = schedule;
+    }
+
+    public void clearSubject(int indexDay, int indexHour) {
+        schedules[indexDay][indexHour] = new Schedule();
     }
 
 }

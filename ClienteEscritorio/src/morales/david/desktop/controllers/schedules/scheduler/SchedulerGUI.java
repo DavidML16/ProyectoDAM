@@ -4,9 +4,11 @@ import com.jfoenix.controls.JFXButton;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -14,17 +16,21 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
+import morales.david.desktop.interfaces.Hideable;
 import morales.david.desktop.models.Day;
 import morales.david.desktop.models.Hour;
 import morales.david.desktop.models.Schedule;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SchedulerGUI {
 
-    private static final int ANIMATION_DURATION = 200;
-    private final int ANIMATION_DISTANCE = 50;
-    private static final double FOCUS_ANIMATION_OFFSET_FACTOR = 0.6;
-    private static final double GAP_SIZE = 5;
-    private static final double FONT_FACTOR = 0.22;
+    public static final int ANIMATION_DURATION = 200;
+    public static final int ANIMATION_DISTANCE = 50;
+    public static final double FOCUS_ANIMATION_OFFSET_FACTOR = 0.6;
+    public static final double GAP_SIZE = 5;
+    public static final double FONT_FACTOR = 0.22;
 
     private static final int DAY_LENGTH = 5;
     private static final int HOURS_LENGTH = 7;
@@ -38,7 +44,24 @@ public class SchedulerGUI {
     private EventHandler<MouseEvent> schedulePressedEvent;
     private EventHandler<MouseEvent> scheduleDraggedEvent;
     private EventHandler<MouseEvent>scheduleReleasedEvent;
-    private EventHandler<KeyEvent> scheduleKeyReleasedEvent;
+
+    private JFXButton schedulePreview;
+
+    public boolean controlDown = false;
+    private boolean firstDrag = true;
+    private boolean primaryButton;
+    private double subjectStartX;
+    private double subjectStartY;
+    private double subjectInnerX;
+    private double subjectInnerY;
+
+    private OptionsPane scheduleContextMenu;
+    private JFXButton copy;
+    private JFXButton cut;
+    private JFXButton paste;
+    private JFXButton clear;
+
+    private JFXButton selectedSchedule;
 
     private HBox tabBox;
     private Label tabMorning;
@@ -47,6 +70,8 @@ public class SchedulerGUI {
     private JFXButton[] days;
     private JFXButton[] hours;
     private JFXButton[][] schedules;
+
+    private List<Hideable> menus;
 
     public SchedulerGUI(AnchorPane anchorPane, TimetableManager timetableManager) {
         this.background = anchorPane;
@@ -88,6 +113,40 @@ public class SchedulerGUI {
             hour.setPrefSize(500, 500);
             hours[i] = hour;
         }
+
+        menus = new ArrayList<Hideable>();
+
+        scheduleContextMenu = new OptionsPane(background);
+        menus.add(scheduleContextMenu);
+        copy = new JFXButton("Copiar");
+        copy.setOnAction(event -> {
+            copy(event);
+        });
+        cut = new JFXButton("Cortar");
+        cut.setOnAction(event -> {
+            cut(event);
+        });
+        paste = new JFXButton("Pegar");
+        paste.setOnAction(event -> {
+            paste(event);
+        });
+        clear = new JFXButton("Borrar");
+        clear.setOnAction(event -> {
+            clear();
+        });
+        scheduleContextMenu.addButton(copy);
+        scheduleContextMenu.addButton(cut);
+        scheduleContextMenu.addButton(paste);
+        scheduleContextMenu.addButton(clear);
+
+        schedulePreview = new JFXButton();
+        schedulePreview.getStyleClass().add("schedulePreviewButton");
+        schedulePreview.setTextAlignment(TextAlignment.CENTER);
+        schedulePreview.setAlignment(Pos.CENTER);
+        schedulePreview.prefWidthProperty().bind(schedules[0][0].widthProperty());
+        schedulePreview.prefHeightProperty().bind(schedules[0][0].heightProperty());
+        schedulePreview.setVisible(false);
+        background.getChildren().add(schedulePreview);
 
         selectMorningTurn();
 
@@ -133,9 +192,6 @@ public class SchedulerGUI {
         scheduleReleasedEvent = (MouseEvent event) -> {
             scheduleReleased(event);
         };
-        scheduleKeyReleasedEvent = (KeyEvent event) -> {
-            scheduleKeyReleased(event);
-        };
 
         schedules = new JFXButton[DAY_LENGTH][HOURS_LENGTH - 1];
         for (int i = 0; i < schedules.length; i++) {
@@ -149,7 +205,6 @@ public class SchedulerGUI {
                 schedule.setOnMousePressed(schedulePressedEvent);
                 schedule.setOnMouseDragged(scheduleDraggedEvent);
                 schedule.setOnMouseReleased(scheduleReleasedEvent);
-                schedule.setOnKeyReleased(scheduleKeyReleasedEvent);
                 schedules[i][j] = schedule;
             }
         }
@@ -157,6 +212,7 @@ public class SchedulerGUI {
     }
 
     private void selectMorningTurn() {
+        hideAllMenus();
         timetableManager.setMorning(true);
         tabMorning.getStyleClass().removeIf(s -> (s == "selectedSchedulerTabButton"));
         tabAfternoon.getStyleClass().add("selectedSchedulerTabButton");
@@ -164,25 +220,148 @@ public class SchedulerGUI {
     }
 
     private void selectAfternoonTurn() {
+        hideAllMenus();
         timetableManager.setMorning(false);
         tabAfternoon.getStyleClass().removeIf(s -> (s == "selectedSchedulerTabButton"));
         tabMorning.getStyleClass().add("selectedSchedulerTabButton");
         displayCurrentTimetable();
     }
 
-    private void scheduleKeyReleased(KeyEvent event) {
-    }
-
     private void scheduleReleased(MouseEvent event) {
+
+        if(primaryButton) {
+
+            boolean onSubject = false;
+            int is1 = 0;
+            int js1 = 0;
+            int is2 = 0;
+            int js2 = 0;
+
+            for (int i = 0; i < schedules.length; i++) {
+                for (int j = 0; j < schedules[0].length; j++) {
+                    if (schedules[i][j] == event.getSource()) {
+                        is1 = i;
+                        js1 = j;
+                        break;
+                    }
+                }
+            }
+            for (int i = 0; i < schedules.length; i++) {
+                for (int j = 0; j < schedules[0].length; j++) {
+                    if (schedules[i][j].getLayoutX() < event.getSceneX() && schedules[i][j].getLayoutX() + schedules[i][j].getWidth() > event.getSceneX() &&
+                            schedules[i][j].getLayoutY() < event.getSceneY() && schedules[i][j].getLayoutY() + schedules[i][j].getHeight() > event.getSceneY()) {
+                        is2 = i;
+                        js2 = j;
+                        onSubject = true;
+                        break;
+                    }
+                }
+            }
+
+            if (onSubject) {
+                if (controlDown) {
+                    timetableManager.copy(is1, js1);
+                    timetableManager.paste(is2, js2);
+                } else {
+                    timetableManager.getCurrentTable().switchSchedule(is1, js1, is2, js2);
+                }
+                displayCurrentTimetable();
+            }
+
+            schedulePreview.setVisible(false);
+            firstDrag = true;
+
+        }
+
     }
 
     private void scheduleDragged(MouseEvent event) {
+
+        if (primaryButton) {
+
+            if (firstDrag) {
+                hideAllMenus();
+                for (int i = 0; i < schedules.length; i++) {
+                    for (int j = 0; j < schedules[0].length; j++) {
+                        if (schedules[i][j] == event.getSource()) {
+                            String text = timetableManager.getCurrentTable().getScheduleText(i, j);
+                            if(!text.equalsIgnoreCase("")) {
+                                schedulePreview.setVisible(true);
+                                schedulePreview.setText(text);
+                            }
+                            break;
+                        }
+                    }
+                }
+                firstDrag = false;
+            }
+
+            schedulePreview.setLayoutX(event.getSceneX() - subjectInnerX);
+            schedulePreview.setLayoutY(event.getSceneY() - subjectInnerY);
+
+        }
+
     }
 
     private void schedulePressed(MouseEvent event) {
+        if (event.isSecondaryButtonDown()) {
+            primaryButton = false;
+            getSelectedSubject(event);
+            scheduleContextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), selectedSchedule);
+        } else {
+            hideAllMenus();
+            primaryButton = true;
+            subjectStartX = event.getSceneX();
+            subjectStartY = event.getSceneY();
+            subjectInnerX = event.getX();
+            subjectInnerY = event.getY();
+        }
     }
 
     private void scheduleMenu(ActionEvent event) {
+    }
+
+    private void copy(Event event) {
+        getSelectedSubject(event);
+        timetableManager.copyCurrentClipboard();
+        displayCurrentTimetable();
+    }
+
+    private void cut(Event event) {
+        getSelectedSubject(event);
+        timetableManager.copyCurrentClipboard();
+        timetableManager.clearSubject();
+        displayCurrentTimetable();
+    }
+
+    private void paste(Event event) {
+        getSelectedSubject(event);
+        timetableManager.pasteCurrentClipboard();
+        displayCurrentTimetable();
+    }
+
+    public void clear() {
+        timetableManager.clearSubject();
+        displayCurrentTimetable();
+    }
+
+    private void getSelectedSubject(Event event) {
+        for (int day = 0; day < schedules.length; day++) {
+            for (int hour = 0; hour < schedules[0].length; hour++) {
+                if (event.getSource() == schedules[day][hour]) {
+                    selectedSchedule = schedules[day][hour];
+                    timetableManager.setSelectedIndexDay(day);
+                    timetableManager.setSelectedIndexHour(hour);
+                    break;
+                }
+            }
+        }
+    }
+
+    public void hideAllMenus() {
+        for (Hideable menu : menus) {
+            menu.hide();
+        }
     }
 
     public void resize() {
@@ -198,7 +377,7 @@ public class SchedulerGUI {
 
         Font font1 = Font.font("Arial", FontWeight.BOLD, (h + w) * 0.09);
         Font font2 = Font.font("Arial", FontWeight.BOLD, h * 0.3);
-        Font font3 = new Font(h * 0.20);
+        Font font3 = Font.font("Arial", FontWeight.LIGHT, h * 0.2);
 
         for (JFXButton b : days)
             b.setFont(font1);
@@ -210,6 +389,7 @@ public class SchedulerGUI {
             for (JFXButton b : ba)
                 b.setFont(font3);
 
+        schedulePreview.setFont(Font.font("Arial", FontWeight.BOLD, h * 0.2));
 
     }
 
@@ -259,7 +439,7 @@ public class SchedulerGUI {
 
                 Schedule schedule = scheduleArray[i][j];
 
-                if(schedule != null) {
+                if(schedule != null && schedule.getTeacher() != null && schedule.getGroup() != null) {
 
                     StringBuilder sb = new StringBuilder();
                     sb.append(schedule.getTeacher().getName());

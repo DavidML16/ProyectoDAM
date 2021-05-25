@@ -95,6 +95,10 @@ public class Schedule {
 
     }
 
+    public Schedule duplicate() {
+        return new Schedule(id, teacher, subject, group, classroom, timeZone);
+    }
+
     @Override
     public String toString() {
         return "Schedule{" +

@@ -100,6 +100,9 @@ public final class ScreenManager {
             stage.setWidth(1280);
             stage.setHeight(720);
 
+            stage.setMinWidth(900);
+            stage.setMinHeight(500);
+
             stage.show();
 
             Utils.centerWindow(stage);

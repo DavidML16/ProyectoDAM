@@ -87,4 +87,5 @@ public class DBConstants {
     public static final String DB_QUERY_INSERTSB_TEACHERS = "INSERT INTO profesor VALUES ";
     public static final String DB_QUERY_INSERTSB_SCHEDULES = "INSERT IGNORE INTO imparte VALUES ";
 
+
 }

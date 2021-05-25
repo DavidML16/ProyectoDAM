@@ -10,7 +10,9 @@ import morales.david.server.utils.DBConnection;
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ImportManager {
 
@@ -607,13 +609,12 @@ public class ImportManager {
     private List<Classroom> getClassrooms() {
 
         List<Classroom> classroomList = new ArrayList<>();
+        Set<String> classroomsSet = new HashSet<>();
 
         PreparedStatement stm = null;
         ResultSet rs = null;
 
         try {
-
-            int i = 1;
 
             String[] tables = {"Soluc fp", "Soluc1 fpbasica", "Soluc inf", "Soluc esoycam", "solucion total"};
 
@@ -624,13 +625,20 @@ public class ImportManager {
 
                 while (rs.next()) {
                     String name = rs.getString("AULA");
-                    classroomList.add(new Classroom(i, name.trim().replace(" ", "")));
-                    i++;
+                    classroomsSet.add(name.trim().replace(" ", ""));
                 }
 
                 rs.close();
                 stm.close();
 
+            }
+
+
+            int i = 1;
+
+            for(String classroomName : classroomsSet) {
+                classroomList.add(new Classroom(i, classroomName));
+                i++;
             }
 
         } catch (SQLException throwables) {

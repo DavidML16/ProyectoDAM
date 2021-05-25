@@ -1,20 +1,15 @@
 package morales.david.desktop.controllers.modals;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.util.StringConverter;
 import morales.david.desktop.managers.DataManager;
-import morales.david.desktop.models.Course;
 import morales.david.desktop.models.Credential;
 import morales.david.desktop.models.Teacher;
-import morales.david.desktop.utils.ComboBoxAutoComplete;
+import morales.david.desktop.utils.FxUtilTest;
 import morales.david.desktop.utils.HashUtil;
 import morales.david.desktop.utils.Utils;
 
@@ -55,7 +50,19 @@ public class CredentialModalController implements Initializable {
             passwordCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> passwordField.setDisable(!newValue));
         }
 
-        //new ComboBoxAutoComplete(teacherField);
+        teacherField.setConverter(new StringConverter<Teacher>() {
+            @Override
+            public String toString(Teacher object) {
+                return object != null ? object.getName() : "";
+            }
+
+            @Override
+            public Teacher fromString(String string) {
+                return teacherField.getItems().stream().filter(object ->
+                        object.getName().equals(string)).findFirst().orElse(null);
+            }
+        });
+        FxUtilTest.autoCompleteComboBoxPlus(teacherField, (typedText, itemToCompare) -> itemToCompare.getName().toLowerCase().contains(typedText.toLowerCase()));
 
         removeTeacherButton.setOnMouseClicked(event -> {
            teacherField.getSelectionModel().clearSelection();
