@@ -2,9 +2,11 @@ package morales.david.desktop.models;
 
 import com.google.gson.internal.LinkedTreeMap;
 
+import java.util.UUID;
+
 public class Schedule {
 
-    private int id;
+    private String uuid;
     private Teacher teacher;
     private Subject subject;
     private Group group;
@@ -12,11 +14,15 @@ public class Schedule {
     private TimeZone timeZone;
 
     public Schedule() {
-        this(-1, null, null, null, null, null);
+        this(null, null, null, null, null);
     }
 
-    public Schedule(int id, Teacher teacher, Subject subject, Group group, Classroom classroom, TimeZone timeZone) {
-        this.id = id;
+    public Schedule(Teacher teacher, Subject subject, Group group, Classroom classroom, TimeZone timeZone) {
+        this(UUID.randomUUID().toString(), teacher, subject, group, classroom, timeZone);
+    }
+
+    public Schedule(String uuid, Teacher teacher, Subject subject, Group group, Classroom classroom, TimeZone timeZone) {
+        this.uuid = uuid;
         this.teacher = teacher;
         this.subject = subject;
         this.group = group;
@@ -24,12 +30,12 @@ public class Schedule {
         this.timeZone = timeZone;
     }
 
-    public int getId() {
-        return id;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public Teacher getTeacher() {
@@ -74,7 +80,7 @@ public class Schedule {
 
     public static Schedule parse(LinkedTreeMap scheduleMap) {
 
-        int id = ((Double) scheduleMap.get("id")).intValue();
+        String uuid = (String) scheduleMap.get("uuid");
 
         LinkedTreeMap teacherMap = (LinkedTreeMap) scheduleMap.get("teacher");
         Teacher teacher = Teacher.parse(teacherMap);
@@ -91,24 +97,23 @@ public class Schedule {
         LinkedTreeMap timeZoneMap = (LinkedTreeMap) scheduleMap.get("timeZone");
         TimeZone timeZone = TimeZone.parse(timeZoneMap);
 
-        return new Schedule(id, teacher, subject, group, classroom, timeZone);
+        return new Schedule(uuid, teacher, subject, group, classroom, timeZone);
 
-    }
-
-    public Schedule duplicate() {
-        return new Schedule(id, teacher, subject, group, classroom, timeZone);
     }
 
     @Override
     public String toString() {
         return "Schedule{" +
-                "id=" + id +
-                ", teacher=" + teacher +
+                "teacher=" + teacher +
                 ", subject=" + subject +
                 ", group=" + group +
                 ", classroom=" + classroom +
                 ", timeZone=" + timeZone +
                 '}';
+    }
+
+    public Schedule duplicate() {
+        return new Schedule(teacher, subject, group, classroom, timeZone);
     }
 
 }

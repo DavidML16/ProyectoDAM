@@ -2216,8 +2216,6 @@ public class DBConnection {
 
             rs = stm.executeQuery();
 
-            int i = 1;
-
             while (rs.next()) {
 
                 int id_teacher = rs.getInt("profesor");
@@ -2225,6 +2223,7 @@ public class DBConnection {
                 int id_group = rs.getInt("grupo");
                 int id_classroom = rs.getInt("aula");
                 int id_timezone = rs.getInt("franja");
+                String uuid = rs.getString("uuid");
 
                 Teacher teacher = getTeacher(id_teacher);
                 Subject subject = getSubject(id_subject);
@@ -2232,9 +2231,7 @@ public class DBConnection {
                 Classroom classroom = getClassroom(id_classroom);
                 TimeZone timeZone = getTimeZone(id_timezone);
 
-                schedules.add(new Schedule(i, teacher, subject, group, classroom, timeZone));
-
-                i++;
+                schedules.add(new Schedule(uuid, teacher, subject, group, classroom, timeZone));
 
             }
 

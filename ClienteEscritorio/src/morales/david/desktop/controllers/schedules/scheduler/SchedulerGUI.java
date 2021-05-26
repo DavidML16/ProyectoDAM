@@ -8,8 +8,6 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
@@ -306,7 +304,7 @@ public class SchedulerGUI {
     private void schedulePressed(MouseEvent event) {
         if (event.isSecondaryButtonDown()) {
             primaryButton = false;
-            getSelectedSubject(event);
+            getSelectedScheduleButton(event);
             scheduleContextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), selectedSchedule);
         } else {
             hideAllMenus();
@@ -322,20 +320,20 @@ public class SchedulerGUI {
     }
 
     private void copy(Event event) {
-        getSelectedSubject(event);
+        getSelectedScheduleButton(event);
         timetableManager.copyCurrentClipboard();
         displayCurrentTimetable();
     }
 
     private void cut(Event event) {
-        getSelectedSubject(event);
+        getSelectedScheduleButton(event);
         timetableManager.copyCurrentClipboard();
         timetableManager.clearSubject();
         displayCurrentTimetable();
     }
 
     private void paste(Event event) {
-        getSelectedSubject(event);
+        getSelectedScheduleButton(event);
         timetableManager.pasteCurrentClipboard();
         displayCurrentTimetable();
     }
@@ -345,7 +343,7 @@ public class SchedulerGUI {
         displayCurrentTimetable();
     }
 
-    private void getSelectedSubject(Event event) {
+    private void getSelectedScheduleButton(Event event) {
         for (int day = 0; day < schedules.length; day++) {
             for (int hour = 0; hour < schedules[0].length; hour++) {
                 if (event.getSource() == schedules[day][hour]) {
@@ -356,6 +354,18 @@ public class SchedulerGUI {
                 }
             }
         }
+    }
+
+    private Schedule getSelectedSchedule(Event event) {
+        for (int day = 0; day < schedules.length; day++) {
+            for (int hour = 0; hour < schedules[0].length; hour++) {
+                if (event.getSource() == schedules[day][hour]) {
+                    Schedule schedule = timetableManager.getCurrentTable().getSchedule(day, hour);
+                    return schedule;
+                }
+            }
+        }
+        return null;
     }
 
     public void hideAllMenus() {

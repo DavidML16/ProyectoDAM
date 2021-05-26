@@ -6,6 +6,7 @@ import morales.david.server.models.packets.Packet;
 import morales.david.server.models.packets.PacketBuilder;
 import morales.david.server.models.packets.PacketType;
 import morales.david.server.utils.DBConnection;
+import morales.david.server.utils.DBConstants;
 
 import java.io.File;
 import java.sql.*;
@@ -616,9 +617,7 @@ public class ImportManager {
 
         try {
 
-            String[] tables = {"Soluc fp", "Soluc1 fpbasica", "Soluc inf", "Soluc esoycam", "solucion total"};
-
-            for(String table : tables) {
+            for(String table : DBConstants.SCHEDULE_TABLES) {
 
                 stm = acon.prepareStatement("SELECT AULA FROM `" + table + "` WHERE AULA IS NOT NULL GROUP BY AULA");
                 rs = stm.executeQuery();
@@ -693,9 +692,7 @@ public class ImportManager {
 
             int i = 1;
 
-            String[] tables = {"Soluc fp", "Soluc1 fpbasica", "Soluc inf", "Soluc esoycam", "solucion total"};
-
-            for(String table : tables) {
+            for(String table : DBConstants.SCHEDULE_TABLES) {
 
                 stm = acon.prepareStatement("SELECT CURSO, NIVEL FROM `" + table + "` WHERE CURSO IS NOT NULL AND NIVEL IS NOT NULL GROUP BY CURSO, NIVEL");
                 rs = stm.executeQuery();
@@ -767,9 +764,7 @@ public class ImportManager {
 
         try {
 
-            String[] tables = {"Soluc fp", "Soluc1 fpbasica", "Soluc inf", "Soluc esoycam", "solucion total"};
-
-            for(String table : tables) {
+            for(String table : DBConstants.SCHEDULE_TABLES) {
 
                 for(Subject subject : subjectList) {
 
@@ -847,11 +842,9 @@ public class ImportManager {
 
         try {
 
-            String[] tables = {"Soluc fp", "Soluc1 fpbasica", "Soluc inf", "Soluc esoycam", "solucion total"};
-
             int i = 1;
 
-            for(String table : tables) {
+            for(String table : DBConstants.SCHEDULE_TABLES) {
 
                 stm = acon.prepareStatement("SELECT DISTINCT GRUPO, CURSO, NIVEL FROM `" + table + "` WHERE CURSO IS NOT NULL AND NIVEL IS NOT NULL AND GRUPO IS NOT NULL");
                 rs = stm.executeQuery();
@@ -935,11 +928,7 @@ public class ImportManager {
 
         try {
 
-            String[] tables = {"Soluc fp", "Soluc1 fpbasica", "Soluc inf", "Soluc esoycam", "solucion total"};
-
-            int i = 1;
-
-            for(String table : tables) {
+            for(String table : DBConstants.SCHEDULE_TABLES) {
 
                 stm = acon.prepareStatement("SELECT ASIG, PROF, CURSO, NIVEL, GRUPO, AULA, DIA, HORA FROM `" + table + "` WHERE AULA IS NOT NULL AND CODGRUPO IS NOT NULL AND ASIG IS NOT NULL");
                 rs = stm.executeQuery();
@@ -962,8 +951,7 @@ public class ImportManager {
                     TimeZone timeZone = getTimeZoneBy(zonashorarias, dia, hora);
 
                     if(subject != null && teacher != null && group != null && classroom != null && timeZone != null) {
-                        scheduleList.add(new Schedule(i, teacher, subject, group, classroom, timeZone));
-                        i++;
+                        scheduleList.add(new Schedule(teacher, subject, group, classroom, timeZone));
                     }
 
                 }
@@ -1013,7 +1001,9 @@ public class ImportManager {
                     .append(schedule.getClassroom().getId())
                     .append(",")
                     .append(schedule.getTimeZone().getId())
-                    .append(")");
+                    .append(",'")
+                    .append(schedule.getUuid())
+                    .append("')");
 
         }
 

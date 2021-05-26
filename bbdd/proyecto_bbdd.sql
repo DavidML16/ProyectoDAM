@@ -89,6 +89,7 @@ CREATE TABLE imparte (
 	grupo INTEGER(11) NOT NULL,
 	aula INTEGER(11) NOT NULL,
 	franja INTEGER(11) NOT NULL,
+	uuid VARCHAR(36) NOT NULL,
 	CONSTRAINT imparte_pk PRIMARY KEY (profesor, asignatura, grupo, aula, franja),
 	CONSTRAINT imparte_profesor_fk FOREIGN KEY (profesor) REFERENCES profesor(id_profesor),
 	CONSTRAINT imparte_asignatura_fk FOREIGN KEY (asignatura) REFERENCES asignatura(id_asignatura),

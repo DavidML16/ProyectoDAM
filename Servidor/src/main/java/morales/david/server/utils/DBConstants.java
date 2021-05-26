@@ -88,4 +88,8 @@ public class DBConstants {
     public static final String DB_QUERY_INSERTSB_SCHEDULES = "INSERT IGNORE INTO imparte VALUES ";
 
 
+    //public static final String[] SCHEDULE_TABLES = {"Soluc fp", "Soluc1 fpbasica", "Soluc inf", "Soluc esoycam", "solucion total"};
+    public static final String[] SCHEDULE_TABLES = {"solucion total"};
+
+
 }
