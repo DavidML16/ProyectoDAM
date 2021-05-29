@@ -178,6 +178,14 @@ public class ClientProtocol {
                 searchSchedule();
                 break;
 
+            case INSERTSCHEDULE:
+                insertSchedule();
+                break;
+
+            case REMOVESCHEDULE:
+                removeSchedule();
+                break;
+
         }
 
         clientThread.getDbConnection().close();
@@ -1027,6 +1035,82 @@ public class ClientProtocol {
                     .build();
 
             sendPacketIO(schedulesConfirmationPacket);
+
+        }
+
+    }
+
+    /**
+     * Get schedule data from packet
+     * Parse schedule data and return schedule object
+     * Insert schedule to database, and send confirmation or error packet to client
+     */
+    private void insertSchedule() {
+
+        LinkedTreeMap scheduleMap = (LinkedTreeMap) lastPacket.getArgument("schedule");
+
+        Schedule schedule = Schedule.parse(scheduleMap);
+
+        if(schedule == null)
+            return;
+
+        if(clientThread.getDbConnection().insertSchedule(schedule)) {
+
+            Packet insertScheduleConfirmationPacket = new PacketBuilder()
+                    .ofType(PacketType.INSERTSCHEDULE.getConfirmation())
+                    .addArgument("uuid", schedule.getUuid())
+                    .addArgument("schedule", schedule)
+                    .build();
+
+            sendPacketIO(insertScheduleConfirmationPacket);
+
+        } else {
+
+            Packet insertScheduleErrorPacket = new PacketBuilder()
+                    .ofType(PacketType.INSERTSCHEDULE.getError())
+                    .addArgument("uuid", schedule.getUuid())
+                    .addArgument("message", "No se ha podido insertar ese schedule")
+                    .build();
+
+            sendPacketIO(insertScheduleErrorPacket);
+
+        }
+
+    }
+
+    /**
+     * Get schedule data from packet
+     * Parse schedule data and return schedule object
+     * Remove schedule from database, and send confirmation or error packet to client
+     */
+    private void removeSchedule() {
+
+        LinkedTreeMap scheduleMap = (LinkedTreeMap) lastPacket.getArgument("schedule");
+
+        Schedule schedule = Schedule.parse(scheduleMap);
+
+        if(schedule == null)
+            return;
+
+        if(clientThread.getDbConnection().removeSchedule(schedule)) {
+
+            Packet deleteScheduleConfirmationPacket = new PacketBuilder()
+                    .ofType(PacketType.REMOVESCHEDULE.getConfirmation())
+                    .addArgument("uuid", schedule.getUuid())
+                    .addArgument("schedule", schedule)
+                    .build();
+
+            sendPacketIO(deleteScheduleConfirmationPacket);
+
+        } else {
+
+            Packet deleteScheduleErrorPacket = new PacketBuilder()
+                    .ofType(PacketType.REMOVESCHEDULE.getError())
+                    .addArgument("uuid", schedule.getUuid())
+                    .addArgument("message", "No se ha podido eliminar ese schedule")
+                    .build();
+
+            sendPacketIO(deleteScheduleErrorPacket);
 
         }
 

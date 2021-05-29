@@ -9,33 +9,37 @@ import morales.david.desktop.models.TimeZone;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TimetablePair {
+public class SchedulerPair {
 
     private List<Schedule> scheduleList;
     private List<Day> dayList;
     private List<Hour> hourList;
     private List<TimeZone> timeZoneList;
 
-    private Timetable timetableMorning;
-    private Timetable timetableAfternoon;
+    private Scheduler schedulerMorning;
+    private Scheduler schedulerAfternoon;
 
-    public TimetablePair(List<Schedule> scheduleList) {
+    private SchedulerManager schedulerManager;
+
+    public SchedulerPair(List<Schedule> scheduleList, SchedulerManager schedulerManager) {
+
+        this.schedulerManager = schedulerManager;
 
         this.scheduleList = scheduleList;
         this.dayList = new ArrayList<>(DataManager.getInstance().getDays());
         this.hourList = new ArrayList<>(DataManager.getInstance().getHours());
         this.timeZoneList = new ArrayList<>(DataManager.getInstance().getTimeZones());
 
-        this.timetableMorning = new Timetable(this, true);
-        this.timetableAfternoon = new Timetable(this, false);
+        this.schedulerMorning = new Scheduler(this, true);
+        this.schedulerAfternoon = new Scheduler(this, false);
 
     }
 
-    public Timetable get(boolean isMorning) {
+    public Scheduler get(boolean isMorning) {
         if (isMorning)
-            return timetableMorning;
+            return schedulerMorning;
         else
-            return timetableAfternoon;
+            return schedulerAfternoon;
     }
 
     public List<Schedule> getScheduleList() { return scheduleList; }
@@ -50,6 +54,10 @@ public class TimetablePair {
 
     public List<TimeZone> getTimeZoneList() {
         return timeZoneList;
+    }
+
+    public SchedulerManager getTimetableManager() {
+        return schedulerManager;
     }
 
 }

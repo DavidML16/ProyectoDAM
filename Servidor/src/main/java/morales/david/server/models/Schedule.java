@@ -83,18 +83,28 @@ public class Schedule {
         String uuid = (String) scheduleMap.get("uuid");
 
         LinkedTreeMap teacherMap = (LinkedTreeMap) scheduleMap.get("teacher");
+        if(teacherMap == null)
+            return null;
         Teacher teacher = Teacher.parse(teacherMap);
 
         LinkedTreeMap subjectMap = (LinkedTreeMap) scheduleMap.get("subject");
+        if(subjectMap == null)
+            return null;
         Subject subject = Subject.parse(subjectMap);
 
         LinkedTreeMap groupMap = (LinkedTreeMap) scheduleMap.get("group");
+        if(groupMap == null)
+            return null;
         Group group = Group.parse(groupMap);
 
         LinkedTreeMap classroomMap = (LinkedTreeMap) scheduleMap.get("classroom");
+        if(classroomMap == null)
+            return null;
         Classroom classroom = Classroom.parse(classroomMap);
 
         LinkedTreeMap timeZoneMap = (LinkedTreeMap) scheduleMap.get("timeZone");
+        if(timeZoneMap == null)
+            return null;
         TimeZone timeZone = TimeZone.parse(timeZoneMap);
 
         return new Schedule(uuid, teacher, subject, group, classroom, timeZone);
@@ -104,7 +114,8 @@ public class Schedule {
     @Override
     public String toString() {
         return "Schedule{" +
-                "teacher=" + teacher +
+                "uuid='" + uuid + '\'' +
+                ", teacher=" + teacher +
                 ", subject=" + subject +
                 ", group=" + group +
                 ", classroom=" + classroom +

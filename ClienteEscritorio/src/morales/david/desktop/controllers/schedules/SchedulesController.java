@@ -5,9 +5,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
 import morales.david.desktop.controllers.schedules.scheduler.SchedulerGUI;
-import morales.david.desktop.controllers.schedules.scheduler.TimetableManager;
+import morales.david.desktop.controllers.schedules.scheduler.SchedulerManager;
 import morales.david.desktop.interfaces.Controller;
-import morales.david.desktop.managers.ScreenManager;
 import morales.david.desktop.models.Schedule;
 
 import java.net.URL;
@@ -54,9 +53,9 @@ public class SchedulesController implements Initializable, Controller {
 
         this.schedules = schedules;
 
-        TimetableManager timetableManager = new TimetableManager(schedules);
+        SchedulerManager schedulerManager = new SchedulerManager(schedules);
 
-        schedulerGui = new SchedulerGUI(anchorPane, timetableManager);
+        schedulerGui = new SchedulerGUI(anchorPane, schedulerManager);
 
         schedulerGui.init();
         schedulerGui.displayCurrentTimetable();

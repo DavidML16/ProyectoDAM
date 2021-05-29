@@ -64,6 +64,8 @@ public class DBConstants {
             "FROM franja_horaria TZ, numero_dia DN, numero_hora HN WHERE TZ.dia = DN.id_dia AND TZ.hora = HN.id_hora AND TZ.id_franja = ?";
 
     public static final String DB_QUERY_SEARCH_SCHEDULE = "SELECT * FROM imparte WHERE ";
+    public static final String DB_QUERY_REMOVESCHEDULE = "DELETE FROM imparte WHERE `uuid` = ?";
+    public static final String DB_QUERY_INSERTSCHEDULE = "INSERT INTO imparte VALUES (?,?,?,?,?,?)";
 
     public static final String DB_QUERY_CLEAR_DAYS = "DELETE FROM numero_dia";
     public static final String DB_QUERY_CLEAR_HOURS = "DELETE FROM numero_hora";

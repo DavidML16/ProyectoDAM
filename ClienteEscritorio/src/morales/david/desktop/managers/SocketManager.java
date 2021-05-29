@@ -8,6 +8,9 @@ import morales.david.desktop.Client;
 import morales.david.desktop.controllers.ImportController;
 import morales.david.desktop.controllers.LoginController;
 import morales.david.desktop.controllers.schedules.ScheduleSearchController;
+import morales.david.desktop.managers.eventcallbacks.ScheduleConfirmationListener;
+import morales.david.desktop.managers.eventcallbacks.ScheduleErrorListener;
+import morales.david.desktop.managers.eventcallbacks.EventManager;
 import morales.david.desktop.models.*;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketType;
@@ -374,14 +377,57 @@ public final class SocketManager extends Thread {
                                 for (LinkedTreeMap scheduleMap : schedules)
                                     scheduleList.add(Schedule.parse(scheduleMap));
 
-                                Platform.runLater(() -> {
-                                    ScreenManager.getInstance().openScheduleView(scheduleList);
-//                                    if(ScreenManager.getInstance().getController() instanceof ScheduleSearchController) {
-//                                        ((ScheduleSearchController) ScreenManager.getInstance().getController()).getParentController().loadScheduleGui(scheduleList);
-//                                    } else {
-//                                        ScreenManager.getInstance().openScheduleView(scheduleList);
-//                                    }
-                                });
+                                Platform.runLater(() -> ScreenManager.getInstance().openScheduleView(scheduleList));
+
+                            }
+
+                            break;
+
+                        }
+
+                        case INSERTSCHEDULE: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.INSERTSCHEDULE.getConfirmation())) {
+
+                                String uuid = (String) receivedPacket.getArgument("uuid");
+                                LinkedTreeMap scheduleMap = (LinkedTreeMap) receivedPacket.getArgument("schedule");
+
+                                Schedule schedule = Schedule.parse(scheduleMap);
+
+                                if (schedule != null)
+                                    EventManager.getInstance().notify(uuid, new ScheduleConfirmationListener(uuid, schedule));
+
+                            } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.INSERTSCHEDULE.getError())) {
+
+                                String uuid = (String) receivedPacket.getArgument("uuid");
+                                String message = (String) receivedPacket.getArgument("message");
+
+                                EventManager.getInstance().notify(uuid, new ScheduleErrorListener(uuid, message));
+
+                            }
+
+                            break;
+
+                        }
+
+                        case REMOVESCHEDULE: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.REMOVESCHEDULE.getConfirmation())) {
+
+                                String uuid = (String) receivedPacket.getArgument("uuid");
+                                LinkedTreeMap scheduleMap = (LinkedTreeMap) receivedPacket.getArgument("schedule");
+
+                                Schedule schedule = Schedule.parse(scheduleMap);
+
+                                if (schedule != null)
+                                    EventManager.getInstance().notify(uuid, new ScheduleConfirmationListener(uuid, schedule));
+
+                            } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.REMOVESCHEDULE.getError())) {
+
+                                String uuid = (String) receivedPacket.getArgument("uuid");
+                                String message = (String) receivedPacket.getArgument("message");
+
+                                EventManager.getInstance().notify(uuid, new ScheduleErrorListener(uuid, message));
 
                             }
 

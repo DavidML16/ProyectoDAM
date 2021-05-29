@@ -104,7 +104,8 @@ public class Schedule {
     @Override
     public String toString() {
         return "Schedule{" +
-                "teacher=" + teacher +
+                "uuid='" + uuid + '\'' +
+                ", teacher=" + teacher +
                 ", subject=" + subject +
                 ", group=" + group +
                 ", classroom=" + classroom +

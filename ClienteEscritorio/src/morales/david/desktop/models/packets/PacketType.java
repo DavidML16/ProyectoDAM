@@ -24,7 +24,7 @@ public enum PacketType {
 
     TIMEZONES,
 
-    SCHEDULES;
+    SCHEDULES, INSERTSCHEDULE, REMOVESCHEDULE;
 
     public String getRequest() {
         return "REQUEST_" + toString();

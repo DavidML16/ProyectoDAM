@@ -36,7 +36,7 @@ public class SchedulerGUI {
     private AnchorPane background;
     private GridPane subjectGrid;
 
-    private TimetableManager timetableManager;
+    private SchedulerManager schedulerManager;
 
     private EventHandler<ActionEvent> scheduleActionEvent;
     private EventHandler<MouseEvent> schedulePressedEvent;
@@ -57,7 +57,7 @@ public class SchedulerGUI {
     private JFXButton copy;
     private JFXButton cut;
     private JFXButton paste;
-    private JFXButton clear;
+    private JFXButton delete;
 
     private JFXButton selectedSchedule;
 
@@ -71,9 +71,10 @@ public class SchedulerGUI {
 
     private List<Hideable> menus;
 
-    public SchedulerGUI(AnchorPane anchorPane, TimetableManager timetableManager) {
+    public SchedulerGUI(AnchorPane anchorPane, SchedulerManager schedulerManager) {
         this.background = anchorPane;
-        this.timetableManager = timetableManager;
+        this.schedulerManager = schedulerManager;
+        this.schedulerManager.setGui(this);
     }
 
     public void init() {
@@ -128,14 +129,14 @@ public class SchedulerGUI {
         paste.setOnAction(event -> {
             paste(event);
         });
-        clear = new JFXButton("Borrar");
-        clear.setOnAction(event -> {
-            clear();
+        delete = new JFXButton("Eliminar");
+        delete.setOnAction(event -> {
+            delete();
         });
         scheduleContextMenu.addButton(copy);
         scheduleContextMenu.addButton(cut);
         scheduleContextMenu.addButton(paste);
-        scheduleContextMenu.addButton(clear);
+        scheduleContextMenu.addButton(delete);
 
         schedulePreview = new JFXButton();
         schedulePreview.getStyleClass().add("schedulePreviewButton");
@@ -211,7 +212,7 @@ public class SchedulerGUI {
 
     private void selectMorningTurn() {
         hideAllMenus();
-        timetableManager.setMorning(true);
+        schedulerManager.setMorning(true);
         tabMorning.getStyleClass().removeIf(s -> (s == "selectedSchedulerTabButton"));
         tabAfternoon.getStyleClass().add("selectedSchedulerTabButton");
         displayCurrentTimetable();
@@ -219,7 +220,7 @@ public class SchedulerGUI {
 
     private void selectAfternoonTurn() {
         hideAllMenus();
-        timetableManager.setMorning(false);
+        schedulerManager.setMorning(false);
         tabAfternoon.getStyleClass().removeIf(s -> (s == "selectedSchedulerTabButton"));
         tabMorning.getStyleClass().add("selectedSchedulerTabButton");
         displayCurrentTimetable();
@@ -258,10 +259,10 @@ public class SchedulerGUI {
 
             if (onSubject) {
                 if (controlDown) {
-                    timetableManager.copy(is1, js1);
-                    timetableManager.paste(is2, js2);
+                    schedulerManager.copy(is1, js1);
+                    schedulerManager.paste(is2, js2);
                 } else {
-                    timetableManager.getCurrentTable().switchSchedule(is1, js1, is2, js2);
+                    schedulerManager.getCurrentTable().switchSchedule(is1, js1, is2, js2);
                 }
                 displayCurrentTimetable();
             }
@@ -282,7 +283,7 @@ public class SchedulerGUI {
                 for (int i = 0; i < schedules.length; i++) {
                     for (int j = 0; j < schedules[0].length; j++) {
                         if (schedules[i][j] == event.getSource()) {
-                            String text = timetableManager.getCurrentTable().getScheduleText(i, j);
+                            String text = schedulerManager.getCurrentTable().getScheduleText(i, j);
                             if(!text.equalsIgnoreCase("")) {
                                 schedulePreview.setVisible(true);
                                 schedulePreview.setText(text);
@@ -321,25 +322,25 @@ public class SchedulerGUI {
 
     private void copy(Event event) {
         getSelectedScheduleButton(event);
-        timetableManager.copyCurrentClipboard();
+        schedulerManager.copyCurrentClipboard();
         displayCurrentTimetable();
     }
 
     private void cut(Event event) {
         getSelectedScheduleButton(event);
-        timetableManager.copyCurrentClipboard();
-        timetableManager.clearSubject();
+        schedulerManager.copyCurrentClipboard();
+        schedulerManager.deleteSchedule();
         displayCurrentTimetable();
     }
 
     private void paste(Event event) {
         getSelectedScheduleButton(event);
-        timetableManager.pasteCurrentClipboard();
+        schedulerManager.pasteCurrentClipboard();
         displayCurrentTimetable();
     }
 
-    public void clear() {
-        timetableManager.clearSubject();
+    public void delete() {
+        schedulerManager.deleteSchedule();
         displayCurrentTimetable();
     }
 
@@ -348,8 +349,8 @@ public class SchedulerGUI {
             for (int hour = 0; hour < schedules[0].length; hour++) {
                 if (event.getSource() == schedules[day][hour]) {
                     selectedSchedule = schedules[day][hour];
-                    timetableManager.setSelectedIndexDay(day);
-                    timetableManager.setSelectedIndexHour(hour);
+                    schedulerManager.setSelectedIndexDay(day);
+                    schedulerManager.setSelectedIndexHour(hour);
                     break;
                 }
             }
@@ -360,7 +361,7 @@ public class SchedulerGUI {
         for (int day = 0; day < schedules.length; day++) {
             for (int hour = 0; hour < schedules[0].length; hour++) {
                 if (event.getSource() == schedules[day][hour]) {
-                    Schedule schedule = timetableManager.getCurrentTable().getSchedule(day, hour);
+                    Schedule schedule = schedulerManager.getCurrentTable().getSchedule(day, hour);
                     return schedule;
                 }
             }
@@ -414,7 +415,7 @@ public class SchedulerGUI {
         subjectGrid.add(tabBox, 1, 0, 5, 1);
 
         int pos = 0;
-        Day[] dayArray = timetableManager.getCurrentTable().getDays();
+        Day[] dayArray = schedulerManager.getCurrentTable().getDays();
         for (int i = 0; i < days.length; i++) {
             subjectGrid.add(days[i], pos + 1, 1, 1, 1);
             if(dayArray[i] != null)
@@ -422,7 +423,7 @@ public class SchedulerGUI {
             pos++;
         }
 
-        Hour[] hourArray = timetableManager.getCurrentTable().getHours();
+        Hour[] hourArray = schedulerManager.getCurrentTable().getHours();
         for (int i = 0; i < hours.length; i++) {
             subjectGrid.add(hours[i], 0, i + 2, 1, 1);
             if(hourArray[i] != null)
@@ -430,7 +431,7 @@ public class SchedulerGUI {
         }
 
         pos = 0;
-        Schedule[][] scheduleArray = timetableManager.getCurrentTable().getSchedules();
+        Schedule[][] scheduleArray = schedulerManager.getCurrentTable().getSchedules();
         for (int i = 0; i < schedules.length; i++) {
             for (int j = 0; j < schedules[0].length; j++) {
 

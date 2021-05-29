@@ -1,13 +1,12 @@
 package morales.david.desktop.controllers.schedules.scheduler;
 
 import morales.david.desktop.models.Schedule;
-import morales.david.desktop.models.Subject;
 
 import java.util.List;
 
-public class TimetableManager {
+public class SchedulerManager {
 
-    private TimetablePair currentTimetable;
+    private SchedulerPair currentTimetable;
 
     private int selectedIndexDay = 0;
     private int selectedIndexHour = 0;
@@ -16,15 +15,17 @@ public class TimetableManager {
 
     private boolean isMorning;
 
-    public TimetableManager(List<Schedule> scheduleList) {
-        currentTimetable = new TimetablePair(scheduleList);
+    private SchedulerGUI gui;
+
+    public SchedulerManager(List<Schedule> scheduleList) {
+        currentTimetable = new SchedulerPair(scheduleList, this);
     }
 
-    public TimetablePair getCurrentTimetable() {
+    public SchedulerPair getCurrentTimetable() {
         return currentTimetable;
     }
 
-    public void setCurrentTimetable(TimetablePair currentTimetable) {
+    public void setCurrentTimetable(SchedulerPair currentTimetable) {
         this.currentTimetable = currentTimetable;
     }
 
@@ -44,8 +45,8 @@ public class TimetableManager {
         this.selectedIndexHour = selectedIndexHour;
     }
 
-    public void clearSubject() {
-        currentTimetable.get(isMorning).clearSubject(selectedIndexDay, selectedIndexHour);
+    public void deleteSchedule() {
+        currentTimetable.get(isMorning).deleteSchedule(selectedIndexDay, selectedIndexHour);
     }
 
     public Schedule getClipBoard() {
@@ -88,8 +89,16 @@ public class TimetableManager {
         isMorning = morning;
     }
 
-    public Timetable getCurrentTable() {
+    public Scheduler getCurrentTable() {
         return currentTimetable.get(isMorning);
+    }
+
+    public SchedulerGUI getGui() {
+        return gui;
+    }
+
+    public void setGui(SchedulerGUI gui) {
+        this.gui = gui;
     }
 
 }
