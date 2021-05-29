@@ -182,6 +182,10 @@ public class ClientProtocol {
                 insertSchedule();
                 break;
 
+            case SWITCHSCHEDULE:
+                switchSchedules();
+                break;
+
             case REMOVESCHEDULE:
                 removeSchedule();
                 break;
@@ -1069,6 +1073,53 @@ public class ClientProtocol {
             Packet insertScheduleErrorPacket = new PacketBuilder()
                     .ofType(PacketType.INSERTSCHEDULE.getError())
                     .addArgument("uuid", schedule.getUuid())
+                    .addArgument("message", "No se ha podido insertar ese schedule")
+                    .build();
+
+            sendPacketIO(insertScheduleErrorPacket);
+
+        }
+
+    }
+
+    /**
+     * Get schedule data from packet
+     * Parse schedule data and return schedule object
+     * Switch schedules from database, and send confirmation or error packet to client
+     */
+    private void switchSchedules() {
+
+        LinkedTreeMap schedule1Map = (LinkedTreeMap) lastPacket.getArgument("schedule1");
+        Schedule schedule1 = Schedule.parse(schedule1Map);
+
+        LinkedTreeMap schedule2Map = (LinkedTreeMap) lastPacket.getArgument("schedule2");
+        Schedule schedule2 = Schedule.parse(schedule2Map);
+
+        if(schedule1 == null || schedule2 == null)
+            return;
+
+        TimeZone timezone1 = schedule1.getTimeZone();
+        TimeZone timezone2 = schedule2.getTimeZone();
+
+        schedule1.setTimeZone(timezone2);
+        schedule2.setTimeZone(timezone1);
+
+        if(clientThread.getDbConnection().updateSchedule(schedule1) && clientThread.getDbConnection().updateSchedule(schedule2)) {
+
+            Packet switchScheduleConfirmationPacket = new PacketBuilder()
+                    .ofType(PacketType.SWITCHSCHEDULE.getConfirmation())
+                    .addArgument("uuid", schedule1.getUuid() + "|" + schedule2.getUuid())
+                    .addArgument("schedule1", schedule1)
+                    .addArgument("schedule2", schedule2)
+                    .build();
+
+            sendPacketIO(switchScheduleConfirmationPacket);
+
+        } else {
+
+            Packet insertScheduleErrorPacket = new PacketBuilder()
+                    .ofType(PacketType.SWITCHSCHEDULE.getError())
+                    .addArgument("uuid", schedule1.getUuid() + "|" + schedule2.getUuid())
                     .addArgument("message", "No se ha podido insertar ese schedule")
                     .build();
 

@@ -11,6 +11,7 @@ import morales.david.desktop.controllers.schedules.ScheduleSearchController;
 import morales.david.desktop.managers.eventcallbacks.ScheduleConfirmationListener;
 import morales.david.desktop.managers.eventcallbacks.ScheduleErrorListener;
 import morales.david.desktop.managers.eventcallbacks.EventManager;
+import morales.david.desktop.managers.eventcallbacks.ScheduleSwitchConfirmationListener;
 import morales.david.desktop.models.*;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketType;
@@ -398,6 +399,34 @@ public final class SocketManager extends Thread {
                                     EventManager.getInstance().notify(uuid, new ScheduleConfirmationListener(uuid, schedule));
 
                             } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.INSERTSCHEDULE.getError())) {
+
+                                String uuid = (String) receivedPacket.getArgument("uuid");
+                                String message = (String) receivedPacket.getArgument("message");
+
+                                EventManager.getInstance().notify(uuid, new ScheduleErrorListener(uuid, message));
+
+                            }
+
+                            break;
+
+                        }
+
+                        case SWITCHSCHEDULE: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.SWITCHSCHEDULE.getConfirmation())) {
+
+                                String uuid = (String) receivedPacket.getArgument("uuid");
+
+                                LinkedTreeMap schedule1Map = (LinkedTreeMap) receivedPacket.getArgument("schedule1");
+                                Schedule schedule1 = Schedule.parse(schedule1Map);
+
+                                LinkedTreeMap schedule2Map = (LinkedTreeMap) receivedPacket.getArgument("schedule2");
+                                Schedule schedule2 = Schedule.parse(schedule2Map);
+
+                                if (schedule1 != null && schedule2 != null)
+                                    EventManager.getInstance().notify(uuid, new ScheduleSwitchConfirmationListener(uuid, schedule1, schedule2));
+
+                            } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.SWITCHSCHEDULE.getError())) {
 
                                 String uuid = (String) receivedPacket.getArgument("uuid");
                                 String message = (String) receivedPacket.getArgument("message");

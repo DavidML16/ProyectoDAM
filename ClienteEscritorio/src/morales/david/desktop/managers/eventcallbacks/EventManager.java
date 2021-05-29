@@ -34,6 +34,8 @@ public class EventManager {
     public void notify(String uuid, ScheduleListenerType scheduleListenerType) {
         Platform.runLater(() -> {
             List<ScheduleListener> typeListeners = listeners.get(uuid);
+            if(typeListeners == null)
+                return;
             for (ScheduleListener listener : typeListeners) {
                 listener.callback(uuid, scheduleListenerType);
             }

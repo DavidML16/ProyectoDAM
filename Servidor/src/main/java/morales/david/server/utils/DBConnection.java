@@ -2298,6 +2298,45 @@ public class DBConnection {
     }
 
     /**
+     * Update schedule provided from the database
+     * @param schedule
+     * @return schedule deleted
+     */
+    public boolean updateSchedule(Schedule schedule) {
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_UPDATESCHEDULE);
+
+            stm.setInt(1, schedule.getTeacher().getId());
+            stm.setInt(2, schedule.getSubject().getId());
+            stm.setInt(3, schedule.getGroup().getId());
+            stm.setInt(4, schedule.getClassroom().getId());
+            stm.setInt(5, schedule.getTimeZone().getId());
+            stm.setString(6, schedule.getUuid());
+
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return rs == 1;
+
+    }
+
+    /**
      * Remove schedule provided from the database
      * @param schedule
      * @return schedule deleted

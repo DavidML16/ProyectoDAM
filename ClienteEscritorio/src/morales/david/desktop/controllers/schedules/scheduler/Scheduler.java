@@ -5,6 +5,7 @@ import morales.david.desktop.managers.eventcallbacks.ScheduleConfirmationListene
 import morales.david.desktop.managers.eventcallbacks.ScheduleErrorListener;
 import morales.david.desktop.managers.eventcallbacks.EventManager;
 import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.managers.eventcallbacks.ScheduleSwitchConfirmationListener;
 import morales.david.desktop.models.Day;
 import morales.david.desktop.models.Hour;
 import morales.david.desktop.models.Schedule;
@@ -94,9 +95,55 @@ public class Scheduler {
     }
 
     public void switchSchedule(int i1, int j1, int i2, int j2) {
-        Schedule temp = schedules[i1][j1];
-        schedules[i1][j1] = schedules[i2][j2];
-        schedules[i2][j2] = temp;
+
+        Schedule schedule1 = schedules[i1][j1];
+
+        if(schedule1 == null)
+            return;
+
+        Schedule schedule2 = schedules[i2][j2];
+
+        if(schedule2 == null) {
+
+            deleteSchedule(i1, j1);
+            setScheduleFinal(schedule1, i2, j2);
+
+        } else {
+
+            EventManager.getInstance().subscribe(schedule1.getUuid() + "|" + schedule2.getUuid(), (eventType, scheduleListenerType) -> {
+
+                if(scheduleListenerType instanceof ScheduleSwitchConfirmationListener) {
+
+                    ScheduleSwitchConfirmationListener switchConfirmationListener = (ScheduleSwitchConfirmationListener) scheduleListenerType;
+
+                    schedules[i1][j1] = null;
+                    schedules[i2][j2] = null;
+
+                    schedules[i1][j1] = switchConfirmationListener.getSchedule2();
+                    schedules[i2][j2] = switchConfirmationListener.getSchedule1();
+
+                    parentPair.getTimetableManager().getGui().displayCurrentTimetable();
+
+                } else if (scheduleListenerType instanceof ScheduleErrorListener) {
+
+                    ScheduleErrorListener errorListener = (ScheduleErrorListener) scheduleListenerType;
+
+                    System.out.println(errorListener.getMessage());
+
+                }
+
+            });
+
+            Packet switchScheduleRequestPacket = new PacketBuilder()
+                    .ofType(PacketType.SWITCHSCHEDULE.getRequest())
+                    .addArgument("schedule1", schedule1)
+                    .addArgument("schedule2", schedule2)
+                    .build();
+
+            SocketManager.getInstance().sendPacketIO(switchScheduleRequestPacket);
+
+        }
+
     }
 
     private Schedule findSchedule(int day, int hour) {
