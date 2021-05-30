@@ -8,6 +8,7 @@ import morales.david.desktop.controllers.schedules.scheduler.SchedulerGUI;
 import morales.david.desktop.controllers.schedules.scheduler.SchedulerManager;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.models.Schedule;
+import morales.david.desktop.models.SchedulerItem;
 
 import java.net.URL;
 import java.util.List;
@@ -20,7 +21,7 @@ public class SchedulesController implements Initializable, Controller {
 
     private SchedulerGUI schedulerGui;
 
-    private List<Schedule> schedules;
+    private List<SchedulerItem> schedules;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -45,11 +46,11 @@ public class SchedulesController implements Initializable, Controller {
         schedulerGui.resize();
     }
 
-    public List<Schedule> getSchedules() {
+    public List<SchedulerItem> getSchedules() {
         return schedules;
     }
 
-    public void setSchedules(List<Schedule> schedules) {
+    public void setSchedules(List<SchedulerItem> schedules) {
 
         this.schedules = schedules;
 

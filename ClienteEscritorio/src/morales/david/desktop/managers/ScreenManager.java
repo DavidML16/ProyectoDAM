@@ -9,6 +9,7 @@ import morales.david.desktop.controllers.DashboardController;
 import morales.david.desktop.controllers.schedules.SchedulesController;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.models.Schedule;
+import morales.david.desktop.models.SchedulerItem;
 import morales.david.desktop.utils.Utils;
 
 import java.io.IOException;
@@ -81,7 +82,7 @@ public final class ScreenManager {
 
     }
 
-    public synchronized void openScheduleView(List<Schedule> scheduleList) {
+    public synchronized void openScheduleView(List<SchedulerItem> scheduleList) {
 
         try {
 

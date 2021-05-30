@@ -373,10 +373,10 @@ public final class SocketManager extends Thread {
 
                                 List<LinkedTreeMap> schedules = (List<LinkedTreeMap>) receivedPacket.getArgument("schedules");
 
-                                final List<Schedule> scheduleList = new ArrayList<>();
+                                final List<SchedulerItem> scheduleList = new ArrayList<>();
 
                                 for (LinkedTreeMap scheduleMap : schedules)
-                                    scheduleList.add(Schedule.parse(scheduleMap));
+                                    scheduleList.add(SchedulerItem.parse(scheduleMap));
 
                                 Platform.runLater(() -> ScreenManager.getInstance().openScheduleView(scheduleList));
 
@@ -391,9 +391,9 @@ public final class SocketManager extends Thread {
                             if(receivedPacket.getType().equalsIgnoreCase(PacketType.INSERTSCHEDULE.getConfirmation())) {
 
                                 String uuid = (String) receivedPacket.getArgument("uuid");
-                                LinkedTreeMap scheduleMap = (LinkedTreeMap) receivedPacket.getArgument("schedule");
+                                LinkedTreeMap scheduleMap = (LinkedTreeMap) receivedPacket.getArgument("scheduleItem");
 
-                                Schedule schedule = Schedule.parse(scheduleMap);
+                                SchedulerItem schedule = SchedulerItem.parse(scheduleMap);
 
                                 if (schedule != null)
                                     EventManager.getInstance().notify(uuid, new ScheduleConfirmationListener(uuid, schedule));
@@ -417,11 +417,11 @@ public final class SocketManager extends Thread {
 
                                 String uuid = (String) receivedPacket.getArgument("uuid");
 
-                                LinkedTreeMap schedule1Map = (LinkedTreeMap) receivedPacket.getArgument("schedule1");
-                                Schedule schedule1 = Schedule.parse(schedule1Map);
+                                LinkedTreeMap schedule1Map = (LinkedTreeMap) receivedPacket.getArgument("scheduleItem1");
+                                SchedulerItem schedule1 = SchedulerItem.parse(schedule1Map);
 
-                                LinkedTreeMap schedule2Map = (LinkedTreeMap) receivedPacket.getArgument("schedule2");
-                                Schedule schedule2 = Schedule.parse(schedule2Map);
+                                LinkedTreeMap schedule2Map = (LinkedTreeMap) receivedPacket.getArgument("scheduleItem2");
+                                SchedulerItem schedule2 = SchedulerItem.parse(schedule2Map);
 
                                 if (schedule1 != null && schedule2 != null)
                                     EventManager.getInstance().notify(uuid, new ScheduleSwitchConfirmationListener(uuid, schedule1, schedule2));
@@ -444,12 +444,12 @@ public final class SocketManager extends Thread {
                             if(receivedPacket.getType().equalsIgnoreCase(PacketType.REMOVESCHEDULE.getConfirmation())) {
 
                                 String uuid = (String) receivedPacket.getArgument("uuid");
-                                LinkedTreeMap scheduleMap = (LinkedTreeMap) receivedPacket.getArgument("schedule");
+                                LinkedTreeMap scheduleMap = (LinkedTreeMap) receivedPacket.getArgument("scheduleItem");
 
-                                Schedule schedule = Schedule.parse(scheduleMap);
+                                SchedulerItem schedulerItem = SchedulerItem.parse(scheduleMap);
 
-                                if (schedule != null)
-                                    EventManager.getInstance().notify(uuid, new ScheduleConfirmationListener(uuid, schedule));
+                                if (schedulerItem != null)
+                                    EventManager.getInstance().notify(uuid, new ScheduleConfirmationListener(uuid, schedulerItem));
 
                             } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.REMOVESCHEDULE.getError())) {
 

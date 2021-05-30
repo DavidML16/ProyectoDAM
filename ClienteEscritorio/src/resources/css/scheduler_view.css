@@ -17,11 +17,6 @@
     -fx-text-fill: #000;
 }
 
-.schedulePreviewButton {
-    -fx-background-color: #FF8300;
-    -fx-text-fill: #FFF;
-}
-
 .schedulerTabButton {
     -fx-background-color: #FFF;
     -fx-text-fill: #000;

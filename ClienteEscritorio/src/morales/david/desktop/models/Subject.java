@@ -11,18 +11,20 @@ public class Subject {
     private int number;
     private String abreviation;
     private String name;
+    private String color;
 
     private List<Course> courses;
 
     public Subject() {
-        this(-1, -1, "", "", new ArrayList<>());
+        this(-1, -1, "", "", "FFFFFF", new ArrayList<>());
     }
 
-    public Subject(int id, int number, String abreviation, String name, List<Course> courses) {
+    public Subject(int id, int number, String abreviation, String name, String color, List<Course> courses) {
         this.id = id;
         this.number = number;
         this.abreviation = abreviation;
         this.name = name;
+        this.color = color;
         this.courses = courses;
     }
 
@@ -66,6 +68,14 @@ public class Subject {
         this.courses = courses;
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
     @Override
     public String toString() {
         return "Subject{" +
@@ -73,6 +83,7 @@ public class Subject {
                 ", number=" + number +
                 ", abreviation='" + abreviation + '\'' +
                 ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
                 ", courses=" + courses +
                 '}';
     }
@@ -83,6 +94,7 @@ public class Subject {
         int number = ((Double) subjectMap.get("number")).intValue();
         String abreviation = (String) subjectMap.get("abreviation");
         String name = (String) subjectMap.get("name");
+        String color = (String) subjectMap.get("color");
 
         List<LinkedTreeMap> crs = (List<LinkedTreeMap>) subjectMap.get("courses");
 
@@ -91,7 +103,7 @@ public class Subject {
         for(LinkedTreeMap courseMap : crs)
             courses.add(Course.parse(courseMap));
 
-        return new Subject(id, number, abreviation, name, courses);
+        return new Subject(id, number, abreviation, name, color, courses);
 
     }
 

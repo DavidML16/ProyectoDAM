@@ -1,6 +1,7 @@
 package morales.david.desktop.controllers.schedules.scheduler;
 
 import morales.david.desktop.models.Schedule;
+import morales.david.desktop.models.SchedulerItem;
 
 import java.util.List;
 
@@ -11,13 +12,13 @@ public class SchedulerManager {
     private int selectedIndexDay = 0;
     private int selectedIndexHour = 0;
 
-    private Schedule clipBoard;
+    private SchedulerItem clipBoard;
 
     private boolean isMorning;
 
     private SchedulerGUI gui;
 
-    public SchedulerManager(List<Schedule> scheduleList) {
+    public SchedulerManager(List<SchedulerItem> scheduleList) {
         currentTimetable = new SchedulerPair(scheduleList, this);
     }
 
@@ -49,11 +50,11 @@ public class SchedulerManager {
         currentTimetable.get(isMorning).deleteSchedule(selectedIndexDay, selectedIndexHour);
     }
 
-    public Schedule getClipBoard() {
+    public SchedulerItem getClipBoard() {
         return clipBoard;
     }
 
-    public void setClipBoard(Schedule clipBoard) {
+    public void setClipBoard(SchedulerItem clipBoard) {
         this.clipBoard = clipBoard;
     }
 

@@ -43,7 +43,7 @@ public class DBConstants {
 
     public static final String DB_QUERY_SUBJECTS = "SELECT * FROM asignatura";
     public static final String DB_QUERY_SUBJECT_BY_ID = "SELECT * FROM asignatura WHERE `id_asignatura` = ?";
-    public static final String DB_QUERY_ADDSUBJECT = "INSERT INTO asignatura (`numero`, `abreviacion`, `nombre`) VALUES (?, ?, ?)";
+    public static final String DB_QUERY_ADDSUBJECT = "INSERT INTO asignatura (`numero`, `abreviacion`, `nombre`, `color`) VALUES (?, ?, ?, ?)";
     public static final String DB_QUERY_ADDSUBJECT_RELATION = "INSERT INTO curso_asignatura (`curso`, `asignatura`) VALUES (?, ?)";
     public static final String DB_QUERY_UPDATESUBJECT = "UPDATE asignatura SET `numero` = ?, `abreviacion` = ?, `nombre` = ? WHERE `id_asignatura` = ?";
     public static final String DB_QUERY_REMOVESUBJECT = "DELETE FROM asignatura WHERE `id_asignatura` = ?";
@@ -65,6 +65,7 @@ public class DBConstants {
 
     public static final String DB_QUERY_SEARCH_SCHEDULE = "SELECT * FROM imparte WHERE ";
     public static final String DB_QUERY_REMOVESCHEDULE = "DELETE FROM imparte WHERE `uuid` = ?";
+    public static final String DB_QUERY_REMOVESCHEDULE_SB = "DELETE FROM imparte WHERE `uuid` IN ";
     public static final String DB_QUERY_UPDATESCHEDULE = "UPDATE imparte SET `profesor` = ?, `asignatura` = ?, `grupo` = ?, `aula` = ?, `franja` = ? WHERE uuid = ?";
     public static final String DB_QUERY_INSERTSCHEDULE = "INSERT INTO imparte VALUES (?,?,?,?,?,?)";
 
@@ -87,7 +88,7 @@ public class DBConstants {
     public static final String DB_QUERY_INSERTSB_COURSES = "INSERT INTO curso VALUES ";
     public static final String DB_QUERY_INSERTSB_GROUPS = "INSERT INTO grupo VALUES ";
     public static final String DB_QUERY_INSERTSB_COURSE_SUBJECTS = "INSERT IGNORE INTO curso_asignatura VALUES ";
-    public static final String DB_QUERY_INSERTSB_TEACHERS = "INSERT INTO profesor VALUES ";
+    public static final String DB_QUERY_INSERTSB_TEACHERS = "INSERT IGNORE INTO profesor VALUES ";
     public static final String DB_QUERY_INSERTSB_SCHEDULES = "INSERT IGNORE INTO imparte VALUES ";
 
 

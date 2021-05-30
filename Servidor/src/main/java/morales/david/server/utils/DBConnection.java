@@ -4,6 +4,7 @@ import morales.david.server.interfaces.ScheduleSearcheable;
 import morales.david.server.clients.ClientSession;
 import morales.david.server.models.*;
 
+import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -1234,6 +1235,7 @@ public class DBConnection {
                 int number = rs.getInt("numero");
                 String abreviation = rs.getString("abreviacion");
                 String name = rs.getString("nombre");
+                String color = rs.getString("color");
 
                 stm2 = connection.prepareStatement(DBConstants.DB_QUERY_SUBJECTS_COURSES);
                 stm2.setInt(1, id);
@@ -1252,7 +1254,7 @@ public class DBConnection {
                 stm2.close();
                 rs2.close();
 
-                subjects.add(new Subject(id, number, abreviation, name, subjectCourses));
+                subjects.add(new Subject(id, number, abreviation, name, color, subjectCourses));
 
             }
 
@@ -1305,6 +1307,7 @@ public class DBConnection {
                 int number = rs.getInt("numero");
                 String abreviation = rs.getString("abreviacion");
                 String name = rs.getString("nombre");
+                String color = rs.getString("color");
 
                 stm2 = connection.prepareStatement(DBConstants.DB_QUERY_SUBJECTS_COURSES);
                 stm2.setInt(1, id);
@@ -1323,7 +1326,7 @@ public class DBConnection {
                 stm2.close();
                 rs2.close();
 
-                subject = new Subject(id, number, abreviation, name, subjectCourses);
+                subject = new Subject(id, number, abreviation, name, color, subjectCourses);
 
             }
 
@@ -1367,6 +1370,7 @@ public class DBConnection {
             stm.setInt(1, subject.getNumber());
             stm.setString(2, subject.getAbreviation());
             stm.setString(3, subject.getName());
+            stm.setString(4, ColorUtil.getColor());
 
             rs = stm.executeUpdate();
 
@@ -2181,9 +2185,9 @@ public class DBConnection {
      * Get schedules from database
      * @return list of schedules
      */
-    public List<Schedule> searchSchedule(ScheduleSearcheable item) {
+    public List<SchedulerItem> searchSchedule(ScheduleSearcheable item) {
 
-        List<Schedule> schedules = new ArrayList<>();
+        List<SchedulerItem> schedules = new ArrayList<>();
 
         String sqlSearch = "";
 
@@ -2203,9 +2207,9 @@ public class DBConnection {
         return schedules;
 
     }
-    private List<Schedule> getSchedule(String params) {
+    private List<SchedulerItem> getSchedule(String params) {
 
-        List<Schedule> schedules = new ArrayList<>();
+        List<SchedulerItem> schedules = new ArrayList<>();
 
         PreparedStatement stm = null;
         ResultSet rs = null;
@@ -2216,6 +2220,12 @@ public class DBConnection {
 
             rs = stm.executeQuery();
 
+            List<Schedule> tempSchedule = new ArrayList<>();
+            int tempTimezone = 0;
+            boolean first = true;
+
+            int i = 1;
+
             while (rs.next()) {
 
                 int id_teacher = rs.getInt("profesor");
@@ -2225,15 +2235,36 @@ public class DBConnection {
                 int id_timezone = rs.getInt("franja");
                 String uuid = rs.getString("uuid");
 
+                if(first) {
+                    first = false;
+                    tempTimezone = id_timezone;
+                    tempSchedule = new ArrayList<>();
+                }
+                
                 Teacher teacher = getTeacher(id_teacher);
                 Subject subject = getSubject(id_subject);
                 Group group = getGroup(id_group);
                 Classroom classroom = getClassroom(id_classroom);
                 TimeZone timeZone = getTimeZone(id_timezone);
+                
+                if(id_timezone == tempTimezone) {
 
-                schedules.add(new Schedule(uuid, teacher, subject, group, classroom, timeZone));
+                    tempSchedule.add(new Schedule(uuid, teacher, subject, group, classroom, timeZone));
+                    
+                } else {
+
+                    schedules.add(new SchedulerItem(tempSchedule));
+
+                    tempTimezone = id_timezone;
+                    tempSchedule = new ArrayList<>();
+
+                    tempSchedule.add(new Schedule(uuid, teacher, subject, group, classroom, timeZone));
+
+                }
 
             }
+
+            schedules.add(new SchedulerItem(tempSchedule));
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -2370,5 +2401,36 @@ public class DBConnection {
 
     }
 
+    /**
+     * Remove schedules information to database
+     * @param sb
+     * @return schedules removed
+     */
+    public boolean removeSchedulesSB(String sb) {
+
+        PreparedStatement stm = null;
+        int rs = 0;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_REMOVESCHEDULE_SB + sb.toString());
+            rs = stm.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return rs == 1;
+
+
+    }
 
 }

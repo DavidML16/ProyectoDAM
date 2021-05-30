@@ -18,6 +18,7 @@ import morales.david.desktop.managers.ScreenManager;
 import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.models.Day;
 import morales.david.desktop.models.Schedule;
+import morales.david.desktop.models.SchedulerItem;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
@@ -110,7 +111,7 @@ public class SchedulesMenuController implements Initializable, Controller {
 
     }
 
-    public void loadScheduleGui(List<Schedule> scheduleList) {
+    public void loadScheduleGui(List<SchedulerItem> scheduleList) {
 
         try {
 

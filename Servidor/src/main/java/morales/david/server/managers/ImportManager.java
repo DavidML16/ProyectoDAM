@@ -2,18 +2,19 @@ package morales.david.server.managers;
 
 import morales.david.server.Server;
 import morales.david.server.models.*;
+import morales.david.server.models.TimeZone;
 import morales.david.server.models.packets.Packet;
 import morales.david.server.models.packets.PacketBuilder;
 import morales.david.server.models.packets.PacketType;
+import morales.david.server.utils.ColorUtil;
 import morales.david.server.utils.DBConnection;
 import morales.david.server.utils.DBConstants;
 
+import java.awt.*;
 import java.io.File;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 public class ImportManager {
 
@@ -481,7 +482,7 @@ public class ImportManager {
                 int number = rs.getInt("N");
                 String abreviation = rs.getString("ABREV");
                 String name = rs.getString("NOMBRE");
-                subjectList.add(new Subject(id, number, abreviation, name, new ArrayList<>()));
+                subjectList.add(new Subject(id, number, abreviation, name, ColorUtil.getColor(), new ArrayList<>()));
 
             }
 
@@ -522,6 +523,8 @@ public class ImportManager {
                 .append(subject.getAbreviation())
                 .append("','")
                 .append(subject.getName())
+                .append("','")
+                .append(ColorUtil.getColor())
                 .append("')");
 
         }

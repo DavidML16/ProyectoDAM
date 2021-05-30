@@ -12,6 +12,7 @@ import morales.david.server.utils.Constants;
 import morales.david.server.utils.DBConnection;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClientProtocol {
@@ -1031,7 +1032,7 @@ public class ClientProtocol {
 
         if(scheduleSearcheable != null) {
 
-            List<Schedule> schedules = clientThread.getDbConnection().searchSchedule(scheduleSearcheable);
+            List<SchedulerItem> schedules = clientThread.getDbConnection().searchSchedule(scheduleSearcheable);
 
             Packet schedulesConfirmationPacket = new PacketBuilder()
                     .ofType(PacketType.SCHEDULES.getConfirmation())
@@ -1051,19 +1052,31 @@ public class ClientProtocol {
      */
     private void insertSchedule() {
 
-        LinkedTreeMap scheduleMap = (LinkedTreeMap) lastPacket.getArgument("schedule");
+        LinkedTreeMap scheduleMap = (LinkedTreeMap) lastPacket.getArgument("scheduleItem");
 
-        Schedule schedule = Schedule.parse(scheduleMap);
+        SchedulerItem schedulerItem = SchedulerItem.parse(scheduleMap);
 
-        if(schedule == null)
+        if(schedulerItem == null)
             return;
 
-        if(clientThread.getDbConnection().insertSchedule(schedule)) {
+        StringBuilder insertString = new StringBuilder();
+        for(Schedule schedule : schedulerItem.getScheduleList()) {
+
+            if(insertString.toString().equalsIgnoreCase("")) insertString.append("(");
+            else insertString.append(", (");
+
+            insertString
+                    .append(schedule.getTeacher().getId()).append(",").append(schedule.getSubject().getId()).append(",").append(schedule.getGroup().getId())
+                    .append(",").append(schedule.getClassroom().getId()).append(",").append(schedule.getTimeZone().getId()).append(",'").append(schedule.getUuid()).append("')");
+
+        }
+
+        if(clientThread.getDbConnection().insertSchedulesSB(insertString)) {
 
             Packet insertScheduleConfirmationPacket = new PacketBuilder()
                     .ofType(PacketType.INSERTSCHEDULE.getConfirmation())
-                    .addArgument("uuid", schedule.getUuid())
-                    .addArgument("schedule", schedule)
+                    .addArgument("uuid", schedulerItem.getUuid())
+                    .addArgument("scheduleItem", schedulerItem)
                     .build();
 
             sendPacketIO(insertScheduleConfirmationPacket);
@@ -1072,7 +1085,7 @@ public class ClientProtocol {
 
             Packet insertScheduleErrorPacket = new PacketBuilder()
                     .ofType(PacketType.INSERTSCHEDULE.getError())
-                    .addArgument("uuid", schedule.getUuid())
+                    .addArgument("uuid", schedulerItem.getUuid())
                     .addArgument("message", "No se ha podido insertar ese schedule")
                     .build();
 
@@ -1089,28 +1102,48 @@ public class ClientProtocol {
      */
     private void switchSchedules() {
 
-        LinkedTreeMap schedule1Map = (LinkedTreeMap) lastPacket.getArgument("schedule1");
-        Schedule schedule1 = Schedule.parse(schedule1Map);
+        LinkedTreeMap schedule1Map = (LinkedTreeMap) lastPacket.getArgument("scheduleItem1");
+        SchedulerItem schedule1 = SchedulerItem.parse(schedule1Map);
 
-        LinkedTreeMap schedule2Map = (LinkedTreeMap) lastPacket.getArgument("schedule2");
-        Schedule schedule2 = Schedule.parse(schedule2Map);
+        LinkedTreeMap schedule2Map = (LinkedTreeMap) lastPacket.getArgument("scheduleItem2");
+        SchedulerItem schedule2 = SchedulerItem.parse(schedule2Map);
 
         if(schedule1 == null || schedule2 == null)
             return;
 
-        TimeZone timezone1 = schedule1.getTimeZone();
-        TimeZone timezone2 = schedule2.getTimeZone();
+        TimeZone timezone1 = schedule1.getScheduleList().get(0).getTimeZone();
+        TimeZone timezone2 = schedule2.getScheduleList().get(0).getTimeZone();
 
-        schedule1.setTimeZone(timezone2);
-        schedule2.setTimeZone(timezone1);
+        int updated = 1;
+        int updatedRequired = schedule1.getScheduleList().size() + schedule2.getScheduleList().size();
 
-        if(clientThread.getDbConnection().updateSchedule(schedule1) && clientThread.getDbConnection().updateSchedule(schedule2)) {
+        List<Schedule> tempDelete = new ArrayList<>();
+        tempDelete.addAll(schedule1.getScheduleList());
+        tempDelete.addAll(schedule2.getScheduleList());
+
+        for(Schedule schedule : tempDelete) {
+            clientThread.getDbConnection().removeSchedule(schedule);
+        }
+
+        for(Schedule schedule : schedule1.getScheduleList()) {
+            schedule.setTimeZone(timezone2);
+            if(clientThread.getDbConnection().insertSchedule(schedule))
+                updated++;
+        }
+
+        for(Schedule schedule : schedule2.getScheduleList()) {
+            schedule.setTimeZone(timezone1);
+            if(clientThread.getDbConnection().insertSchedule(schedule))
+                updated++;
+        }
+
+        if(updated >= updatedRequired) {
 
             Packet switchScheduleConfirmationPacket = new PacketBuilder()
                     .ofType(PacketType.SWITCHSCHEDULE.getConfirmation())
                     .addArgument("uuid", schedule1.getUuid() + "|" + schedule2.getUuid())
-                    .addArgument("schedule1", schedule1)
-                    .addArgument("schedule2", schedule2)
+                    .addArgument("scheduleItem1", schedule1)
+                    .addArgument("scheduleItem2", schedule2)
                     .build();
 
             sendPacketIO(switchScheduleConfirmationPacket);
@@ -1136,19 +1169,26 @@ public class ClientProtocol {
      */
     private void removeSchedule() {
 
-        LinkedTreeMap scheduleMap = (LinkedTreeMap) lastPacket.getArgument("schedule");
+        LinkedTreeMap scheduleMap = (LinkedTreeMap) lastPacket.getArgument("scheduleItem");
 
-        Schedule schedule = Schedule.parse(scheduleMap);
+        SchedulerItem schedulerItem = SchedulerItem.parse(scheduleMap);
 
-        if(schedule == null)
+        if(schedulerItem == null)
             return;
 
-        if(clientThread.getDbConnection().removeSchedule(schedule)) {
+        StringBuilder removeString = new StringBuilder();
+        for(Schedule schedule : schedulerItem.getScheduleList()) {
+            removeString.append("'" + schedule.getUuid() + "',");
+        }
+
+        String string = removeString.substring(0, removeString.toString().length() - 1);
+
+        if(clientThread.getDbConnection().removeSchedulesSB("(" + string + ")")) {
 
             Packet deleteScheduleConfirmationPacket = new PacketBuilder()
                     .ofType(PacketType.REMOVESCHEDULE.getConfirmation())
-                    .addArgument("uuid", schedule.getUuid())
-                    .addArgument("schedule", schedule)
+                    .addArgument("uuid", schedulerItem.getUuid())
+                    .addArgument("scheduleItem", schedulerItem)
                     .build();
 
             sendPacketIO(deleteScheduleConfirmationPacket);
@@ -1157,7 +1197,7 @@ public class ClientProtocol {
 
             Packet deleteScheduleErrorPacket = new PacketBuilder()
                     .ofType(PacketType.REMOVESCHEDULE.getError())
-                    .addArgument("uuid", schedule.getUuid())
+                    .addArgument("uuid", schedulerItem.getUuid())
                     .addArgument("message", "No se ha podido eliminar ese schedule")
                     .build();
 

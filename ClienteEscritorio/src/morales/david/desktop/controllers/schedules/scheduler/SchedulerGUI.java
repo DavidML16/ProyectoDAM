@@ -18,6 +18,7 @@ import morales.david.desktop.interfaces.Hideable;
 import morales.david.desktop.models.Day;
 import morales.david.desktop.models.Hour;
 import morales.david.desktop.models.Schedule;
+import morales.david.desktop.models.SchedulerItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -139,7 +140,6 @@ public class SchedulerGUI {
         scheduleContextMenu.addButton(delete);
 
         schedulePreview = new JFXButton();
-        schedulePreview.getStyleClass().add("schedulePreviewButton");
         schedulePreview.setTextAlignment(TextAlignment.CENTER);
         schedulePreview.setAlignment(Pos.CENTER);
         schedulePreview.prefWidthProperty().bind(schedules[0][0].widthProperty());
@@ -284,9 +284,11 @@ public class SchedulerGUI {
                     for (int j = 0; j < schedules[0].length; j++) {
                         if (schedules[i][j] == event.getSource()) {
                             String text = schedulerManager.getCurrentTable().getScheduleText(i, j);
+                            SchedulerItem schedulerItem = schedulerManager.getCurrentTable().getSchedule(i, j);
                             if(!text.equalsIgnoreCase("")) {
                                 schedulePreview.setVisible(true);
                                 schedulePreview.setText(text);
+                                schedulePreview.setStyle("-fx-background-color: " + schedulerItem.getScheduleList().get(0).getSubject().getColor() + ";");
                             }
                             break;
                         }
@@ -357,11 +359,11 @@ public class SchedulerGUI {
         }
     }
 
-    private Schedule getSelectedSchedule(Event event) {
+    private SchedulerItem getSelectedSchedule(Event event) {
         for (int day = 0; day < schedules.length; day++) {
             for (int hour = 0; hour < schedules[0].length; hour++) {
                 if (event.getSource() == schedules[day][hour]) {
-                    Schedule schedule = schedulerManager.getCurrentTable().getSchedule(day, hour);
+                    SchedulerItem schedule = schedulerManager.getCurrentTable().getSchedule(day, hour);
                     return schedule;
                 }
             }
@@ -431,7 +433,7 @@ public class SchedulerGUI {
         }
 
         pos = 0;
-        Schedule[][] scheduleArray = schedulerManager.getCurrentTable().getSchedules();
+        SchedulerItem[][] scheduleArray = schedulerManager.getCurrentTable().getSchedules();
         for (int i = 0; i < schedules.length; i++) {
             for (int j = 0; j < schedules[0].length; j++) {
 
@@ -448,18 +450,14 @@ public class SchedulerGUI {
 
                 subjectGrid.add(schedules[i][j], pos + 1, j + (j >= 3 ? 3 : 2), 1, 1);
 
-                Schedule schedule = scheduleArray[i][j];
+                SchedulerItem schedule = scheduleArray[i][j];
 
-                if(schedule != null && schedule.getTeacher() != null && schedule.getGroup() != null) {
+                schedules[i][j].setStyle("-fx-background-color: #FFFFFF;");
 
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(schedule.getTeacher().getName());
-                    sb.append("\n");
-                    sb.append(schedule.getSubject().getAbreviation() + "     " + schedule.getClassroom().toString());
-                    sb.append("\n");
-                    sb.append(schedule.getGroup().toString());
+                if(schedule != null && schedule.getScheduleList().size() > 0) {
 
-                    schedules[i][j].setText(sb.toString());
+                    schedules[i][j].setText(schedulerManager.getCurrentTable().getScheduleText(i, j));
+                    schedules[i][j].setStyle("-fx-background-color: " + schedule.getScheduleList().get(0).getSubject().getColor() + ";");
 
                 } else {
 

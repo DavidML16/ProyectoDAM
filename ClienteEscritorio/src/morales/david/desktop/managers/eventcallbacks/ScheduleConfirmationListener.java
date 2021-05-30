@@ -1,17 +1,18 @@
 package morales.david.desktop.managers.eventcallbacks;
 
 import morales.david.desktop.models.Schedule;
+import morales.david.desktop.models.SchedulerItem;
 
 public class ScheduleConfirmationListener extends ScheduleListenerType {
 
-    private Schedule schedule;
+    private SchedulerItem schedule;
 
-    public ScheduleConfirmationListener(String uuid, Schedule schedule) {
+    public ScheduleConfirmationListener(String uuid, SchedulerItem schedule) {
         super(uuid);
         this.schedule = schedule;
     }
 
-    public Schedule getSchedule() {
+    public SchedulerItem getScheduleItem() {
         return schedule;
     }
 

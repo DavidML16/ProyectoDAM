@@ -41,7 +41,8 @@ CREATE TABLE asignatura (
     id_asignatura INTEGER(11) PRIMARY KEY AUTO_INCREMENT,
     numero INTEGER(5) NOT NULL,
     abreviacion VARCHAR(150) NOT NULL,
-    nombre VARCHAR(150) NOT NULL
+    nombre VARCHAR(150) NOT NULL,
+	color VARCHAR(9)
 );
 
 

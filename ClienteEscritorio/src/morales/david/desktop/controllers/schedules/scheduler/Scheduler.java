@@ -6,10 +6,7 @@ import morales.david.desktop.managers.eventcallbacks.ScheduleErrorListener;
 import morales.david.desktop.managers.eventcallbacks.EventManager;
 import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.managers.eventcallbacks.ScheduleSwitchConfirmationListener;
-import morales.david.desktop.models.Day;
-import morales.david.desktop.models.Hour;
-import morales.david.desktop.models.Schedule;
-import morales.david.desktop.models.TimeZone;
+import morales.david.desktop.models.*;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
@@ -34,7 +31,7 @@ public class Scheduler {
 
     private Hour[] hours;
     private Day[] days;
-    private Schedule[][] schedules;
+    private SchedulerItem[][] schedules;
 
     private SchedulerPair parentPair;
 
@@ -72,17 +69,17 @@ public class Scheduler {
 
         {
 
-            schedules = new Schedule[DAY_LENGTH][HOURS_LENGTH];
+            schedules = new SchedulerItem[DAY_LENGTH][HOURS_LENGTH];
 
             for(int day = 0; day < DAY_LENGTH; day++) {
 
                 for(int hour = 0; hour < HOURS_LENGTH; hour++) {
 
-                    Schedule schedule = findSchedule(day + 1, hour + 1);
+                    SchedulerItem schedulerItem = findSchedule(day + 1, hour + 1);
 
-                    if(schedule != null) {
+                    if(schedulerItem != null) {
 
-                        schedules[day][hour] = schedule;
+                        schedules[day][hour] = schedulerItem;
 
                     }
 
@@ -96,12 +93,12 @@ public class Scheduler {
 
     public void switchSchedule(int i1, int j1, int i2, int j2) {
 
-        Schedule schedule1 = schedules[i1][j1];
+        SchedulerItem schedule1 = schedules[i1][j1];
 
         if(schedule1 == null)
             return;
 
-        Schedule schedule2 = schedules[i2][j2];
+        SchedulerItem schedule2 = schedules[i2][j2];
 
         if(schedule2 == null) {
 
@@ -109,6 +106,9 @@ public class Scheduler {
             setScheduleFinal(schedule1, i2, j2);
 
         } else {
+
+            if(schedule1 == schedule2)
+                return;
 
             EventManager.getInstance().subscribe(schedule1.getUuid() + "|" + schedule2.getUuid(), (eventType, scheduleListenerType) -> {
 
@@ -136,8 +136,8 @@ public class Scheduler {
 
             Packet switchScheduleRequestPacket = new PacketBuilder()
                     .ofType(PacketType.SWITCHSCHEDULE.getRequest())
-                    .addArgument("schedule1", schedule1)
-                    .addArgument("schedule2", schedule2)
+                    .addArgument("scheduleItem1", schedule1)
+                    .addArgument("scheduleItem2", schedule2)
                     .build();
 
             SocketManager.getInstance().sendPacketIO(switchScheduleRequestPacket);
@@ -146,11 +146,13 @@ public class Scheduler {
 
     }
 
-    private Schedule findSchedule(int day, int hour) {
+    private SchedulerItem findSchedule(int day, int hour) {
         int displacement = isMorning ? 0 : 6;
-        for(Schedule schedule : parentPair.getScheduleList()) {
-            if(schedule.getTimeZone().getDay().getId() == day && schedule.getTimeZone().getHour().getId() == (hour + displacement)) {
-                return schedule;
+        for(SchedulerItem schedulerItem : parentPair.getScheduleList()) {
+            for(Schedule schedule : schedulerItem.getScheduleList()) {
+                if (schedule.getTimeZone().getDay().getId() == day && schedule.getTimeZone().getHour().getId() == (hour + displacement)) {
+                    return schedulerItem;
+                }
             }
         }
         return null;
@@ -164,37 +166,42 @@ public class Scheduler {
         return hours;
     }
 
-    public Schedule[][] getSchedules() {
+    public SchedulerItem[][] getSchedules() {
         return schedules;
     }
 
-    public Schedule getSchedule(int day, int hour) {
+    public SchedulerItem getSchedule(int day, int hour) {
         return schedules[day][hour];
     }
 
     public String getScheduleText(int day, int hour) {
 
-        Schedule schedule = schedules[day][hour];
+        SchedulerItem schedulerItem = schedules[day][hour];
 
-        if(schedule == null || schedule.getTeacher() == null || schedule.getSubject() == null || schedule.getGroup() == null)
+        if(schedulerItem == null || schedulerItem.getScheduleList().size() == 0)
             return "";
 
         StringBuilder sb = new StringBuilder();
-        sb.append(schedule.getTeacher().getName());
-        sb.append("\n");
-        sb.append(schedule.getSubject().getAbreviation() + "     " + schedule.getClassroom().toString());
-        sb.append("\n");
-        sb.append(schedule.getGroup().toString());
+
+        for(Schedule schedule : schedulerItem.getScheduleList()) {
+
+            sb.append(schedule.getTeacher().getName());
+            sb.append("\n");
+            sb.append(schedule.getSubject().getAbreviation() + "     " + schedule.getClassroom().toString());
+            sb.append("\n");
+            sb.append(schedule.getGroup().toString() + "     " + schedule.getTimeZone().getId());
+
+        }
 
         return sb.toString();
 
     }
 
-    public void setSchedule(Schedule schedule, int day, int hour) {
+    public void setSchedule(SchedulerItem schedule, int day, int hour) {
 
-        Schedule oldSchedule = schedules[day][hour];
+        SchedulerItem oldSchedule = schedules[day][hour];
 
-        if(oldSchedule == null || oldSchedule.getTeacher() == null || oldSchedule.getGroup() == null || oldSchedule.getSubject() == null) {
+        if(oldSchedule == null || oldSchedule.getScheduleList().size() == 0) {
 
             setScheduleFinal(schedule, day, hour);
 
@@ -219,7 +226,7 @@ public class Scheduler {
 
             Packet deleteScheduleRequestPacket = new PacketBuilder()
                     .ofType(PacketType.REMOVESCHEDULE.getRequest())
-                    .addArgument("schedule", oldSchedule)
+                    .addArgument("scheduleItem", oldSchedule)
                     .build();
 
             SocketManager.getInstance().sendPacketIO(deleteScheduleRequestPacket);
@@ -227,20 +234,21 @@ public class Scheduler {
         }
 
     }
-    private void setScheduleFinal(Schedule schedule, int day, int hour) {
+    private void setScheduleFinal(SchedulerItem schedulerItem, int day, int hour) {
 
         TimeZone newTimeZone = getTimeZoneBy(day + 1, hour + 1);
-        TimeZone oldTimeZone = schedule.getTimeZone();
+        TimeZone oldTimeZone = schedulerItem.getScheduleList().get(0).getTimeZone();
 
-        schedule.setTimeZone(newTimeZone);
+        for(Schedule schedule : schedulerItem.getScheduleList())
+            schedule.setTimeZone(newTimeZone);
 
-        if (schedule.getTeacher() != null && schedule.getGroup() != null && schedule.getSubject() != null && schedule.getClassroom() != null) {
+        if (schedulerItem.getScheduleList().size() > 0) {
 
-            EventManager.getInstance().subscribe(schedule.getUuid(), (eventType, scheduleListenerType) -> {
+            EventManager.getInstance().subscribe(schedulerItem.getUuid(), (eventType, scheduleListenerType) -> {
 
                 if (scheduleListenerType instanceof ScheduleConfirmationListener) {
 
-                    schedules[day][hour] = schedule;
+                    schedules[day][hour] = schedulerItem;
                     parentPair.getTimetableManager().getGui().displayCurrentTimetable();
 
                 } else if (scheduleListenerType instanceof ScheduleErrorListener) {
@@ -249,7 +257,8 @@ public class Scheduler {
 
                     System.out.println(errorListener.getMessage());
 
-                    schedule.setTimeZone(oldTimeZone);
+                    for(Schedule schedule : schedulerItem.getScheduleList())
+                        schedule.setTimeZone(oldTimeZone);
 
                 }
 
@@ -257,7 +266,7 @@ public class Scheduler {
 
             Packet insertScheduleRequestPacket = new PacketBuilder()
                     .ofType(PacketType.INSERTSCHEDULE.getRequest())
-                    .addArgument("schedule", schedule)
+                    .addArgument("scheduleItem", schedulerItem)
                     .build();
 
             SocketManager.getInstance().sendPacketIO(insertScheduleRequestPacket);
@@ -268,11 +277,11 @@ public class Scheduler {
 
     public void deleteSchedule(int indexDay, int indexHour) {
 
-        Schedule schedule = schedules[indexDay][indexHour];
+        SchedulerItem schedulerItem = schedules[indexDay][indexHour];
 
-        if(schedule != null && schedule.getTeacher() != null && schedule.getGroup() != null && schedule.getSubject() != null && schedule.getClassroom() != null) {
+        if(schedulerItem != null && schedulerItem.getScheduleList().size() > 0) {
 
-            EventManager.getInstance().subscribe(schedule.getUuid(), (eventType, scheduleListenerType) -> {
+            EventManager.getInstance().subscribe(schedulerItem.getUuid(), (eventType, scheduleListenerType) -> {
 
                 if(scheduleListenerType instanceof ScheduleConfirmationListener) {
 
@@ -291,7 +300,7 @@ public class Scheduler {
 
             Packet deleteScheduleRequestPacket = new PacketBuilder()
                     .ofType(PacketType.REMOVESCHEDULE.getRequest())
-                    .addArgument("schedule", schedule)
+                    .addArgument("scheduleItem", schedulerItem)
                     .build();
 
             SocketManager.getInstance().sendPacketIO(deleteScheduleRequestPacket);
