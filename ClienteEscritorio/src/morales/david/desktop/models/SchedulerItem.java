@@ -11,6 +11,10 @@ public class SchedulerItem {
     private String uuid;
     private List<Schedule> scheduleList;
 
+    public SchedulerItem() {
+        this(new ArrayList<>());
+    }
+
     public SchedulerItem(List<Schedule> scheduleList) {
         this(UUID.randomUUID().toString(), scheduleList);
     }
@@ -60,7 +64,17 @@ public class SchedulerItem {
     }
 
     public SchedulerItem duplicate() {
-        return new SchedulerItem(scheduleList);
+        List<Schedule> temp = new ArrayList<>();
+        for(Schedule schedule : scheduleList)
+            temp.add(schedule.duplicate());
+        return new SchedulerItem(temp);
+    }
+
+    public SchedulerItem duplicateUUID() {
+        List<Schedule> temp = new ArrayList<>();
+        for(Schedule schedule : scheduleList)
+            temp.add(schedule.duplicate());
+        return new SchedulerItem(uuid, temp);
     }
 
 }

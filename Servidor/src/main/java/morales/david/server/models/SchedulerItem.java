@@ -59,4 +59,12 @@ public class SchedulerItem {
 
     }
 
+    public SchedulerItem duplicate() {
+        return new SchedulerItem(scheduleList);
+    }
+
+    public SchedulerItem duplicateUUID() {
+        return new SchedulerItem(uuid, scheduleList);
+    }
+
 }

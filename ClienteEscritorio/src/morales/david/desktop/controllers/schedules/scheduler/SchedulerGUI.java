@@ -17,8 +17,9 @@ import javafx.util.Duration;
 import morales.david.desktop.interfaces.Hideable;
 import morales.david.desktop.models.Day;
 import morales.david.desktop.models.Hour;
-import morales.david.desktop.models.Schedule;
 import morales.david.desktop.models.SchedulerItem;
+import morales.david.desktop.models.TimeZone;
+import morales.david.desktop.utils.ColorUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class SchedulerGUI {
     private EventHandler<ActionEvent> scheduleActionEvent;
     private EventHandler<MouseEvent> schedulePressedEvent;
     private EventHandler<MouseEvent> scheduleDraggedEvent;
-    private EventHandler<MouseEvent>scheduleReleasedEvent;
+    private EventHandler<MouseEvent> scheduleReleasedEvent;
 
     private JFXButton schedulePreview;
 
@@ -55,12 +56,14 @@ public class SchedulerGUI {
     private double subjectInnerY;
 
     private OptionsPane scheduleContextMenu;
+    private JFXButton edit;
     private JFXButton copy;
     private JFXButton cut;
     private JFXButton paste;
     private JFXButton delete;
 
-    private JFXButton selectedSchedule;
+    private JFXButton selectedScheduleButton;
+    private SchedulerItem selectedScheduleItem;
 
     private HBox tabBox;
     private Label tabMorning;
@@ -118,6 +121,10 @@ public class SchedulerGUI {
 
         scheduleContextMenu = new OptionsPane(background);
         menus.add(scheduleContextMenu);
+        edit = new JFXButton("Editar");
+        edit.setOnAction(event -> {
+            edit(event);
+        });
         copy = new JFXButton("Copiar");
         copy.setOnAction(event -> {
             copy(event);
@@ -134,6 +141,7 @@ public class SchedulerGUI {
         delete.setOnAction(event -> {
             delete();
         });
+        scheduleContextMenu.addButton(edit);
         scheduleContextMenu.addButton(copy);
         scheduleContextMenu.addButton(cut);
         scheduleContextMenu.addButton(paste);
@@ -283,13 +291,22 @@ public class SchedulerGUI {
                 for (int i = 0; i < schedules.length; i++) {
                     for (int j = 0; j < schedules[0].length; j++) {
                         if (schedules[i][j] == event.getSource()) {
+
                             String text = schedulerManager.getCurrentTable().getScheduleText(i, j);
                             SchedulerItem schedulerItem = schedulerManager.getCurrentTable().getSchedule(i, j);
+
                             if(!text.equalsIgnoreCase("")) {
+
                                 schedulePreview.setVisible(true);
                                 schedulePreview.setText(text);
-                                schedulePreview.setStyle("-fx-background-color: " + schedulerItem.getScheduleList().get(0).getSubject().getColor() + ";");
+
+                                String color = schedulerItem.getScheduleList().get(0).getSubject().getColor();
+                                String fontColor = ColorUtil.getFontColor(color);
+
+                                schedulePreview.setStyle("-fx-background-color: " + color + ";");
+
                             }
+
                             break;
                         }
                     }
@@ -305,21 +322,33 @@ public class SchedulerGUI {
     }
 
     private void schedulePressed(MouseEvent event) {
-        if (event.isSecondaryButtonDown()) {
-            primaryButton = false;
-            getSelectedScheduleButton(event);
-            scheduleContextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), selectedSchedule);
-        } else {
-            hideAllMenus();
-            primaryButton = true;
-            subjectStartX = event.getSceneX();
-            subjectStartY = event.getSceneY();
-            subjectInnerX = event.getX();
-            subjectInnerY = event.getY();
+        if(event.getClickCount() <= 1) {
+            if (event.isSecondaryButtonDown()) {
+                primaryButton = false;
+                getSelectedScheduleButton(event);
+                selectedScheduleItem = getSelectedSchedule(event);
+                scheduleContextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), selectedScheduleButton);
+            } else {
+                hideAllMenus();
+                primaryButton = true;
+                subjectStartX = event.getSceneX();
+                subjectStartY = event.getSceneY();
+                subjectInnerX = event.getX();
+                subjectInnerY = event.getY();
+            }
         }
     }
 
     private void scheduleMenu(ActionEvent event) {
+    }
+
+    private void edit(Event event) {
+        TimeZone timeZone = schedulerManager.getSelectedTimeZone();
+        if(selectedScheduleItem != null) {
+            schedulerManager.getCurrentTable().openSchedulerItemModal(selectedScheduleItem, timeZone);
+        } else {
+            schedulerManager.getCurrentTable().openSchedulerItemModal(new SchedulerItem(), timeZone);
+        }
     }
 
     private void copy(Event event) {
@@ -350,7 +379,7 @@ public class SchedulerGUI {
         for (int day = 0; day < schedules.length; day++) {
             for (int hour = 0; hour < schedules[0].length; hour++) {
                 if (event.getSource() == schedules[day][hour]) {
-                    selectedSchedule = schedules[day][hour];
+                    selectedScheduleButton = schedules[day][hour];
                     schedulerManager.setSelectedIndexDay(day);
                     schedulerManager.setSelectedIndexHour(hour);
                     break;
@@ -457,7 +486,11 @@ public class SchedulerGUI {
                 if(schedule != null && schedule.getScheduleList().size() > 0) {
 
                     schedules[i][j].setText(schedulerManager.getCurrentTable().getScheduleText(i, j));
-                    schedules[i][j].setStyle("-fx-background-color: " + schedule.getScheduleList().get(0).getSubject().getColor() + ";");
+
+                    String color = schedule.getScheduleList().get(0).getSubject().getColor();
+                    String fontColor = ColorUtil.getFontColor(color);
+
+                    schedules[i][j].setStyle("-fx-background-color: " + color + ";");
 
                 } else {
 

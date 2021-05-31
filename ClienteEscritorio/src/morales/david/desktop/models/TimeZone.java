@@ -58,11 +58,7 @@ public class TimeZone {
 
     @Override
     public String toString() {
-        return "TimeZone{" +
-                "id=" + id +
-                ", day=" + day +
-                ", hour=" + hour +
-                '}';
+        return day.getName() + ", " + hour.getName();
     }
 
 }

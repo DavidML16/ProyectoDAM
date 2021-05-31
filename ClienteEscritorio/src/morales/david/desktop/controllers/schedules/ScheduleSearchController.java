@@ -103,15 +103,23 @@ public class ScheduleSearchController implements Initializable, Controller {
     }
 
     private void removePressed() {
+
         teacherSearchButton.getStyleClass().remove("buttonPressed");
         groupSearchButton.getStyleClass().remove("buttonPressed");
         classroomSearchButton.getStyleClass().remove("buttonPressed");
+
         teacherPanel.setVisible(false);
         teacherComboBox.getSelectionModel().clearSelection();
+        teacherComboBox.setItems(DataManager.getInstance().getTeachers());
+
         groupPanel.setVisible(false);
         groupComboBox.getSelectionModel().clearSelection();
+        groupComboBox.setItems(DataManager.getInstance().getGroups());
+
         classroomPanel.setVisible(false);
         classroomComboBox.getSelectionModel().clearSelection();
+        classroomComboBox.setItems(DataManager.getInstance().getClassrooms());
+
         searchButton.setDisable(true);
     }
 

@@ -1059,19 +1059,16 @@ public class ClientProtocol {
         if(schedulerItem == null)
             return;
 
-        StringBuilder insertString = new StringBuilder();
+        int inserted = 1;
+        int required = schedulerItem.getScheduleList().size();
+
         for(Schedule schedule : schedulerItem.getScheduleList()) {
-
-            if(insertString.toString().equalsIgnoreCase("")) insertString.append("(");
-            else insertString.append(", (");
-
-            insertString
-                    .append(schedule.getTeacher().getId()).append(",").append(schedule.getSubject().getId()).append(",").append(schedule.getGroup().getId())
-                    .append(",").append(schedule.getClassroom().getId()).append(",").append(schedule.getTimeZone().getId()).append(",'").append(schedule.getUuid()).append("')");
-
+            if(clientThread.getDbConnection().insertSchedule(schedule)) {
+                inserted++;
+            }
         }
 
-        if(clientThread.getDbConnection().insertSchedulesSB(insertString)) {
+        if(inserted > required) {
 
             Packet insertScheduleConfirmationPacket = new PacketBuilder()
                     .ofType(PacketType.INSERTSCHEDULE.getConfirmation())
@@ -1176,14 +1173,16 @@ public class ClientProtocol {
         if(schedulerItem == null)
             return;
 
-        StringBuilder removeString = new StringBuilder();
+        int removed = 1;
+        int required = schedulerItem.getScheduleList().size();
+
         for(Schedule schedule : schedulerItem.getScheduleList()) {
-            removeString.append("'" + schedule.getUuid() + "',");
+            if(clientThread.getDbConnection().removeSchedule(schedule)) {
+                removed++;
+            }
         }
 
-        String string = removeString.substring(0, removeString.toString().length() - 1);
-
-        if(clientThread.getDbConnection().removeSchedulesSB("(" + string + ")")) {
+        if(removed > required) {
 
             Packet deleteScheduleConfirmationPacket = new PacketBuilder()
                     .ofType(PacketType.REMOVESCHEDULE.getConfirmation())

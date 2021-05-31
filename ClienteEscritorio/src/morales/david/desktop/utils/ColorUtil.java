@@ -1,4 +1,4 @@
-package morales.david.server.utils;
+package morales.david.desktop.utils;
 
 import java.awt.*;
 import java.util.Random;

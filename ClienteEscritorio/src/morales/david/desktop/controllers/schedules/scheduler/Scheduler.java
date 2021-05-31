@@ -1,5 +1,12 @@
 package morales.david.desktop.controllers.schedules.scheduler;
 
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
+import morales.david.desktop.controllers.modals.ClassroomModalController;
+import morales.david.desktop.controllers.modals.SchedulerItemModalController;
 import morales.david.desktop.managers.DataManager;
 import morales.david.desktop.managers.eventcallbacks.ScheduleConfirmationListener;
 import morales.david.desktop.managers.eventcallbacks.ScheduleErrorListener;
@@ -11,8 +18,11 @@ import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class Scheduler {
 
@@ -189,7 +199,7 @@ public class Scheduler {
             sb.append("\n");
             sb.append(schedule.getSubject().getAbreviation() + "     " + schedule.getClassroom().toString());
             sb.append("\n");
-            sb.append(schedule.getGroup().toString() + "     " + schedule.getTimeZone().getId());
+            sb.append(schedule.getGroup().toString());
 
         }
 
@@ -309,13 +319,45 @@ public class Scheduler {
 
     }
 
-    private TimeZone getTimeZoneBy(int day, int hour) {
+    public TimeZone getTimeZoneBy(int day, int hour) {
         for(TimeZone timeZone : new ArrayList<>(DataManager.getInstance().getTimeZones())) {
             if(timeZone.getDay().getId() == day && timeZone.getHour().getId() == hour) {
                 return timeZone;
             }
         }
         return null;
+    }
+
+    public void openSchedulerItemModal(SchedulerItem schedulerItem, TimeZone timeZone) {
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/schedulerItemModal.fxml"));
+        try {
+
+            DialogPane parent = loader.load();
+            SchedulerItemModalController controller = loader.getController();
+
+            controller.setData(schedulerItem, timeZone);
+
+            Dialog<ButtonType> dialog = new Dialog<>();
+
+            dialog.setDialogPane(parent);
+            dialog.setTitle("");
+
+            ButtonType cancelBtn = new ButtonType("Cerrar", ButtonBar.ButtonData.NO);
+
+            dialog.getDialogPane().getButtonTypes().addAll(cancelBtn);
+
+            Button cancelButton = (Button) dialog.getDialogPane().lookupButton(cancelBtn);
+            cancelButton.getStyleClass().addAll("dialogButton", "cancelButton");
+
+            ((Stage)dialog.getDialogPane().getScene().getWindow()).getIcons().add(new Image("/resources/images/schedule-icon-inverted.png"));
+
+            dialog.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

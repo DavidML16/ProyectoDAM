@@ -1,7 +1,7 @@
 package morales.david.desktop.controllers.schedules.scheduler;
 
-import morales.david.desktop.models.Schedule;
 import morales.david.desktop.models.SchedulerItem;
+import morales.david.desktop.models.TimeZone;
 
 import java.util.List;
 
@@ -42,6 +42,10 @@ public class SchedulerManager {
         return selectedIndexHour;
     }
 
+    public TimeZone getSelectedTimeZone() {
+        return getCurrentTable().getTimeZoneBy(selectedIndexDay + 1, (selectedIndexHour + 1) + (isMorning ? 0 : 6));
+    }
+
     public void setSelectedIndexHour(int selectedIndexHour) {
         this.selectedIndexHour = selectedIndexHour;
     }
@@ -72,13 +76,13 @@ public class SchedulerManager {
 
     public void pasteCurrentClipboard() {
         if (clipBoard != null) {
-            getCurrentTable().setSchedule(clipBoard, selectedIndexDay, selectedIndexHour);
+            getCurrentTable().setSchedule(clipBoard.duplicate(), selectedIndexDay, selectedIndexHour);
         }
     }
 
     public void paste(int day, int hour) {
         if (clipBoard != null) {
-            getCurrentTable().setSchedule(clipBoard, day, hour);
+            getCurrentTable().setSchedule(clipBoard.duplicate(), day, hour);
         }
     }
 
