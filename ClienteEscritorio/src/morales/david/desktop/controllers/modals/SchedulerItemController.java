@@ -46,6 +46,8 @@ public class SchedulerItemController implements Initializable {
     @FXML
     private Label groupLabel;
 
+    private SchedulerItemModalController controller;
+
     private SchedulerManager schedulerManager;
     private SchedulerItem schedulerItem;
     private TimeZone timeZone;
@@ -54,8 +56,9 @@ public class SchedulerItemController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) { }
 
-    public void setData(SchedulerManager schedulerManager, SchedulerItem schedulerItem, TimeZone timeZone, Schedule schedule) {
+    public void setData(SchedulerItemModalController controller, SchedulerManager schedulerManager, SchedulerItem schedulerItem, TimeZone timeZone, Schedule schedule) {
 
+        this.controller = controller;
         this.schedulerManager = schedulerManager;
         this.schedulerItem = schedulerItem;
         this.timeZone = timeZone;
@@ -89,7 +92,7 @@ public class SchedulerItemController implements Initializable {
 
         } else if(event.getSource() == editButton) {
 
-            System.out.println("EDIT BUTTON");
+            controller.editSchedule(schedule);
 
         }
 

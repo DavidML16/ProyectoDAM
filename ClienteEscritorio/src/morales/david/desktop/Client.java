@@ -2,6 +2,7 @@ package morales.david.desktop;
 
 import com.google.gson.Gson;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Alert;
@@ -42,6 +43,11 @@ public class Client extends Application {
         primaryStage.setHeight(720);
 
         Utils.centerWindow(primaryStage);
+
+        Platform.runLater(() -> {
+            primaryStage.setMinWidth(975);
+            primaryStage.setMinHeight(680);
+        });
 
         primaryStage.setOnCloseRequest(event -> {
 

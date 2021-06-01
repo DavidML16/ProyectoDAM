@@ -3,11 +3,14 @@ package morales.david.desktop.controllers.schedules.scheduler;
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
@@ -15,6 +18,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import morales.david.desktop.interfaces.Hideable;
+import morales.david.desktop.managers.ScreenManager;
 import morales.david.desktop.models.Day;
 import morales.david.desktop.models.Hour;
 import morales.david.desktop.models.SchedulerItem;
@@ -26,7 +30,7 @@ import java.util.List;
 
 public class SchedulerGUI {
 
-    public static final int ANIMATION_DURATION = 200;
+    public static final int ANIMATION_DURATION = 100;
     public static final int ANIMATION_DISTANCE = 50;
     public static final double FOCUS_ANIMATION_OFFSET_FACTOR = 0.6;
     public static final double GAP_SIZE = 5;
@@ -54,6 +58,8 @@ public class SchedulerGUI {
     private double subjectStartY;
     private double subjectInnerX;
     private double subjectInnerY;
+
+    private JFXButton backButton;
 
     private OptionsPane scheduleContextMenu;
     private JFXButton edit;
@@ -156,6 +162,9 @@ public class SchedulerGUI {
         background.getChildren().add(schedulePreview);
 
         selectMorningTurn();
+
+        new Timeline(new KeyFrame(Duration.millis(100), event -> resizeFonts())).play();
+        new Timeline(new KeyFrame(Duration.millis(200), event -> resizeFonts())).play();
 
         resize();
 
@@ -417,9 +426,9 @@ public class SchedulerGUI {
         double w = hours[0].getWidth();
         double h = hours[0].getHeight();
 
-        Font font1 = Font.font("Arial", FontWeight.BOLD, (h + w) * 0.09);
-        Font font2 = Font.font("Arial", FontWeight.BOLD, h * 0.3);
-        Font font3 = Font.font("Arial", FontWeight.LIGHT, h * 0.2);
+        Font font1 = Font.font("System", FontWeight.BOLD, (h + w) * 0.09);
+        Font font2 = Font.font("System", FontWeight.BOLD, h * 0.3);
+        Font font3 = Font.font("System", FontWeight.LIGHT, h * 0.2);
 
         for (JFXButton b : days)
             b.setFont(font1);
@@ -430,6 +439,8 @@ public class SchedulerGUI {
         for (JFXButton[] ba : schedules)
             for (JFXButton b : ba)
                 b.setFont(font3);
+
+        backButton.setFont(font2);
 
         schedulePreview.setFont(Font.font("Arial", FontWeight.BOLD, h * 0.2));
 
@@ -444,6 +455,14 @@ public class SchedulerGUI {
         rc.setPercentHeight(10);
         subjectGrid.getRowConstraints().add(rc);
         subjectGrid.add(tabBox, 1, 0, 5, 1);
+
+        backButton = new JFXButton();
+        backButton.getStyleClass().add("backButton");
+        backButton.setText("VOLVER");
+        backButton.setMinSize(100, 40);
+        backButton.setPrefSize(500, 500);
+        backButton.setOnMouseClicked(event -> ScreenManager.getInstance().closeScheduleView());
+        subjectGrid.add(backButton, 0, 0, 1, 2);
 
         int pos = 0;
         Day[] dayArray = schedulerManager.getCurrentTable().getDays();

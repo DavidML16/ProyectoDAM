@@ -12,6 +12,13 @@
     -fx-text-fill: #FFF;
 }
 
+.backButton {
+    -fx-background-color: #A40A36;
+    -fx-text-fill: #FFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 28px;
+}
+
 .scheduleButton {
     -fx-background-color: #FFF;
     -fx-text-fill: #000;

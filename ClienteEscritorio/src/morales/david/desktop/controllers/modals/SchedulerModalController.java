@@ -17,6 +17,9 @@ import java.util.ResourceBundle;
 public class SchedulerModalController implements Initializable {
 
     @FXML
+    private Label titleLabel;
+
+    @FXML
     private ComboBox<Teacher> teacherField;
 
     @FXML
@@ -26,16 +29,14 @@ public class SchedulerModalController implements Initializable {
     private ComboBox<Classroom> classroomField;
 
     @FXML
-    private ComboBox<TimeZone> timezoneField;
+    private ComboBox<Group> groupField;
 
-    @FXML
-    private ListSelectionView<Group> courseField;
-
-    private SchedulerItem schedulerItem;
+    private Schedule schedule;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        teacherField.setItems(DataManager.getInstance().getTeachers());
         teacherField.setConverter(new StringConverter<Teacher>() {
             @Override
             public String toString(Teacher object) {
@@ -44,52 +45,131 @@ public class SchedulerModalController implements Initializable {
 
             @Override
             public Teacher fromString(String string) {
-                return teacherField.getItems().stream().filter(object ->
-                        object.getName().equals(string)).findFirst().orElse(null);
+                return teacherField.getItems().stream().filter(object -> object.getName().equals(string)).findFirst().orElse(null);
             }
         });
-        FxUtilTest.autoCompleteComboBoxPlus(teacherField, (typedText, itemToCompare) -> itemToCompare.getName().toLowerCase().contains(typedText.toLowerCase()));
+        FxUtilTest.autoCompleteComboBoxPlus(teacherField, (typedText, itemToCompare) ->
+                itemToCompare.getName().toLowerCase().contains(typedText.toLowerCase())
+                || itemToCompare.getAbreviation().toLowerCase().contains(typedText.toLowerCase())
+                || itemToCompare.getDepartment().toLowerCase().contains(typedText.toLowerCase())
+                || Integer.toString(itemToCompare.getNumber()).contains(typedText.toLowerCase())
+        );
 
+        subjectField.setItems(DataManager.getInstance().getSubjects());
         subjectField.setConverter(new StringConverter<Subject>() {
             @Override
             public String toString(Subject object) {
-                return object != null ? object.getAbreviation() + ", " + object.getName() : "";
+                return object != null ? object.getName() : "";
             }
 
             @Override
             public Subject fromString(String string) {
-                return subjectField.getItems().stream().filter(object ->
-                        object.getName().equals(string) || object.getAbreviation().equals(string)).findFirst().orElse(null);
+                return subjectField.getItems().stream().filter(object -> object.getName().equals(string)).findFirst().orElse(null);
             }
         });
-        FxUtilTest.autoCompleteComboBoxPlus(subjectField, (typedText, itemToCompare) -> itemToCompare.getName().toLowerCase().contains(typedText.toLowerCase()) ||
-                itemToCompare.getAbreviation().toLowerCase().contains(typedText.toLowerCase()));
+        FxUtilTest.autoCompleteComboBoxPlus(subjectField, (typedText, itemToCompare) ->
+                itemToCompare.getName().toLowerCase().contains(typedText.toLowerCase())
+                || itemToCompare.getAbreviation().toLowerCase().contains(typedText.toLowerCase())
+                || Integer.toString(itemToCompare.getNumber()).toLowerCase().contains(typedText.toLowerCase())
+        );
+
+        classroomField.setItems(DataManager.getInstance().getClassrooms());
+        classroomField.setConverter(new StringConverter<Classroom>() {
+            @Override
+            public String toString(Classroom object) {
+                return object != null ? object.getName() : "";
+            }
+
+            @Override
+            public Classroom fromString(String string) {
+                return classroomField.getItems().stream().filter(object -> object.getName().equals(string)).findFirst().orElse(null);
+            }
+        });
+        FxUtilTest.autoCompleteComboBoxPlus(classroomField, (typedText, itemToCompare) -> itemToCompare.getName().toLowerCase().contains(typedText.toLowerCase()));
+
+        groupField.setItems(DataManager.getInstance().getGroups());
+        groupField.setConverter(new StringConverter<Group>() {
+            @Override
+            public String toString(Group object) {
+                return object != null ? object.toString() : "";
+            }
+
+            @Override
+            public Group fromString(String string) {
+                return groupField.getItems().stream().filter(object -> object.toString().equals(string)).findFirst().orElse(null);
+            }
+        });
+        FxUtilTest.autoCompleteComboBoxPlus(groupField, (typedText, itemToCompare) -> itemToCompare.toString().toLowerCase().contains(typedText.toLowerCase()));
 
     }
 
-    public void setData(SchedulerItem schedulerItem, boolean edit) {
+    public void setData(Schedule schedule, boolean edit) {
 
-        this.schedulerItem = schedulerItem;
+        this.schedule = schedule;
+
+        titleLabel.setText("Añadir nuevo turno");
 
         if(!edit) return;
 
+        titleLabel.setText("Editar turno");
+
+        Teacher teacher = schedule.getTeacher();
+        for(Teacher cachedTeacher : DataManager.getInstance().getTeachers()) {
+            if(cachedTeacher.getId() == teacher.getId()) {
+                teacherField.getSelectionModel().select(cachedTeacher);
+                break;
+            }
+        }
+
+        Subject subject = schedule.getSubject();
+        for(Subject cachedSubject : DataManager.getInstance().getSubjects()) {
+            if(cachedSubject.getId() == subject.getId()) {
+                subjectField.getSelectionModel().select(cachedSubject);
+                break;
+            }
+        }
+
+        Classroom classroom = schedule.getClassroom();
+        for(Classroom cachedClassroom : DataManager.getInstance().getClassrooms()) {
+            if(cachedClassroom.getId() == classroom.getId()) {
+                classroomField.getSelectionModel().select(cachedClassroom);
+                break;
+            }
+        }
+
+        Group group = schedule.getGroup();
+        for(Group cachedGroup : DataManager.getInstance().getGroups()) {
+            if(cachedGroup.getId() == group.getId()) {
+                groupField.getSelectionModel().select(cachedGroup);
+                break;
+            }
+        }
+
     }
 
-    public SchedulerItem getData() {
-        return schedulerItem;
+    public Schedule getData() {
+        schedule.setTeacher(teacherField.getSelectionModel().getSelectedItem());
+        schedule.setSubject(subjectField.getSelectionModel().getSelectedItem());
+        schedule.setClassroom(classroomField.getSelectionModel().getSelectedItem());
+        schedule.setGroup(groupField.getSelectionModel().getSelectedItem());
+        return schedule;
     }
 
     public boolean validateInputs() {
 
+        if(teacherField.getSelectionModel().isEmpty())
+            return false;
+
+        if(subjectField.getSelectionModel().isEmpty())
+            return false;
+
+        if(classroomField.getSelectionModel().isEmpty())
+            return false;
+
+        if(groupField.getSelectionModel().isEmpty())
+            return false;
+
         return true;
-
-    }
-
-    @FXML
-    void numberInputKeyTyped(KeyEvent event) {
-
-        if(!Utils.isInteger(event.getCharacter()))
-            event.consume();
 
     }
 

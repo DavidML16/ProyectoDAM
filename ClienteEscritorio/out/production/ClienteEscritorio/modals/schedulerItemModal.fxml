@@ -25,7 +25,7 @@
    <content>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
-            <Button mnemonicParsing="false" prefHeight="35.0" styleClass="addButton" text="Crear nuevo turno en el horario" textFill="#797979" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="10.0">
+            <Button fx:id="newScheduleButton" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="35.0" styleClass="addButton" text="Crear nuevo turno en el horario" textFill="#797979" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="10.0">
                <font>
                   <Font size="16.0" />
                </font>

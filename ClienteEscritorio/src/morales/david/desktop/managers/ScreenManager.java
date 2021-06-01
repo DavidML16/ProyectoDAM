@@ -28,6 +28,7 @@ public final class ScreenManager {
     private Stage stage;
     private Scene scene;
     private Controller controller, dashboardController;
+    private Parent sceneBeforeScheduleOpen;
 
     public synchronized Stage getStage() {
         return stage;
@@ -56,6 +57,14 @@ public final class ScreenManager {
     public synchronized Controller getDashboardController() { return dashboardController; }
 
     public synchronized void setDashboardController(Controller dashboardController) { this.dashboardController = dashboardController; }
+
+    public synchronized Parent getSceneBeforeScheduleOpen() {
+        return sceneBeforeScheduleOpen;
+    }
+
+    public synchronized void setSceneBeforeScheduleOpen(Parent sceneBeforeScheduleOpen) {
+        this.sceneBeforeScheduleOpen = sceneBeforeScheduleOpen;
+    }
 
     public synchronized void openScene(String url, String title) {
 
@@ -86,31 +95,27 @@ public final class ScreenManager {
 
         try {
 
+            setSceneBeforeScheduleOpen(scene.getRoot());
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/views/schedules/schedules.fxml"));
             Parent parent = loader.load();
 
             SchedulesController controller = loader.getController();
             controller.setSchedules(scheduleList);
 
-            Stage stage = new Stage();
             stage.setTitle("HORARIO");
-            stage.setScene(new Scene(parent));
 
-            stage.getIcons().add(new Image("/resources/images/schedule-icon-inverted.png"));
-
-            stage.setWidth(1280);
-            stage.setHeight(720);
-
-            stage.setMinWidth(900);
-            stage.setMinHeight(500);
-
-            stage.show();
-
-            Utils.centerWindow(stage);
+            scene.setRoot(parent);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+    public synchronized void closeScheduleView() {
+
+        scene.setRoot(getSceneBeforeScheduleOpen());
 
     }
 
