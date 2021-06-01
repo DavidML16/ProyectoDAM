@@ -11,12 +11,12 @@
 
 <AnchorPane fx:id="anchorPane" prefHeight="150.0" prefWidth="485.0" styleClass="addButton" stylesheets="@../css/table_view.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morales.david.desktop.controllers.modals.SchedulerItemController">
    <children>
-      <Button fx:id="deleteButton" mnemonicParsing="false" prefHeight="36.0" prefWidth="38.0" style="-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.7) , 10,0,0,1 );" styleClass="deleteButton" text="X" textFill="WHITE" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+      <Button fx:id="deleteButton" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="36.0" prefWidth="38.0" style="-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.4) , 10,0,0,1 );" styleClass="deleteButton" text="X" textFill="WHITE" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <Button fx:id="deleteButton1" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="35.0" style="-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.7) , 10,0,0,1 );" styleClass="editButton" textFill="WHITE" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="60.0">
+      <Button fx:id="editButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="36.0" prefWidth="35.0" style="-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.4) , 10,0,0,1 );" styleClass="editButton" textFill="WHITE" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="60.0">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>

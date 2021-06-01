@@ -1,5 +1,6 @@
 package morales.david.desktop.controllers.schedules.scheduler;
 
+import morales.david.desktop.controllers.modals.SchedulerItemModalController;
 import morales.david.desktop.models.SchedulerItem;
 import morales.david.desktop.models.TimeZone;
 
@@ -17,6 +18,8 @@ public class SchedulerManager {
     private boolean isMorning;
 
     private SchedulerGUI gui;
+
+    private SchedulerItemModalController openedItemModal;
 
     public SchedulerManager(List<SchedulerItem> scheduleList) {
         currentTimetable = new SchedulerPair(scheduleList, this);
@@ -51,7 +54,7 @@ public class SchedulerManager {
     }
 
     public void deleteSchedule() {
-        currentTimetable.get(isMorning).deleteSchedule(selectedIndexDay, selectedIndexHour);
+        currentTimetable.get(isMorning).deleteScheduleItem(selectedIndexDay, selectedIndexHour);
     }
 
     public SchedulerItem getClipBoard() {
@@ -63,26 +66,26 @@ public class SchedulerManager {
     }
 
     public void copyCurrentClipboard() {
-        if(getCurrentTable().getSchedule(selectedIndexDay, selectedIndexHour) != null) {
-            clipBoard = getCurrentTable().getSchedule(selectedIndexDay, selectedIndexHour).duplicate();
+        if(getCurrentTable().getScheduleItem(selectedIndexDay, selectedIndexHour) != null) {
+            clipBoard = getCurrentTable().getScheduleItem(selectedIndexDay, selectedIndexHour).duplicate();
         }
     }
 
     public void copy(int day, int hour) {
-        if(getCurrentTable().getSchedule(day, hour) != null) {
-            clipBoard = getCurrentTable().getSchedule(day, hour).duplicate();
+        if(getCurrentTable().getScheduleItem(day, hour) != null) {
+            clipBoard = getCurrentTable().getScheduleItem(day, hour).duplicate();
         }
     }
 
     public void pasteCurrentClipboard() {
         if (clipBoard != null) {
-            getCurrentTable().setSchedule(clipBoard.duplicate(), selectedIndexDay, selectedIndexHour);
+            getCurrentTable().setScheduleItem(clipBoard.duplicate(), selectedIndexDay, selectedIndexHour);
         }
     }
 
     public void paste(int day, int hour) {
         if (clipBoard != null) {
-            getCurrentTable().setSchedule(clipBoard.duplicate(), day, hour);
+            getCurrentTable().setScheduleItem(clipBoard.duplicate(), day, hour);
         }
     }
 
@@ -106,4 +109,11 @@ public class SchedulerManager {
         this.gui = gui;
     }
 
+    public SchedulerItemModalController getOpenedItemModal() {
+        return openedItemModal;
+    }
+
+    public void setOpenedItemModal(SchedulerItemModalController openedItemModal) {
+        this.openedItemModal = openedItemModal;
+    }
 }

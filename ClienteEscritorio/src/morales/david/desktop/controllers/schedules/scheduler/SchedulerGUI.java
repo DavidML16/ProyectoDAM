@@ -292,8 +292,8 @@ public class SchedulerGUI {
                     for (int j = 0; j < schedules[0].length; j++) {
                         if (schedules[i][j] == event.getSource()) {
 
-                            String text = schedulerManager.getCurrentTable().getScheduleText(i, j);
-                            SchedulerItem schedulerItem = schedulerManager.getCurrentTable().getSchedule(i, j);
+                            String text = schedulerManager.getCurrentTable().getScheduleItemText(i, j);
+                            SchedulerItem schedulerItem = schedulerManager.getCurrentTable().getScheduleItem(i, j);
 
                             if(!text.equalsIgnoreCase("")) {
 
@@ -392,7 +392,7 @@ public class SchedulerGUI {
         for (int day = 0; day < schedules.length; day++) {
             for (int hour = 0; hour < schedules[0].length; hour++) {
                 if (event.getSource() == schedules[day][hour]) {
-                    SchedulerItem schedule = schedulerManager.getCurrentTable().getSchedule(day, hour);
+                    SchedulerItem schedule = schedulerManager.getCurrentTable().getScheduleItem(day, hour);
                     return schedule;
                 }
             }
@@ -462,7 +462,7 @@ public class SchedulerGUI {
         }
 
         pos = 0;
-        SchedulerItem[][] scheduleArray = schedulerManager.getCurrentTable().getSchedules();
+        SchedulerItem[][] scheduleArray = schedulerManager.getCurrentTable().getScheduleItems();
         for (int i = 0; i < schedules.length; i++) {
             for (int j = 0; j < schedules[0].length; j++) {
 
@@ -485,7 +485,7 @@ public class SchedulerGUI {
 
                 if(schedule != null && schedule.getScheduleList().size() > 0) {
 
-                    schedules[i][j].setText(schedulerManager.getCurrentTable().getScheduleText(i, j));
+                    schedules[i][j].setText(schedulerManager.getCurrentTable().getScheduleItemText(i, j));
 
                     String color = schedule.getScheduleList().get(0).getSubject().getColor();
                     String fontColor = ColorUtil.getFontColor(color);

@@ -4,14 +4,18 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import morales.david.desktop.models.Schedule;
-import morales.david.desktop.models.SchedulerItem;
-import morales.david.desktop.models.TimeZone;
+import morales.david.desktop.controllers.schedules.scheduler.SchedulerManager;
+import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.models.*;
+import morales.david.desktop.models.packets.PacketBuilder;
+import morales.david.desktop.models.packets.PacketType;
+import morales.david.desktop.utils.FxUtilTest;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -23,6 +27,9 @@ public class SchedulerItemController implements Initializable {
 
     @FXML
     private Button deleteButton;
+
+    @FXML
+    private Button editButton;
 
     @FXML
     private Label teacherLabel;
@@ -39,6 +46,7 @@ public class SchedulerItemController implements Initializable {
     @FXML
     private Label groupLabel;
 
+    private SchedulerManager schedulerManager;
     private SchedulerItem schedulerItem;
     private TimeZone timeZone;
     private Schedule schedule;
@@ -46,8 +54,9 @@ public class SchedulerItemController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) { }
 
-    public void setData(SchedulerItem schedulerItem, TimeZone timeZone, Schedule schedule) {
+    public void setData(SchedulerManager schedulerManager, SchedulerItem schedulerItem, TimeZone timeZone, Schedule schedule) {
 
+        this.schedulerManager = schedulerManager;
         this.schedulerItem = schedulerItem;
         this.timeZone = timeZone;
         this.schedule = schedule;
@@ -68,6 +77,21 @@ public class SchedulerItemController implements Initializable {
 
         if(schedule.getGroup() != null)
             groupLabel.setText(schedule.getGroup().toString());
+
+    }
+
+    @FXML
+    public void handleButtonAction(MouseEvent event) {
+
+        if(event.getSource() == deleteButton) {
+
+            schedulerManager.getCurrentTable().deleteSchedule(schedulerItem, schedule);
+
+        } else if(event.getSource() == editButton) {
+
+            System.out.println("EDIT BUTTON");
+
+        }
 
     }
 

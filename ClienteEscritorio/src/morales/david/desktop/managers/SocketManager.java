@@ -7,7 +7,6 @@ import javafx.scene.paint.Color;
 import morales.david.desktop.Client;
 import morales.david.desktop.controllers.ImportController;
 import morales.david.desktop.controllers.LoginController;
-import morales.david.desktop.controllers.schedules.ScheduleSearchController;
 import morales.david.desktop.managers.eventcallbacks.ScheduleConfirmationListener;
 import morales.david.desktop.managers.eventcallbacks.ScheduleErrorListener;
 import morales.david.desktop.managers.eventcallbacks.EventManager;
@@ -386,9 +385,9 @@ public final class SocketManager extends Thread {
 
                         }
 
-                        case INSERTSCHEDULE: {
+                        case INSERTSCHEDULEITEM: {
 
-                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.INSERTSCHEDULE.getConfirmation())) {
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.INSERTSCHEDULEITEM.getConfirmation())) {
 
                                 String uuid = (String) receivedPacket.getArgument("uuid");
                                 LinkedTreeMap scheduleMap = (LinkedTreeMap) receivedPacket.getArgument("scheduleItem");
@@ -398,7 +397,7 @@ public final class SocketManager extends Thread {
                                 if (schedule != null)
                                     EventManager.getInstance().notify(uuid, new ScheduleConfirmationListener(uuid, schedule));
 
-                            } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.INSERTSCHEDULE.getError())) {
+                            } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.INSERTSCHEDULEITEM.getError())) {
 
                                 String uuid = (String) receivedPacket.getArgument("uuid");
                                 String message = (String) receivedPacket.getArgument("message");
@@ -411,9 +410,9 @@ public final class SocketManager extends Thread {
 
                         }
 
-                        case SWITCHSCHEDULE: {
+                        case SWITCHSCHEDULEITEM: {
 
-                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.SWITCHSCHEDULE.getConfirmation())) {
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.SWITCHSCHEDULEITEM.getConfirmation())) {
 
                                 String uuid = (String) receivedPacket.getArgument("uuid");
 
@@ -426,7 +425,7 @@ public final class SocketManager extends Thread {
                                 if (schedule1 != null && schedule2 != null)
                                     EventManager.getInstance().notify(uuid, new ScheduleSwitchConfirmationListener(uuid, schedule1, schedule2));
 
-                            } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.SWITCHSCHEDULE.getError())) {
+                            } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.SWITCHSCHEDULEITEM.getError())) {
 
                                 String uuid = (String) receivedPacket.getArgument("uuid");
                                 String message = (String) receivedPacket.getArgument("message");
@@ -439,9 +438,9 @@ public final class SocketManager extends Thread {
 
                         }
 
-                        case REMOVESCHEDULE: {
+                        case REMOVESCHEDULEITEM: {
 
-                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.REMOVESCHEDULE.getConfirmation())) {
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.REMOVESCHEDULEITEM.getConfirmation())) {
 
                                 String uuid = (String) receivedPacket.getArgument("uuid");
                                 LinkedTreeMap scheduleMap = (LinkedTreeMap) receivedPacket.getArgument("scheduleItem");
@@ -451,7 +450,32 @@ public final class SocketManager extends Thread {
                                 if (schedulerItem != null)
                                     EventManager.getInstance().notify(uuid, new ScheduleConfirmationListener(uuid, schedulerItem));
 
-                            } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.REMOVESCHEDULE.getError())) {
+                            } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.REMOVESCHEDULEITEM.getError())) {
+
+                                String uuid = (String) receivedPacket.getArgument("uuid");
+                                String message = (String) receivedPacket.getArgument("message");
+
+                                EventManager.getInstance().notify(uuid, new ScheduleErrorListener(uuid, message));
+
+                            }
+
+                            break;
+
+                        }
+
+                        case DELETESCHEDULE: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.DELETESCHEDULE.getConfirmation())) {
+
+                                String uuid = (String) receivedPacket.getArgument("uuid");
+                                LinkedTreeMap scheduleMap = (LinkedTreeMap) receivedPacket.getArgument("scheduleItem");
+
+                                SchedulerItem schedulerItem = SchedulerItem.parse(scheduleMap);
+
+                                if (schedulerItem != null)
+                                    EventManager.getInstance().notify(uuid, new ScheduleConfirmationListener(uuid, schedulerItem));
+
+                            } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.DELETESCHEDULE.getError())) {
 
                                 String uuid = (String) receivedPacket.getArgument("uuid");
                                 String message = (String) receivedPacket.getArgument("message");
