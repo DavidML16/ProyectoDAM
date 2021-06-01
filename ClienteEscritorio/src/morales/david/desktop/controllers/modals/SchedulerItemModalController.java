@@ -140,7 +140,7 @@ public class SchedulerItemModalController implements Initializable {
                 Schedule schedule = controller.getData();
                 schedule.setTimeZone(timeZone);
 
-                System.out.println(schedule);
+                schedulerManager.getCurrentTable().addSchedule(schedulerItem, schedule);
 
             }
 
@@ -161,7 +161,7 @@ public class SchedulerItemModalController implements Initializable {
             DialogPane parent = loader.load();
             SchedulerModalController controller = loader.getController();
 
-            controller.setData(schedule, true);
+            controller.setData(schedule.duplicateUUID(), true);
 
             Dialog<ButtonType> dialog = new Dialog<>();
 
@@ -196,7 +196,7 @@ public class SchedulerItemModalController implements Initializable {
 
                 Schedule updatedSchedule = controller.getData();
 
-                System.out.println(updatedSchedule);
+                schedulerManager.getCurrentTable().updateSchedule(schedulerItem, updatedSchedule);
 
             }
 

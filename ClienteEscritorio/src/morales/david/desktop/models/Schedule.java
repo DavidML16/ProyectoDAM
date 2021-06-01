@@ -117,4 +117,8 @@ public class Schedule {
         return new Schedule(teacher, subject, group, classroom, timeZone);
     }
 
+    public Schedule duplicateUUID() {
+        return new Schedule(uuid, teacher, subject, group, classroom, timeZone);
+    }
+
 }

@@ -191,6 +191,14 @@ public class ClientProtocol {
                 removeScheduleItem();
                 break;
 
+            case ADDSCHEDULE:
+                addSchedule();
+                break;
+
+            case UPDATESCHEDULE:
+                updateSchedule();
+                break;
+
             case DELETESCHEDULE:
                 deleteSchedule();
                 break;
@@ -1210,6 +1218,88 @@ public class ClientProtocol {
 
     }
 
+
+    /**
+     * Get schedule data from packet
+     * Parse schedule data and return schedule object
+     * Add schedule to database, and send confirmation or error packet to client
+     */
+    private void addSchedule() {
+
+        LinkedTreeMap scheduleItemMap = (LinkedTreeMap) lastPacket.getArgument("scheduleItem");
+        SchedulerItem schedulerItem = SchedulerItem.parse(scheduleItemMap);
+
+        LinkedTreeMap scheduleMap = (LinkedTreeMap) lastPacket.getArgument("schedule");
+        Schedule schedule = Schedule.parse(scheduleMap);
+
+        if(schedulerItem == null || schedule == null)
+            return;
+
+        if(clientThread.getDbConnection().insertSchedule(schedule)) {
+
+            Packet addScheduleConfirmationPacket = new PacketBuilder()
+                    .ofType(PacketType.ADDSCHEDULE.getConfirmation())
+                    .addArgument("uuid", schedulerItem.getUuid())
+                    .addArgument("scheduleItem", schedulerItem)
+                    .addArgument("schedule", schedule)
+                    .build();
+
+            sendPacketIO(addScheduleConfirmationPacket);
+
+        } else {
+
+            Packet addScheduleErrorPacket = new PacketBuilder()
+                    .ofType(PacketType.ADDSCHEDULE.getError())
+                    .addArgument("uuid", schedulerItem.getUuid())
+                    .addArgument("message", "No se ha podido editar ese schedule")
+                    .build();
+
+            sendPacketIO(addScheduleErrorPacket);
+
+        }
+
+    }
+
+    /**
+     * Get schedule data from packet
+     * Parse schedule data and return schedule object
+     * Update schedule from database, and send confirmation or error packet to client
+     */
+    private void updateSchedule() {
+
+        LinkedTreeMap scheduleItemMap = (LinkedTreeMap) lastPacket.getArgument("scheduleItem");
+        SchedulerItem schedulerItem = SchedulerItem.parse(scheduleItemMap);
+
+        LinkedTreeMap scheduleMap = (LinkedTreeMap) lastPacket.getArgument("schedule");
+        Schedule schedule = Schedule.parse(scheduleMap);
+
+        if(schedulerItem == null || schedule == null)
+            return;
+
+        if(clientThread.getDbConnection().updateSchedule(schedule)) {
+
+            Packet updateScheduleConfirmationPacket = new PacketBuilder()
+                    .ofType(PacketType.UPDATESCHEDULE.getConfirmation())
+                    .addArgument("uuid", schedulerItem.getUuid())
+                    .addArgument("scheduleItem", schedulerItem)
+                    .addArgument("schedule", schedule)
+                    .build();
+
+            sendPacketIO(updateScheduleConfirmationPacket);
+
+        } else {
+
+            Packet updateScheduleErrorPacket = new PacketBuilder()
+                    .ofType(PacketType.UPDATESCHEDULE.getError())
+                    .addArgument("uuid", schedulerItem.getUuid())
+                    .addArgument("message", "No se ha podido editar ese schedule")
+                    .build();
+
+            sendPacketIO(updateScheduleErrorPacket);
+
+        }
+
+    }
 
     /**
      * Get schedule data from packet

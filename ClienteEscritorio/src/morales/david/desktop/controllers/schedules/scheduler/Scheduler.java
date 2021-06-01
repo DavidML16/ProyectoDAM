@@ -348,6 +348,87 @@ public class Scheduler {
 
     }
 
+    public void updateSchedule(SchedulerItem schedulerItem, Schedule schedule) {
+
+        if(schedulerItem != null && schedulerItem.getScheduleList().size() > 0) {
+
+            EventManager.getInstance().subscribe(schedulerItem.getUuid(), (eventType, scheduleListenerType) -> {
+
+                if(scheduleListenerType instanceof ScheduleConfirmationListener) {
+
+                    for(Schedule cachedSchedule : schedulerItem.getScheduleList()) {
+                        if(cachedSchedule.getUuid().equalsIgnoreCase(schedule.getUuid())) {
+
+                            cachedSchedule.setTeacher(schedule.getTeacher());
+                            cachedSchedule.setSubject(schedule.getSubject());
+                            cachedSchedule.setGroup(schedule.getGroup());
+                            cachedSchedule.setClassroom(schedule.getClassroom());
+                            cachedSchedule.setTimeZone(schedule.getTimeZone());
+
+                            parentPair.getTimetableManager().getOpenedItemModal().initItems();
+                            parentPair.getTimetableManager().getGui().displayCurrentTimetable();
+
+                            break;
+                        }
+                    }
+
+                } else if (scheduleListenerType instanceof ScheduleErrorListener) {
+
+                    ScheduleErrorListener errorListener = (ScheduleErrorListener) scheduleListenerType;
+
+                    System.out.println(errorListener.getMessage());
+
+                }
+
+            });
+
+            Packet updateScheduleRequestPacket = new PacketBuilder()
+                    .ofType(PacketType.UPDATESCHEDULE.getRequest())
+                    .addArgument("scheduleItem", schedulerItem)
+                    .addArgument("schedule", schedule)
+                    .build();
+
+            SocketManager.getInstance().sendPacketIO(updateScheduleRequestPacket);
+
+        }
+
+    }
+
+    public void addSchedule(SchedulerItem schedulerItem, Schedule schedule) {
+
+        if(schedulerItem != null) {
+
+            EventManager.getInstance().subscribe(schedulerItem.getUuid(), (eventType, scheduleListenerType) -> {
+
+                if(scheduleListenerType instanceof ScheduleConfirmationListener) {
+
+                    schedulerItem.getScheduleList().add(schedule);
+
+                    parentPair.getTimetableManager().getOpenedItemModal().initItems();
+                    parentPair.getTimetableManager().getGui().displayCurrentTimetable();
+
+                } else if (scheduleListenerType instanceof ScheduleErrorListener) {
+
+                    ScheduleErrorListener errorListener = (ScheduleErrorListener) scheduleListenerType;
+
+                    System.out.println(errorListener.getMessage());
+
+                }
+
+            });
+
+            Packet addScheduleRequestPacket = new PacketBuilder()
+                    .ofType(PacketType.ADDSCHEDULE.getRequest())
+                    .addArgument("scheduleItem", schedulerItem)
+                    .addArgument("schedule", schedule)
+                    .build();
+
+            SocketManager.getInstance().sendPacketIO(addScheduleRequestPacket);
+
+        }
+
+    }
+
     public TimeZone getTimeZoneBy(int day, int hour) {
         for(TimeZone timeZone : new ArrayList<>(DataManager.getInstance().getTimeZones())) {
             if(timeZone.getDay().getId() == day && timeZone.getHour().getId() == hour) {
