@@ -27,17 +27,19 @@ public class SchedulesController implements Initializable, Controller {
     public void initialize(URL location, ResourceBundle resources) {
 
         Platform.runLater(() -> {
-            anchorPane.getScene().setOnKeyPressed(event -> {
-                if (schedulerGui != null && event.isControlDown()) {
-                    schedulerGui.controlDown = true;
-                }
-            });
+            if(anchorPane != null && anchorPane.getScene() != null) {
+                anchorPane.getScene().setOnKeyPressed(event -> {
+                    if (schedulerGui != null && event.isControlDown()) {
+                        schedulerGui.controlDown = true;
+                    }
+                });
 
-            anchorPane.getScene().setOnKeyReleased(event -> {
-                if (schedulerGui != null && !event.isControlDown()) {
-                    schedulerGui.controlDown = false;
-                }
-            });
+                anchorPane.getScene().setOnKeyReleased(event -> {
+                    if (schedulerGui != null && !event.isControlDown()) {
+                        schedulerGui.controlDown = false;
+                    }
+                });
+            }
         });
 
     }

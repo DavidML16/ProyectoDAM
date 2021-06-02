@@ -27,7 +27,7 @@ public final class ScreenManager {
 
     private Stage stage;
     private Scene scene;
-    private Controller controller, dashboardController;
+    private Controller controller, dashboardController, controllerBeforeScheduleOpen;
     private Parent sceneBeforeScheduleOpen;
 
     public synchronized Stage getStage() {
@@ -66,6 +66,14 @@ public final class ScreenManager {
         this.sceneBeforeScheduleOpen = sceneBeforeScheduleOpen;
     }
 
+    public Controller getControllerBeforeScheduleOpen() {
+        return controllerBeforeScheduleOpen;
+    }
+
+    public void setControllerBeforeScheduleOpen(Controller controllerBeforeScheduleOpen) {
+        this.controllerBeforeScheduleOpen = controllerBeforeScheduleOpen;
+    }
+
     public synchronized void openScene(String url, String title) {
 
         try {
@@ -96,12 +104,15 @@ public final class ScreenManager {
         try {
 
             setSceneBeforeScheduleOpen(scene.getRoot());
+            setControllerBeforeScheduleOpen(getController());
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/views/schedules/schedules.fxml"));
             Parent parent = loader.load();
 
             SchedulesController controller = loader.getController();
             controller.setSchedules(scheduleList);
+
+            setController(controller);
 
             stage.setTitle("HORARIO");
 
@@ -115,6 +126,7 @@ public final class ScreenManager {
 
     public synchronized void closeScheduleView() {
 
+        setController(getControllerBeforeScheduleOpen());
         scene.setRoot(getSceneBeforeScheduleOpen());
 
     }

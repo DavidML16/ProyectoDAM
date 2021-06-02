@@ -12,6 +12,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import morales.david.desktop.controllers.LoginController;
+import morales.david.desktop.controllers.schedules.SchedulesController;
 import morales.david.desktop.managers.ScreenManager;
 import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.models.packets.Packet;
@@ -52,6 +53,11 @@ public class Client extends Application {
         primaryStage.setOnCloseRequest(event -> {
 
             event.consume();
+
+            if(ScreenManager.getInstance().getController() instanceof SchedulesController) {
+                ScreenManager.getInstance().closeScheduleView();
+                return;
+            }
 
             Packet exitRequestPacket = new PacketBuilder()
                     .ofType(PacketType.EXIT.getRequest())

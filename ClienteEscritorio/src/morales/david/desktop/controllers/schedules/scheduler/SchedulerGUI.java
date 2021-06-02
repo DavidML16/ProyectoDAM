@@ -3,16 +3,16 @@ package morales.david.desktop.controllers.schedules.scheduler;
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
@@ -44,7 +44,6 @@ public class SchedulerGUI {
 
     private SchedulerManager schedulerManager;
 
-    private EventHandler<ActionEvent> scheduleActionEvent;
     private EventHandler<MouseEvent> schedulePressedEvent;
     private EventHandler<MouseEvent> scheduleDraggedEvent;
     private EventHandler<MouseEvent> scheduleReleasedEvent;
@@ -54,10 +53,8 @@ public class SchedulerGUI {
     public boolean controlDown = false;
     private boolean firstDrag = true;
     private boolean primaryButton;
-    private double subjectStartX;
-    private double subjectStartY;
-    private double subjectInnerX;
-    private double subjectInnerY;
+    private double scheduleInnerX;
+    private double scheduleInnerY;
 
     private JFXButton backButton;
 
@@ -77,7 +74,7 @@ public class SchedulerGUI {
 
     private JFXButton[] days;
     private JFXButton[] hours;
-    private JFXButton[][] schedules;
+    private SchedulerItemPane[][] schedules;
 
     private List<Hideable> menus;
 
@@ -196,9 +193,6 @@ public class SchedulerGUI {
 
         tabBox.getChildren().addAll(tabMorning, tabAfternoon);
 
-        scheduleActionEvent = (ActionEvent event) -> {
-            scheduleMenu(event);
-        };
         schedulePressedEvent = (MouseEvent event) -> {
             schedulePressed(event);
         };
@@ -209,15 +203,10 @@ public class SchedulerGUI {
             scheduleReleased(event);
         };
 
-        schedules = new JFXButton[DAY_LENGTH][HOURS_LENGTH - 1];
+        schedules = new SchedulerItemPane[DAY_LENGTH][HOURS_LENGTH - 1];
         for (int i = 0; i < schedules.length; i++) {
             for (int j = 0; j < schedules[0].length; j++) {
-                JFXButton schedule = new JFXButton();
-                schedule.getStyleClass().add("scheduleButton");
-                schedule.setTextAlignment(TextAlignment.CENTER);
-                schedule.setMinSize(100, 40);
-                schedule.setPrefSize(500, 500);
-                schedule.setOnAction(scheduleActionEvent);
+                SchedulerItemPane schedule = new SchedulerItemPane(null);
                 schedule.setOnMousePressed(schedulePressedEvent);
                 schedule.setOnMouseDragged(scheduleDraggedEvent);
                 schedule.setOnMouseReleased(scheduleReleasedEvent);
@@ -323,8 +312,8 @@ public class SchedulerGUI {
                 firstDrag = false;
             }
 
-            schedulePreview.setLayoutX(event.getSceneX() - subjectInnerX);
-            schedulePreview.setLayoutY(event.getSceneY() - subjectInnerY);
+            schedulePreview.setLayoutX(event.getSceneX() - scheduleInnerX);
+            schedulePreview.setLayoutY(event.getSceneY() - scheduleInnerY);
 
         }
 
@@ -340,15 +329,10 @@ public class SchedulerGUI {
             } else {
                 hideAllMenus();
                 primaryButton = true;
-                subjectStartX = event.getSceneX();
-                subjectStartY = event.getSceneY();
-                subjectInnerX = event.getX();
-                subjectInnerY = event.getY();
+                scheduleInnerX = event.getX();
+                scheduleInnerY = event.getY();
             }
         }
-    }
-
-    private void scheduleMenu(ActionEvent event) {
     }
 
     private void edit(Event event) {
@@ -442,13 +426,13 @@ public class SchedulerGUI {
 
         backButton.setFont(font2);
 
-        schedulePreview.setFont(Font.font("Arial", FontWeight.BOLD, h * 0.2));
+        schedulePreview.setFont(font3);
 
     }
 
     public void displayCurrentTimetable() {
 
-        subjectGrid.getChildren().removeIf(node -> (node.getClass() == JFXButton.class));
+        subjectGrid.getChildren().removeIf(node -> (node.getClass() == SchedulerItemPane.class || node.getClass() == JFXButton.class));
         subjectGrid.getChildren().remove(tabBox);
         subjectGrid.getRowConstraints().clear();
         RowConstraints rc = new RowConstraints();
@@ -500,22 +484,8 @@ public class SchedulerGUI {
 
                 SchedulerItem schedule = scheduleArray[i][j];
 
-                schedules[i][j].setStyle("-fx-background-color: #FFFFFF;");
-
-                if(schedule != null && schedule.getScheduleList().size() > 0) {
-
-                    schedules[i][j].setText(schedulerManager.getCurrentTable().getScheduleItemText(i, j));
-
-                    String color = schedule.getScheduleList().get(0).getSubject().getColor();
-                    String fontColor = ColorUtil.getFontColor(color);
-
-                    schedules[i][j].setStyle("-fx-background-color: " + color + ";");
-
-                } else {
-
-                    schedules[i][j].setText("");
-
-                }
+                schedules[i][j].setSchedulerItem(schedule);
+                schedules[i][j].setContentText(schedulerManager, i, j);
 
             }
             pos++;

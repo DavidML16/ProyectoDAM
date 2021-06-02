@@ -111,25 +111,4 @@ public class SchedulesMenuController implements Initializable, Controller {
 
     }
 
-    public void loadScheduleGui(List<SchedulerItem> scheduleList) {
-
-        try {
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/views/schedules/schedules.fxml"));
-            Parent parent = loader.load();
-
-            viewPane.setCenter(parent);
-
-            SchedulesController controller = loader.getController();
-            controller.setSchedules(scheduleList);
-
-            actualView = "schedule";
-            removePressed();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
 }
