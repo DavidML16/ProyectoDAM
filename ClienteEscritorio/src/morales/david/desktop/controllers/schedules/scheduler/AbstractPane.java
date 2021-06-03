@@ -11,7 +11,7 @@ public abstract class AbstractPane implements Hideable {
     private GridPane pane = new GridPane();
     private Pane parent;
     private JFXButton done = new JFXButton();
-    private JFXButton source;
+    private SchedulerItemPane source;
 
     private double widthFactor = 1.8;
     private double heightFactor = 0.5;
@@ -55,11 +55,11 @@ public abstract class AbstractPane implements Hideable {
         this.parent = parent;
     }
 
-    public JFXButton getSource() {
+    public SchedulerItemPane getSource() {
         return source;
     }
 
-    public void setSource(JFXButton source) {
+    public void setSource(SchedulerItemPane source) {
         this.source = source;
     }
 

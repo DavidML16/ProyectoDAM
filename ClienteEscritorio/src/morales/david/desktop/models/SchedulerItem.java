@@ -77,4 +77,19 @@ public class SchedulerItem {
         return new SchedulerItem(uuid, temp);
     }
 
+    public String getText() {
+
+        if(getScheduleList().size() == 0)
+            return "";
+
+        StringBuilder sb = new StringBuilder();
+
+        for(Schedule schedule : getScheduleList()) {
+            sb.append(schedule.getText());
+        }
+
+        return sb.toString();
+
+    }
+
 }

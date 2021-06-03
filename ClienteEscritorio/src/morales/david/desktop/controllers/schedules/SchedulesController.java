@@ -24,25 +24,7 @@ public class SchedulesController implements Initializable, Controller {
     private List<SchedulerItem> schedules;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-        Platform.runLater(() -> {
-            if(anchorPane != null && anchorPane.getScene() != null) {
-                anchorPane.getScene().setOnKeyPressed(event -> {
-                    if (schedulerGui != null && event.isControlDown()) {
-                        schedulerGui.controlDown = true;
-                    }
-                });
-
-                anchorPane.getScene().setOnKeyReleased(event -> {
-                    if (schedulerGui != null && !event.isControlDown()) {
-                        schedulerGui.controlDown = false;
-                    }
-                });
-            }
-        });
-
-    }
+    public void initialize(URL location, ResourceBundle resources) { }
 
     public void resized() {
         schedulerGui.resize();

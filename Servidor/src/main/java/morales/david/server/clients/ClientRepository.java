@@ -21,9 +21,7 @@ public class ClientRepository {
         clients.remove(clientThread);
     }
 
-    public synchronized List<ClientThread> getClients() {
-        return clients;
-    }
+    public synchronized List<ClientThread> getClients() { return clients; }
 
     public synchronized boolean isNoClients(){
         return clients.isEmpty();

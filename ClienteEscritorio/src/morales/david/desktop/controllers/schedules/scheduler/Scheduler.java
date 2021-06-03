@@ -124,28 +124,7 @@ public class Scheduler {
         return schedules[day][hour];
     }
 
-    public String getScheduleItemText(int day, int hour) {
 
-        SchedulerItem schedulerItem = schedules[day][hour];
-
-        if(schedulerItem == null || schedulerItem.getScheduleList().size() == 0)
-            return "";
-
-        StringBuilder sb = new StringBuilder();
-
-        for(Schedule schedule : schedulerItem.getScheduleList()) {
-
-            sb.append(schedule.getTeacher().getName());
-            sb.append("\n");
-            sb.append(schedule.getSubject().getAbreviation() + "     " + schedule.getClassroom().toString());
-            sb.append("\n");
-            sb.append(schedule.getGroup().toString());
-
-        }
-
-        return sb.toString();
-
-    }
 
     public void setScheduleItem(SchedulerItem schedule, int day, int hour) {
 

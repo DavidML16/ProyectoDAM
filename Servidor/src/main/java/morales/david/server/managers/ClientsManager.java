@@ -9,6 +9,7 @@ import morales.david.server.models.packets.PacketType;
 import morales.david.server.utils.Constants;
 
 import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 
 public class ClientsManager extends Thread {
 

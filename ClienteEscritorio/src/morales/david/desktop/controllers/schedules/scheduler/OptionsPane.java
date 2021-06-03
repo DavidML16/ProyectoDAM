@@ -45,7 +45,7 @@ public class OptionsPane extends AbstractPane {
         hide.setOnFinished(event -> getPane().setVisible(false));
     }
 
-    public void showOnCoordinates(double x, double y, JFXButton source) {
+    public void showOnCoordinates(double x, double y, SchedulerItemPane source) {
         setSource(source);
 
         int size = getPane().getChildren().size();

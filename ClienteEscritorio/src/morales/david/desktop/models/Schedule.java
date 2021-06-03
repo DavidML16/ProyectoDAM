@@ -121,4 +121,21 @@ public class Schedule {
         return new Schedule(uuid, teacher, subject, group, classroom, timeZone);
     }
 
+    public String getText() {
+
+        if(teacher == null || group == null || subject == null || classroom == null || timeZone == null)
+            return "";
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(teacher.getName());
+        sb.append("\n");
+        sb.append(subject.getAbreviation() + "     " + classroom.toString());
+        sb.append("\n");
+        sb.append(group.toString());
+
+        return sb.toString();
+
+    }
+
 }
