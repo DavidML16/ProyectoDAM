@@ -30,13 +30,12 @@ public class SchedulerGUI {
     public static final int ANIMATION_DISTANCE = 50;
     public static final double FOCUS_ANIMATION_OFFSET_FACTOR = 0.6;
     public static final double GAP_SIZE = 5;
-    public static final double FONT_FACTOR = 0.22;
 
     private static final int DAY_LENGTH = 5;
     private static final int HOURS_LENGTH = 7;
 
     private AnchorPane background;
-    private GridPane subjectGrid;
+    private GridPane scheduleGrid;
 
     private SchedulerManager schedulerManager;
 
@@ -81,19 +80,19 @@ public class SchedulerGUI {
 
     public void init() {
 
-        subjectGrid = new GridPane();
-        subjectGrid.setVgap(GAP_SIZE);
-        subjectGrid.setHgap(GAP_SIZE);
+        scheduleGrid = new GridPane();
+        scheduleGrid.setVgap(GAP_SIZE);
+        scheduleGrid.setHgap(GAP_SIZE);
         if(background.getChildren().size() > 1)
             background.getChildren().remove(0);
         background.setPrefSize(900, 600);
-        background.getChildren().add(subjectGrid);
+        background.getChildren().add(scheduleGrid);
         background.getStyleClass().clear();
         background.getStyleClass().add("mainPane");
-        background.setTopAnchor(subjectGrid, GAP_SIZE * 4);
-        background.setRightAnchor(subjectGrid, GAP_SIZE * 4);
-        background.setBottomAnchor(subjectGrid, GAP_SIZE * 4);
-        background.setLeftAnchor(subjectGrid, GAP_SIZE * 4);
+        background.setTopAnchor(scheduleGrid, GAP_SIZE * 4);
+        background.setRightAnchor(scheduleGrid, GAP_SIZE * 4);
+        background.setBottomAnchor(scheduleGrid, GAP_SIZE * 4);
+        background.setLeftAnchor(scheduleGrid, GAP_SIZE * 4);
 
         initControlArrays();
 
@@ -145,7 +144,7 @@ public class SchedulerGUI {
         scheduleContextMenu.addButton(paste);
         scheduleContextMenu.addButton(delete);
 
-        schedulePreview = new SchedulerItemPane(null, true);
+        schedulePreview = new SchedulerItemPane(null, true, schedulerManager);
         schedulePreview.prefWidthProperty().bind(schedules[0][0].widthProperty());
         schedulePreview.prefHeightProperty().bind(schedules[0][0].heightProperty());
         schedulePreview.setVisible(false);
@@ -199,7 +198,7 @@ public class SchedulerGUI {
         schedules = new SchedulerItemPane[DAY_LENGTH][HOURS_LENGTH - 1];
         for (int i = 0; i < schedules.length; i++) {
             for (int j = 0; j < schedules[0].length; j++) {
-                SchedulerItemPane schedule = new SchedulerItemPane(null, false);
+                SchedulerItemPane schedule = new SchedulerItemPane(null, false, schedulerManager);
                 schedule.setOnMousePressed(schedulePressedEvent);
                 schedule.setOnMouseDragged(scheduleDraggedEvent);
                 schedule.setOnMouseReleased(scheduleReleasedEvent);
@@ -280,10 +279,12 @@ public class SchedulerGUI {
 
                             SchedulerItem schedulerItem = schedulerManager.getCurrentTable().getScheduleItem(i, j);
 
-                            schedulePreview.setVisible(true);
-                            schedulePreview.clear();
-                            schedulePreview.setSchedulerItem(schedulerItem);
-                            schedulePreview.setReferenceButton(hours[0]);
+                            if(schedulerItem != null && schedulerItem.getScheduleList() != null && schedulerItem.getScheduleList().size() > 0) {
+                                schedulePreview.setVisible(true);
+                                schedulePreview.clear();
+                                schedulePreview.setSchedulerItem(schedulerItem);
+                                schedulePreview.setReferenceButton(hours[0]);
+                            }
 
                             break;
                         }
@@ -410,7 +411,7 @@ public class SchedulerGUI {
 
     public void displayCurrentTimetable() {
 
-        for(Node node : subjectGrid.getChildren()) {
+        for(Node node : scheduleGrid.getChildren()) {
 
             if(node.getClass() != SchedulerItemPane.class) continue;
 
@@ -420,27 +421,28 @@ public class SchedulerGUI {
 
         }
 
-        subjectGrid.getChildren().removeIf(node -> (node.getClass() == SchedulerItemPane.class || node.getClass() == JFXButton.class));
-        subjectGrid.getChildren().remove(tabBox);
-        subjectGrid.getRowConstraints().clear();
+        scheduleGrid.getChildren().removeIf(node -> (node.getClass() == SchedulerItemPane.class || node.getClass() == JFXButton.class));
+        scheduleGrid.getChildren().remove(tabBox);
+        scheduleGrid.getRowConstraints().clear();
         RowConstraints rc = new RowConstraints();
         rc.setPercentHeight(10);
-        subjectGrid.getRowConstraints().add(rc);
-        subjectGrid.add(tabBox, 1, 0, 5, 1);
+        scheduleGrid.getRowConstraints().add(rc);
+        scheduleGrid.add(tabBox, 1, 0, 5, 1);
 
         infoButton = new JFXButton();
         infoButton.getStyleClass().add("backButton");
         infoButton.setTextAlignment(TextAlignment.CENTER);
         infoButton.setText(schedulerManager.getSearchQuery());
+        infoButton.setWrapText(true);
         infoButton.setMinSize(100, 40);
         infoButton.setPrefSize(500, 500);
-        infoButton.setOnMouseClicked(event -> ScreenManager.getInstance().closeScheduleView());
-        subjectGrid.add(infoButton, 0, 0, 1, 2);
+        infoButton.setMouseTransparent(true);
+        scheduleGrid.add(infoButton, 0, 0, 1, 2);
 
         int pos = 0;
         Day[] dayArray = schedulerManager.getCurrentTable().getDays();
         for (int i = 0; i < days.length; i++) {
-            subjectGrid.add(days[i], pos + 1, 1, 1, 1);
+            scheduleGrid.add(days[i], pos + 1, 1, 1, 1);
             if(dayArray[i] != null)
                 days[i].setText(dayArray[i].getName());
             pos++;
@@ -448,7 +450,7 @@ public class SchedulerGUI {
 
         Hour[] hourArray = schedulerManager.getCurrentTable().getHours();
         for (int i = 0; i < hours.length; i++) {
-            subjectGrid.add(hours[i], 0, i + 2, 1, 1);
+            scheduleGrid.add(hours[i], 0, i + 2, 1, 1);
             if(hourArray[i] != null)
                 hours[i].setText(hourArray[i].getName());
         }
@@ -466,10 +468,10 @@ public class SchedulerGUI {
                     breakTime.setAlignment(Pos.CENTER);
                     breakTime.setMinSize(0, 0);
                     breakTime.setPrefSize(2000, 110);
-                    subjectGrid.add(breakTime, pos + 1, 5, 5, 1);
+                    scheduleGrid.add(breakTime, pos + 1, 5, 5, 1);
                 }
 
-                subjectGrid.add(schedules[i][j], pos + 1, j + (j >= 3 ? 3 : 2), 1, 1);
+                scheduleGrid.add(schedules[i][j], pos + 1, j + (j >= 3 ? 3 : 2), 1, 1);
 
                 SchedulerItem schedule = scheduleArray[i][j];
 

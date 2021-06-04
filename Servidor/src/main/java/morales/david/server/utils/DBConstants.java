@@ -63,6 +63,7 @@ public class DBConstants {
     public static final String DB_QUERY_TIMEZONE_BY_ID = "SELECT TZ.id_franja idTimeZone, DN.id_dia idDay, DN.dia dayString, HN.id_hora idHour, HN.horas hourString " +
             "FROM franja_horaria TZ, numero_dia DN, numero_hora HN WHERE TZ.dia = DN.id_dia AND TZ.hora = HN.id_hora AND TZ.id_franja = ?";
 
+    public static final String DB_QUERY_SCHEDULES = "SELECT * FROM imparte";
     public static final String DB_QUERY_SEARCH_SCHEDULE = "SELECT * FROM imparte WHERE ";
     public static final String DB_QUERY_REMOVESCHEDULE = "DELETE FROM imparte WHERE `uuid` = ?";
     public static final String DB_QUERY_REMOVESCHEDULE_SB = "DELETE FROM imparte WHERE `uuid` IN ";

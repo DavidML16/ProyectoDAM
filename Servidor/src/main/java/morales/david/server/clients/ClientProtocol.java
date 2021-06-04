@@ -176,6 +176,10 @@ public class ClientProtocol {
                 break;
 
             case SCHEDULES:
+                scheduleList();
+                break;
+
+            case SEARCHSCHEDULE:
                 searchSchedule();
                 break;
 
@@ -1014,6 +1018,23 @@ public class ClientProtocol {
 
     /**
      * Get schedule data from database
+     * Search all schedules
+     */
+    private void scheduleList() {
+
+        List<Schedule> schedules = clientThread.getDbConnection().getSchedules();
+
+        Packet schedulesConfirmationPacket = new PacketBuilder()
+                .ofType(PacketType.SCHEDULES.getConfirmation())
+                .addArgument("schedules", schedules)
+                .build();
+
+        sendPacketIO(schedulesConfirmationPacket);
+
+    }
+
+    /**
+     * Get schedule data from database
      * Search schedule by packet arguments
      */
     private void searchSchedule() {
@@ -1023,7 +1044,7 @@ public class ClientProtocol {
         ScheduleSearcheable scheduleSearcheable = null;
 
         PacketBuilder packetBuilder = new PacketBuilder()
-                .ofType(PacketType.SCHEDULES.getConfirmation())
+                .ofType(PacketType.SEARCHSCHEDULE.getConfirmation())
                 .addArgument("searchType", searchType);
 
         if(searchType.equalsIgnoreCase("TEACHER")) {

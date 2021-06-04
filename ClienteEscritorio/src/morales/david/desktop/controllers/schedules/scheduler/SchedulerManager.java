@@ -137,4 +137,13 @@ public class SchedulerManager {
         this.searchQuery = searchQuery;
     }
 
+    public int getSearchTypeNumber() {
+        if(searchType.equalsIgnoreCase("TEACHER"))
+            return 1;
+        else if(searchType.equalsIgnoreCase("GROUP"))
+            return 2;
+        else
+            return 0;
+    }
+
 }

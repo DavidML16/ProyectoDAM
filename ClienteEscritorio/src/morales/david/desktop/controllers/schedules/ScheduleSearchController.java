@@ -132,7 +132,7 @@ public class ScheduleSearchController implements Initializable, Controller {
                 return;
 
             PacketBuilder packetBuilder = new PacketBuilder()
-                    .ofType(PacketType.SCHEDULES.getRequest())
+                    .ofType(PacketType.SEARCHSCHEDULE.getRequest())
                     .addArgument("type", searchType);
 
             if(searchType.equalsIgnoreCase("TEACHER") && teacherComboBox.getSelectionModel().getSelectedItem() != null) {

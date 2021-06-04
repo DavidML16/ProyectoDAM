@@ -1,5 +1,6 @@
 package morales.david.desktop.managers;
 
+import javafx.beans.value.ObservableIntegerValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;

@@ -15,6 +15,7 @@ import java.util.List;
 
 public class SchedulerItemPane extends AnchorPane {
 
+    private SchedulerManager schedulerManager;
     private SchedulerItem schedulerItem;
 
     private GridPane gridPane;
@@ -25,10 +26,11 @@ public class SchedulerItemPane extends AnchorPane {
 
     private JFXButton referenceButton;
 
-    public SchedulerItemPane(SchedulerItem schedulerItem, boolean isPreview) {
+    public SchedulerItemPane(SchedulerItem schedulerItem, boolean isPreview, SchedulerManager schedulerManager) {
         this.schedulerItem = schedulerItem;
         this.showedButtons = new ArrayList<>();
         this.isPreview = isPreview;
+        this.schedulerManager = schedulerManager;
         regenerate();
     }
 
@@ -172,10 +174,10 @@ public class SchedulerItemPane extends AnchorPane {
 
         button.setPrefSize(500, 500);
 
-        button.setStyle("-fx-background-color: " + schedule.getSubject().getColor() + ";");
-        button.setText(schedule.getText());
-
         button.setTextAlignment(TextAlignment.CENTER);
+        button.setStyle("-fx-background-color: " + schedule.getSubject().getColor() + ";");
+
+        button.setText(schedule.getText(schedulerManager.getSearchTypeNumber()));
 
         showedButtons.add(button);
 

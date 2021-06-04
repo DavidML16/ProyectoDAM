@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="855.0" styleClass="mainPane" stylesheets="/resources/css/login.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morales.david.desktop.controllers.LoginController">
+<AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="855.0" styleClass="mainPane" stylesheets="@../css/login.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morales.david.desktop.controllers.LoginController">
     <children>
         <AnchorPane prefHeight="503.0" prefWidth="382.0" styleClass="leftPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -22,7 +22,7 @@
                      <children>
                             <ImageView fitHeight="43.0" fitWidth="127.0" layoutX="128.0" layoutY="3.0" pickOnBounds="true" smooth="false" AnchorPane.leftAnchor="128.0" AnchorPane.rightAnchor="128.0" AnchorPane.topAnchor="25.0">
                                 <image>
-                                    <Image url="/resources/images/logo@x1.png" />
+                                    <Image url="@../images/logo@x1.png" />
                                 </image>
                             </ImageView>
                             <Label alignment="CENTER" prefHeight="24.0" prefWidth="322.0" text="I.E.S Fernando Aguilar Quignon" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0">

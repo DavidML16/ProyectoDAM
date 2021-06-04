@@ -85,7 +85,7 @@ public class SchedulerItem {
         StringBuilder sb = new StringBuilder();
 
         for(Schedule schedule : getScheduleList()) {
-            sb.append(schedule.getText());
+            sb.append(schedule.getText(0));
         }
 
         return sb.toString();

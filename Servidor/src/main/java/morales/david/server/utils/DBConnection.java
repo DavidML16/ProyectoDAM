@@ -2195,6 +2195,65 @@ public class DBConnection {
      * Get schedules from database
      * @return list of schedules
      */
+    public List<Schedule> getSchedules() {
+
+        List<Schedule> schedules = new ArrayList<>();
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_SCHEDULES);
+
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+
+                int id_teacher = rs.getInt("profesor");
+                int id_subject = rs.getInt("asignatura");
+                int id_group = rs.getInt("grupo");
+                int id_classroom = rs.getInt("aula");
+                int id_timezone = rs.getInt("franja");
+                String uuid = rs.getString("uuid");
+
+                Teacher teacher = getTeacher(id_teacher);
+                Subject subject = getSubject(id_subject);
+                Group group = getGroup(id_group);
+                Classroom classroom = getClassroom(id_classroom);
+                TimeZone timeZone = getTimeZone(id_timezone);
+
+                schedules.add(new Schedule(uuid, teacher, subject, group, classroom, timeZone));
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return schedules;
+
+    }
+
+    /**
+     * Get schedules from database by search query
+     * @return list of schedules
+     */
     public List<SchedulerItem> searchSchedule(ScheduleSearcheable item) {
 
         List<SchedulerItem> schedules = new ArrayList<>();
@@ -2250,17 +2309,17 @@ public class DBConnection {
                     tempTimezone = id_timezone;
                     tempSchedule = new ArrayList<>();
                 }
-                
+
                 Teacher teacher = getTeacher(id_teacher);
                 Subject subject = getSubject(id_subject);
                 Group group = getGroup(id_group);
                 Classroom classroom = getClassroom(id_classroom);
                 TimeZone timeZone = getTimeZone(id_timezone);
-                
+
                 if(id_timezone == tempTimezone) {
 
                     tempSchedule.add(new Schedule(uuid, teacher, subject, group, classroom, timeZone));
-                    
+
                 } else {
 
                     schedules.add(new SchedulerItem(tempSchedule));

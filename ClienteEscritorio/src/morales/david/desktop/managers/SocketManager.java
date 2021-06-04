@@ -153,6 +153,19 @@ public final class SocketManager extends Thread {
                                     clientSession.setName("");
                                     clientSession.setRole("");
 
+                                    DataManager.getInstance().getHours().clear();
+                                    DataManager.getInstance().getDays().clear();
+                                    DataManager.getInstance().getTimeZones().clear();
+                                    DataManager.getInstance().getTeachers().clear();
+                                    DataManager.getInstance().getCredentials().clear();
+                                    DataManager.getInstance().getCourses().clear();
+                                    DataManager.getInstance().getGroups().clear();
+                                    DataManager.getInstance().getSubjects().clear();
+                                    DataManager.getInstance().getClassrooms().clear();
+                                    DataManager.getInstance().getSubjects().clear();
+
+                                    Constants.FIRST_HOME_VIEW = true;
+
                                     if (!(screenManager.getController() instanceof LoginController)) {
 
                                         openSocket();
@@ -369,6 +382,27 @@ public final class SocketManager extends Thread {
                         case SCHEDULES: {
 
                             if(receivedPacket.getType().equalsIgnoreCase(PacketType.SCHEDULES.getConfirmation())) {
+
+                                List<LinkedTreeMap> schedules = (List<LinkedTreeMap>) receivedPacket.getArgument("schedules");
+
+                                final List<Schedule> scheduleList = new ArrayList<>();
+
+                                DataManager.getInstance().getSchedules().clear();
+
+                                for (LinkedTreeMap scheduleMap : schedules)
+                                    scheduleList.add(Schedule.parse(scheduleMap));
+
+                                DataManager.getInstance().getSchedules().addAll(scheduleList);
+
+                            }
+
+                            break;
+
+                        }
+
+                        case SEARCHSCHEDULE: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.SEARCHSCHEDULE.getConfirmation())) {
 
                                 List<LinkedTreeMap> schedules = (List<LinkedTreeMap>) receivedPacket.getArgument("schedules");
 

@@ -121,18 +121,28 @@ public class Schedule {
         return new Schedule(uuid, teacher, subject, group, classroom, timeZone);
     }
 
-    public String getText() {
+    public String getText(int type) {
 
         if(teacher == null || group == null || subject == null || classroom == null || timeZone == null)
             return "";
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append(teacher.getName());
-        sb.append("\n");
-        sb.append(subject.getAbreviation() + "     " + classroom.toString());
-        sb.append("\n");
-        sb.append(group.toString());
+        if(type == 0) {
+            sb.append(teacher.getName());
+            sb.append("\n");
+            sb.append(subject.getAbreviation() + "     " + classroom.toString());
+            sb.append("\n");
+            sb.append(group.toString());
+        } else if(type == 1) {
+            sb.append(subject.getAbreviation() + "     " + classroom.toString());
+            sb.append("\n");
+            sb.append(group.toString());
+        } else if(type == 2) {
+            sb.append(teacher.getName());
+            sb.append("\n");
+            sb.append(subject.getAbreviation() + "     " + classroom.toString());
+        }
 
         return sb.toString();
 
