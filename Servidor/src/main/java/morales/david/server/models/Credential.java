@@ -11,10 +11,21 @@ public class Credential {
 
     private Teacher teacher;
 
+    /**
+     * Empty constructor of Credential
+     */
     public Credential() {
         this(-1, "", "", "", null);
     }
 
+    /**
+     * Create a new instance of Credential with given params
+     * @param id
+     * @param username
+     * @param password
+     * @param role
+     * @param teacher
+     */
     public Credential(int id, String username, String password, String role, Teacher teacher) {
         this.id = id;
         this.username = username;
@@ -23,42 +34,82 @@ public class Credential {
         this.teacher = teacher;
     }
 
+    /**
+     * Get id of the credential
+     * @return id
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Set id of the credential
+     * @param id
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * Get username of the credential
+     * @return username
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * Set username of the credential
+     * @param username
+     */
     public void setUsername(String username) {
         this.username = username;
     }
 
+    /**
+     * Get password of the credential
+     * @return password
+     */
     public String getPassword() {
         return password;
     }
 
+    /**
+     * Set password of the credential
+     * @param password
+     */
     public void setPassword(String password) {
         this.password = password;
     }
 
+    /**
+     * Get role of the credential
+     * @return role
+     */
     public String getRole() {
         return role;
     }
 
+    /**
+     * Set role of the credential
+     * @param role
+     */
     public void setRole(String role) {
         this.role = role;
     }
 
+    /**
+     * Get associated teacher of the crential
+     * @return teacher
+     */
     public Teacher getTeacher() {
         return teacher;
     }
 
+    /**
+     * Set associated teacher of the credential
+     * @param teacher
+     */
     public void setTeacher(Teacher teacher) {
         this.teacher = teacher;
     }
@@ -74,6 +125,11 @@ public class Credential {
                 '}';
     }
 
+    /**
+     * Convert the received TreeMap to a Credential object
+     * @param credentialMap
+     * @return credential object
+     */
     public static Credential parse(LinkedTreeMap credentialMap) {
 
         int id = ((Double) credentialMap.get("id")).intValue();

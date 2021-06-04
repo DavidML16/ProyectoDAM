@@ -18,6 +18,11 @@ public class ClientFTPThread extends Thread {
     private BufferedReader input;
     private BufferedWriter output;
 
+    /**
+     * Create a new instance of client ftp thread with given server and socket
+     * @param server
+     * @param socket
+     */
     public ClientFTPThread(Server server, Socket socket) {
 
         this.server = server;
@@ -101,8 +106,16 @@ public class ClientFTPThread extends Thread {
 
     }
 
+    /**
+     * Get server of client thread
+     * @return server
+     */
     public Server getServer() { return server; }
 
+    /**
+     * Get socket of client thread
+     * @return socket
+     */
     public Socket getSocket() { return socket; }
 
 

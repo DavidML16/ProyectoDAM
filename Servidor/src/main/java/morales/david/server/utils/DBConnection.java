@@ -17,6 +17,9 @@ public class DBConnection {
         this.connection = null;
     }
 
+    /**
+     * Open mysql connection if its not oppened
+     */
     public void open() {
         try {
             if(connection != null && !connection.isClosed())
@@ -27,6 +30,9 @@ public class DBConnection {
         }
     }
 
+    /**
+     * Close mysql connection if its open
+     */
     public void close() {
         try {
             if(connection != null && connection.isClosed())
@@ -37,6 +43,10 @@ public class DBConnection {
         }
     }
 
+    /**
+     * Get connection instance
+     * @return connection
+     */
     public Connection getConnection() {
         return connection;
     }

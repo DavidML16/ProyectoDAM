@@ -3,7 +3,6 @@ package morales.david.desktop.controllers.schedules.scheduler;
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -21,7 +20,6 @@ import morales.david.desktop.models.Day;
 import morales.david.desktop.models.Hour;
 import morales.david.desktop.models.SchedulerItem;
 import morales.david.desktop.models.TimeZone;
-import morales.david.desktop.utils.ColorUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +51,7 @@ public class SchedulerGUI {
     private double scheduleInnerX;
     private double scheduleInnerY;
 
-    private JFXButton backButton;
+    private JFXButton infoButton;
 
     private OptionsPane scheduleContextMenu;
     private JFXButton edit;
@@ -406,7 +404,7 @@ public class SchedulerGUI {
                 b.resizeFont();
 
         schedulePreview.resizeFont();
-        backButton.setFont(font2);
+        infoButton.setFont(font2);
 
     }
 
@@ -430,13 +428,14 @@ public class SchedulerGUI {
         subjectGrid.getRowConstraints().add(rc);
         subjectGrid.add(tabBox, 1, 0, 5, 1);
 
-        backButton = new JFXButton();
-        backButton.getStyleClass().add("backButton");
-        backButton.setText("VOLVER");
-        backButton.setMinSize(100, 40);
-        backButton.setPrefSize(500, 500);
-        backButton.setOnMouseClicked(event -> ScreenManager.getInstance().closeScheduleView());
-        subjectGrid.add(backButton, 0, 0, 1, 2);
+        infoButton = new JFXButton();
+        infoButton.getStyleClass().add("backButton");
+        infoButton.setTextAlignment(TextAlignment.CENTER);
+        infoButton.setText(schedulerManager.getSearchQuery());
+        infoButton.setMinSize(100, 40);
+        infoButton.setPrefSize(500, 500);
+        infoButton.setOnMouseClicked(event -> ScreenManager.getInstance().closeScheduleView());
+        subjectGrid.add(infoButton, 0, 0, 1, 2);
 
         int pos = 0;
         Day[] dayArray = schedulerManager.getCurrentTable().getDays();

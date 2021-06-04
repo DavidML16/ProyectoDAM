@@ -21,8 +21,12 @@ public class SchedulerManager {
 
     private SchedulerItemModalController openedItemModal;
 
-    public SchedulerManager(List<SchedulerItem> scheduleList) {
+    private String searchType, searchQuery;
+
+    public SchedulerManager(List<SchedulerItem> scheduleList, String searchType, String searchQuery) {
         currentTimetable = new SchedulerPair(scheduleList, this);
+        this.searchType = searchType;
+        this.searchQuery = searchQuery;
     }
 
     public SchedulerPair getCurrentTimetable() {
@@ -116,4 +120,21 @@ public class SchedulerManager {
     public void setOpenedItemModal(SchedulerItemModalController openedItemModal) {
         this.openedItemModal = openedItemModal;
     }
+
+    public String getSearchType() {
+        return searchType;
+    }
+
+    public void setSearchType(String searchType) {
+        this.searchType = searchType;
+    }
+
+    public String getSearchQuery() {
+        return searchQuery;
+    }
+
+    public void setSearchQuery(String searchQuery) {
+        this.searchQuery = searchQuery;
+    }
+
 }

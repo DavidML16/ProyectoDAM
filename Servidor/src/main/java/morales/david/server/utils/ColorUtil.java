@@ -25,6 +25,10 @@ public class ColorUtil {
             "#d6fcff"
     };
 
+    /**
+     * Returns a random color from the color array
+     * @return random rgb color string
+     */
     public static String getColor() {
 
         int randomNumber = randomGenerator.nextInt(mColors.length);
@@ -32,6 +36,11 @@ public class ColorUtil {
 
     }
 
+    /**
+     * Calculate if the font color has to be black or white depending on the background
+     * @param colorString
+     * @return white or black rgb code
+     */
     public static String getFontColor(String colorString) {
         Color color = Color.decode(colorString);
         double lum = (((0.299 * color.getRed()) + ((0.587 * color.getGreen()) + (0.114 * color.getBlue()))));

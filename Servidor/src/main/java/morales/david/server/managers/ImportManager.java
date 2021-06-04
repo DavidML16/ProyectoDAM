@@ -38,24 +38,55 @@ public class ImportManager {
 
     private boolean isImporting;
 
+    /**
+     * Create a new instance of ImportManager with server as parameter
+     * @param server
+     */
     public ImportManager(Server server) {
         this.server = server;
         this.isImporting = false;
         this.dbConnection = new DBConnection();
     }
 
+    /**
+     * Get if database is in import process or not
+     * @return isImporting
+     */
     public synchronized boolean isImporting() {
         return isImporting;
     }
 
+    /**
+     * Get the file to import
+     * @return file
+     */
     public synchronized File getFile() {
         return file;
     }
 
+    /**
+     * Set the received file to import
+     * @param file
+     */
     public synchronized void setFile(File file) {
         this.file = file;
     }
 
+    /**
+     * Start the proccess of importing the database from Access to MySQL
+     * 1º Clear all rows of the tables from MySQL database
+     * 2º Get days list and insert it
+     * 3º Get hours list and insert it
+     * 4º Get timeZones list and insert it
+     * 5º Get teachers list and insert it
+     * 6º Get subjects list and insert it
+     * 7º Get classrooms list and insert it
+     * 8º Get courses list and insert it
+     * 9º Get the courses association of the subjects and insert it
+     * 10º Get groups list and insert it
+     * 11º Get the schedules list and insert it
+     * 12º Send the confirmation or error if database has been imported correctly
+     */
     public void importDatabase() {
 
         isImporting = true;
@@ -282,7 +313,10 @@ public class ImportManager {
 
     }
 
-
+    /**
+     * Get list of days from access db
+     * @return list of days
+     */
     public List<Day> getDays() {
 
         List<Day> dayList = new ArrayList<>();
@@ -328,6 +362,10 @@ public class ImportManager {
         return dayList;
 
     }
+
+    /**
+     * Insert the list of days to mysql db
+     */
     public void insertDays() {
 
         StringBuilder insertString = new StringBuilder();
@@ -347,6 +385,10 @@ public class ImportManager {
 
     }
 
+    /**
+     * Get list of hours from access db
+     * @return list of hours
+     */
     public List<Hour> getHours() {
 
         List<Hour> hourList = new ArrayList<>();
@@ -406,6 +448,10 @@ public class ImportManager {
         return hourList;
 
     }
+
+    /**
+     * Insert the list of hours to mysql db
+     */
     public void insertHours() {
 
         StringBuilder insertString = new StringBuilder();
@@ -425,6 +471,10 @@ public class ImportManager {
 
     }
 
+    /**
+     * Get list of timezones from the union of days and hours
+     * @return list of timezones
+     */
     public List<TimeZone> getTimeZones() {
 
         List<TimeZone> timeZoneList = new ArrayList<>();
@@ -441,6 +491,10 @@ public class ImportManager {
         return timeZoneList;
 
     }
+
+    /**
+     * Insert the list of timezones to mysql db
+     */
     private void insertTimeZone() {
 
         StringBuilder insertString = new StringBuilder();
@@ -463,6 +517,10 @@ public class ImportManager {
 
     }
 
+    /**
+     * Get list of subjects from access db
+     * @return list of subjects
+     */
     private List<Subject> getSubjects() {
 
         List<Subject> subjectList = new ArrayList<>();
@@ -508,6 +566,10 @@ public class ImportManager {
         return subjectList;
 
     }
+
+    /**
+     * Insert the list of subjects to mysql db
+     */
     private void insertSubjects() {
 
         StringBuilder insertString = new StringBuilder();
@@ -533,6 +595,10 @@ public class ImportManager {
 
     }
 
+    /**
+     * Get list of teachers from access db
+     * @return list of teachers
+     */
     private List<Teacher> getTeachers() {
 
         List<Teacher> teacherList = new ArrayList<>();
@@ -581,6 +647,10 @@ public class ImportManager {
         return teacherList;
 
     }
+
+    /**
+     * Insert the list of teachers to mysql db
+     */
     private void insertTeachers() {
 
         StringBuilder insertString = new StringBuilder();
@@ -610,6 +680,10 @@ public class ImportManager {
 
     }
 
+    /**
+     * Get list of classrooms from access db
+     * @return list of classrooms
+     */
     private List<Classroom> getClassrooms() {
 
         List<Classroom> classroomList = new ArrayList<>();
@@ -665,6 +739,10 @@ public class ImportManager {
         return classroomList;
 
     }
+
+    /**
+     * Insert the list of classrooms to mysql db
+     */
     private void insertClassrooms() {
 
         StringBuilder insertString = new StringBuilder();
@@ -684,6 +762,10 @@ public class ImportManager {
 
     }
 
+    /**
+     * Get list of courses from access db
+     * @return list of courses
+     */
     private List<Course> getCourses() {
 
         List<Course> courseList = new ArrayList<>();
@@ -734,6 +816,10 @@ public class ImportManager {
         return courseList;
 
     }
+
+    /**
+     * Insert the list of courses to mysql db
+     */
     private void insertCourses() {
 
         StringBuilder insertString = new StringBuilder();
@@ -755,6 +841,10 @@ public class ImportManager {
 
     }
 
+    /**
+     * Get list of courseSubjects from access db
+     * @return list of courseSubjects
+     */
     private List<CourseSubject> getCourseSubjects() {
 
         List<CourseSubject> courseSubjectList = new ArrayList<>();
@@ -815,6 +905,10 @@ public class ImportManager {
         return courseSubjectList;
 
     }
+
+    /**
+     * Insert the list of courseSubjects to mysql db
+     */
     private void insertCourseSubjects() {
 
         StringBuilder insertString = new StringBuilder();
@@ -834,6 +928,10 @@ public class ImportManager {
 
     }
 
+    /**
+     * Get list of groups from access db
+     * @return list of groups
+     */
     private List<Group> getGroups() {
 
         List<Group> groupList = new ArrayList<>();
@@ -894,6 +992,10 @@ public class ImportManager {
         return groupList;
 
     }
+
+    /**
+     * Insert the list of groups to mysql db
+     */
     private void insertGroups() {
 
         StringBuilder insertString = new StringBuilder();
@@ -916,6 +1018,10 @@ public class ImportManager {
 
     }
 
+    /**
+     * Get list of schedules from access db
+     * @return list of schedules
+     */
     private List<Schedule> getSchedules() {
 
         List<Schedule> scheduleList = new ArrayList<>();
@@ -986,6 +1092,10 @@ public class ImportManager {
         return scheduleList;
 
     }
+
+    /**
+     * Insert the list of schedules to mysql db
+     */
     private void insertSchedules() {
 
         StringBuilder insertString = new StringBuilder();
@@ -1014,6 +1124,12 @@ public class ImportManager {
 
     }
 
+    /**
+     * Search the day in the list
+     * @param dayList
+     * @param id
+     * @return day
+     */
     private Day getDayBy(List<Day> dayList, int id) {
         for(Day day : dayList) {
             if(day.getId() == id) {
@@ -1022,6 +1138,13 @@ public class ImportManager {
         }
         return null;
     }
+
+    /**
+     * Search the hour in the list
+     * @param hourList
+     * @param id
+     * @return hour
+     */
     private Hour getHourBy(List<Hour> hourList, int id) {
         for(Hour hour : hourList) {
             if(hour.getId() == id) {
@@ -1030,6 +1153,14 @@ public class ImportManager {
         }
         return null;
     }
+
+    /**
+     * Search the timeZOne in the list
+     * @param timeZoneList
+     * @param day
+     * @param hour
+     * @return timeZone
+     */
     private TimeZone getTimeZoneBy(List<TimeZone> timeZoneList, int day, int hour) {
         for(TimeZone timeZone : timeZoneList) {
             if(timeZone.getDay().getId() == day && timeZone.getHour().getId() == hour) {
@@ -1038,6 +1169,13 @@ public class ImportManager {
         }
         return null;
     }
+
+    /**
+     * Search the subject in the list
+     * @param subjectList
+     * @param text
+     * @return subject
+     */
     private Subject getSubjectBy(List<Subject> subjectList, String text) {
         for(Subject subject : subjectList) {
             if(subject.getAbreviation().equalsIgnoreCase(text) || Integer.toString(subject.getNumber()).equalsIgnoreCase(text)) {
@@ -1046,6 +1184,13 @@ public class ImportManager {
         }
         return null;
     }
+
+    /**
+     * Search the teacher in the list
+     * @param teacherList
+     * @param abrev
+     * @return teacher
+     */
     private Teacher getTeacherBy(List<Teacher> teacherList, String abrev) {
         for(Teacher teacher : teacherList) {
             if(teacher.getAbreviation().equalsIgnoreCase(abrev)) {
@@ -1054,6 +1199,13 @@ public class ImportManager {
         }
         return null;
     }
+
+    /**
+     * Search the classroom in the list
+     * @param classroomList
+     * @param name
+     * @return classroom
+     */
     private Classroom getClassroomBy(List<Classroom> classroomList, String name) {
         for(Classroom classroom : classroomList) {
             if(classroom.getName().equalsIgnoreCase(name)) {
@@ -1062,6 +1214,14 @@ public class ImportManager {
         }
         return null;
     }
+
+    /**
+     * Search the course in the list
+     * @param courseList
+     * @param level
+     * @param name
+     * @return course
+     */
     private Course getCourseBy(List<Course> courseList, String level, String name) {
         for(Course course : courseList) {
             if(course.getLevel().equalsIgnoreCase(level) && course.getName().equalsIgnoreCase(name)) {
@@ -1070,6 +1230,15 @@ public class ImportManager {
         }
         return null;
     }
+
+    /**
+     * Search the grou in the list
+     * @param groupList
+     * @param level
+     * @param name
+     * @param letter
+     * @return group
+     */
     private Group getGroupBy(List<Group> groupList, String level, String name, String letter) {
         for(Group group : groupList) {
             if(group.getLetter().equalsIgnoreCase(letter) && group.getCourse().getLevel().equalsIgnoreCase(level) && group.getCourse().getName().equalsIgnoreCase(name)) {
@@ -1079,6 +1248,11 @@ public class ImportManager {
         return null;
     }
 
+    /**
+     * Delete all the remaining files from the import process
+     * @param parentDirectory
+     * @param directoryToBeDeleted
+     */
     private void deleteDirectory(File parentDirectory, File directoryToBeDeleted) {
         File[] allContents = directoryToBeDeleted.listFiles();
         if (allContents != null) {

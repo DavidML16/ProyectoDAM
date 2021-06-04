@@ -26,6 +26,10 @@ public class Server {
 
     public static final Gson GSON = new Gson();
 
+    /**
+     * Init managers, start file tranfer thread, and listen to new client socket connections
+     * @throws IOException
+     */
     private void init() throws IOException {
 
         server = new ServerSocket(Constants.SERVER_PORT);
@@ -37,7 +41,7 @@ public class Server {
         clientsManager.setDaemon(true);
         clientsManager.start();
 
-        FileTransferManager fileTransferManager = new FileTransferManager(this);
+        fileTransferManager = new FileTransferManager(this);
         fileTransferManager.setDaemon(true);
         fileTransferManager.start();
 
@@ -57,12 +61,24 @@ public class Server {
 
     }
 
+    /**
+     * Get client repository where client thread objects are stored
+     * @return clientRepository
+     */
     public ClientRepository getClientRepository() {
         return clientRepository;
     }
 
+    /**
+     * Get access to mysql import manager
+     * @return importManager
+     */
     public ImportManager getImportManager() { return importManager; }
 
+    /**
+     * Get file transfer manager thread
+     * @return fileTransferManager
+     */
     public FileTransferManager getFileTransferManager() { return fileTransferManager; }
 
     public static void main(String[] args) {

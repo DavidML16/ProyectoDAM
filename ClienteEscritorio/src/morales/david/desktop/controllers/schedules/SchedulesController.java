@@ -34,11 +34,11 @@ public class SchedulesController implements Initializable, Controller {
         return schedules;
     }
 
-    public void setSchedules(List<SchedulerItem> schedules) {
+    public void init(List<SchedulerItem> schedules, String searchType, String searchQuery) {
 
         this.schedules = schedules;
 
-        SchedulerManager schedulerManager = new SchedulerManager(schedules);
+        SchedulerManager schedulerManager = new SchedulerManager(schedules, searchType, searchQuery);
 
         schedulerGui = new SchedulerGUI(anchorPane, schedulerManager);
 

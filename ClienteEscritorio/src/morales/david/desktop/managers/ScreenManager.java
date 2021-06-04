@@ -3,14 +3,11 @@ package morales.david.desktop.managers;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import morales.david.desktop.controllers.DashboardController;
 import morales.david.desktop.controllers.schedules.SchedulesController;
 import morales.david.desktop.interfaces.Controller;
-import morales.david.desktop.models.Schedule;
 import morales.david.desktop.models.SchedulerItem;
-import morales.david.desktop.utils.Utils;
 
 import java.io.IOException;
 import java.util.List;
@@ -99,7 +96,7 @@ public final class ScreenManager {
 
     }
 
-    public synchronized void openScheduleView(List<SchedulerItem> scheduleList) {
+    public synchronized void openScheduleView(List<SchedulerItem> scheduleList, String searchType, String searchQuery) {
 
         try {
 
@@ -110,7 +107,7 @@ public final class ScreenManager {
             Parent parent = loader.load();
 
             SchedulesController controller = loader.getController();
-            controller.setSchedules(scheduleList);
+            controller.init(scheduleList, searchType, searchQuery);
 
             setController(controller);
 

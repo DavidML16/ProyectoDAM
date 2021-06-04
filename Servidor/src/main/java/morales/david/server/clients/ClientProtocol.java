@@ -1022,23 +1022,39 @@ public class ClientProtocol {
 
         ScheduleSearcheable scheduleSearcheable = null;
 
+        PacketBuilder packetBuilder = new PacketBuilder()
+                .ofType(PacketType.SCHEDULES.getConfirmation())
+                .addArgument("searchType", searchType);
+
         if(searchType.equalsIgnoreCase("TEACHER")) {
 
             LinkedTreeMap teacherMap = (LinkedTreeMap) lastPacket.getArgument("item");
 
-            scheduleSearcheable = Teacher.parse(teacherMap);
+            Teacher teacher = Teacher.parse(teacherMap);
+
+            packetBuilder.addArgument("searchQuery", teacher.getName());
+
+            scheduleSearcheable = teacher;
 
         } else if(searchType.equalsIgnoreCase("GROUP")) {
 
             LinkedTreeMap groupMap = (LinkedTreeMap) lastPacket.getArgument("item");
 
-            scheduleSearcheable = Group.parse(groupMap);
+            Group group = Group.parse(groupMap);
+
+            packetBuilder.addArgument("searchQuery", group.toString());
+
+            scheduleSearcheable = group;
 
         } else if(searchType.equalsIgnoreCase("CLASSROOM")) {
 
             LinkedTreeMap classroomMap = (LinkedTreeMap) lastPacket.getArgument("item");
 
-            scheduleSearcheable = Classroom.parse(classroomMap);
+            Classroom classroom = Classroom.parse(classroomMap);
+
+            packetBuilder.addArgument("searchQuery", classroom.getName());
+
+            scheduleSearcheable = classroom;
 
         }
 
@@ -1046,12 +1062,9 @@ public class ClientProtocol {
 
             List<SchedulerItem> schedules = clientThread.getDbConnection().searchSchedule(scheduleSearcheable);
 
-            Packet schedulesConfirmationPacket = new PacketBuilder()
-                    .ofType(PacketType.SCHEDULES.getConfirmation())
-                    .addArgument("schedules", schedules)
-                    .build();
+            packetBuilder.addArgument("schedules", schedules);
 
-            sendPacketIO(schedulesConfirmationPacket);
+            sendPacketIO(packetBuilder.build());
 
         }
 

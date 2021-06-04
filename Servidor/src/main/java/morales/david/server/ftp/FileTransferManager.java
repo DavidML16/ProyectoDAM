@@ -15,12 +15,19 @@ public class FileTransferManager extends Thread {
 
     private ServerSocket serverSocket;
 
+    /**
+     * Create a new isntance of FileTransferManager with given server
+     * @param server
+     */
     public FileTransferManager(Server server) {
         this.server = server;
         this.clientRepository = server.getClientRepository();
         init();
     }
 
+    /**
+     * Start the socket server with the specified port in the constant
+     */
     private void init() {
 
         try {

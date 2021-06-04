@@ -26,6 +26,11 @@ public class ClientThread extends Thread {
 
     private DBConnection dbConnection;
 
+    /**
+     * Create a new instance of ClientThread with given server and socket
+     * @param server
+     * @param socket
+     */
     public ClientThread(Server server, Socket socket) {
 
         this.server = server;
@@ -42,6 +47,9 @@ public class ClientThread extends Thread {
 
     }
 
+    /**
+     * Create the input and output streams of the socket
+     */
     public void openIO() {
 
         try {
@@ -54,6 +62,9 @@ public class ClientThread extends Thread {
 
     }
 
+    /**
+     * Close the input and output streams
+     */
     public void closeIO() {
 
         if(input != null) {
@@ -113,22 +124,58 @@ public class ClientThread extends Thread {
 
     }
 
+    /**
+     * Get server of the client thread
+     * @return server
+     */
     public Server getServer() { return server; }
 
+    /**
+     * Get socket of the client thread
+     * @return socket
+     */
     public Socket getSocket() { return socket; }
 
+    /**
+     * Get input stream of the client thread
+     * @return input
+     */
     public BufferedReader getInput() { return input; }
 
+    /**
+     * Get output stream of the client thread
+     * @return output
+     */
     public BufferedWriter getOutput() { return output; }
 
+    /**
+     * Get session of the client thread
+     * @return clientSession
+     */
     public ClientSession getClientSession() { return clientSession; }
 
+    /**
+     * Get protocol of the client thread
+     * @return clientProtocol
+     */
     public ClientProtocol getClientProtocol() { return clientProtocol; }
 
+    /**
+     * Get db connection of the client thread
+     * @return dbConnection
+     */
     public DBConnection getDbConnection() { return dbConnection; }
 
+    /**
+     * Get if the client its connected to the server
+     * @return connected
+     */
     public boolean isConnected() { return connected; }
 
+    /**
+     * Set if the client is connected to the server
+     * @param connected
+     */
     public void setConnected(boolean connected) { this.connected = connected; }
 
 }

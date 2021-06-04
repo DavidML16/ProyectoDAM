@@ -372,12 +372,15 @@ public final class SocketManager extends Thread {
 
                                 List<LinkedTreeMap> schedules = (List<LinkedTreeMap>) receivedPacket.getArgument("schedules");
 
+                                String searchType = (String) receivedPacket.getArgument("searchType");
+                                String searchQuery = (String) receivedPacket.getArgument("searchQuery");
+
                                 final List<SchedulerItem> scheduleList = new ArrayList<>();
 
                                 for (LinkedTreeMap scheduleMap : schedules)
                                     scheduleList.add(SchedulerItem.parse(scheduleMap));
 
-                                Platform.runLater(() -> ScreenManager.getInstance().openScheduleView(scheduleList));
+                                Platform.runLater(() -> ScreenManager.getInstance().openScheduleView(scheduleList, searchType, searchQuery));
 
                             }
 

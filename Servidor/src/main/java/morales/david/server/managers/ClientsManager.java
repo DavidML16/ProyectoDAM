@@ -16,6 +16,10 @@ public class ClientsManager extends Thread {
     private Server server;
     private ClientRepository clientRepository;
 
+    /**
+     * Create a new instace of ClientsManager with server as parameter
+     * @param server
+     */
     public ClientsManager(Server server) {
         this.server = server;
         this.clientRepository = server.getClientRepository();

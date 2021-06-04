@@ -19,6 +19,10 @@ public class FileTransferProcessor {
         bufferSize = 0;
     }
 
+    /**
+     * Receive file from socket imput stream
+     * @param fileName
+     */
     public void receiveFile(String fileName) {
 
         try {
@@ -39,6 +43,10 @@ public class FileTransferProcessor {
 
     }
 
+    /**
+     * Send file to socket output stream
+     * @param file
+     */
     public void sendFile(File file) {
 
         FileInputStream fis;
