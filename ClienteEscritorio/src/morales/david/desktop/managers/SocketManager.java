@@ -406,6 +406,7 @@ public final class SocketManager extends Thread {
 
                                 List<LinkedTreeMap> schedules = (List<LinkedTreeMap>) receivedPacket.getArgument("schedules");
 
+                                String callback = (String) receivedPacket.getArgument("callback");
                                 String searchType = (String) receivedPacket.getArgument("searchType");
                                 String searchQuery = (String) receivedPacket.getArgument("searchQuery");
 
@@ -414,7 +415,18 @@ public final class SocketManager extends Thread {
                                 for (LinkedTreeMap scheduleMap : schedules)
                                     scheduleList.add(SchedulerItem.parse(scheduleMap));
 
-                                Platform.runLater(() -> ScreenManager.getInstance().openScheduleView(scheduleList, searchType, searchQuery));
+                                if(callback.equalsIgnoreCase("SEARCH"))
+                                    Platform.runLater(() -> {
+                                        ScreenManager.getInstance().openScheduleView(scheduleList, searchType, searchQuery);
+                                    });
+                                else if(callback.equalsIgnoreCase("EXPORT"))
+                                    Platform.runLater(() -> {
+                                        try {
+                                            ExportManager.getInstance().exportSchedule(scheduleList, searchType, searchQuery);
+                                        } catch (FileNotFoundException e) {
+                                            e.printStackTrace();
+                                        }
+                                    });
 
                             }
 

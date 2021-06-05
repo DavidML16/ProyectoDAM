@@ -1039,12 +1039,14 @@ public class ClientProtocol {
      */
     private void searchSchedule() {
 
+        String callback = (String) lastPacket.getArgument("callback");
         String searchType = (String) lastPacket.getArgument("type");
 
         ScheduleSearcheable scheduleSearcheable = null;
 
         PacketBuilder packetBuilder = new PacketBuilder()
                 .ofType(PacketType.SEARCHSCHEDULE.getConfirmation())
+                .addArgument("callback", callback)
                 .addArgument("searchType", searchType);
 
         if(searchType.equalsIgnoreCase("TEACHER")) {

@@ -43,6 +43,9 @@ public class ScheduleSearchController implements Initializable, Controller {
     @FXML
     private Button searchButton;
 
+    @FXML
+    private Button exportButton;
+
     private String searchType;
 
     private SchedulesMenuController parentController;
@@ -121,12 +124,13 @@ public class ScheduleSearchController implements Initializable, Controller {
         classroomComboBox.setItems(DataManager.getInstance().getClassrooms());
 
         searchButton.setDisable(true);
+        exportButton.setDisable(true);
     }
 
     @FXML
     public void handleButtonAction(MouseEvent event) {
 
-        if(event.getSource() == searchButton) {
+        if(event.getSource() == searchButton || event.getSource() == exportButton) {
 
             if(searchType.equalsIgnoreCase(""))
                 return;
@@ -152,6 +156,11 @@ public class ScheduleSearchController implements Initializable, Controller {
 
             }
 
+            if(event.getSource() == searchButton)
+                packetBuilder.addArgument("callback", "SEARCH");
+            else
+                packetBuilder.addArgument("callback", "EXPORT");
+
             if(packetBuilder.hasArgument("item")) {
 
                 SocketManager.getInstance().sendPacketIO(packetBuilder.build());
@@ -169,16 +178,19 @@ public class ScheduleSearchController implements Initializable, Controller {
                 teacherSearchButton.getStyleClass().add("buttonPressed");
                 teacherPanel.setVisible(true);
                 searchButton.setDisable(false);
+                exportButton.setDisable(false);
             } else if (event.getSource() == groupSearchButton) {
                 searchType = "GROUP";
                 groupSearchButton.getStyleClass().add("buttonPressed");
                 groupPanel.setVisible(true);
                 searchButton.setDisable(false);
+                exportButton.setDisable(false);
             } else if (event.getSource() == classroomSearchButton) {
                 searchType = "CLASSROOM";
                 classroomSearchButton.getStyleClass().add("buttonPressed");
                 classroomPanel.setVisible(true);
                 searchButton.setDisable(false);
+                exportButton.setDisable(false);
             }
 
         }

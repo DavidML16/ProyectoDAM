@@ -129,6 +129,8 @@ public class SchedulerItemPane extends AnchorPane {
 
                 gridPane.add(button, 0, 0, 2, 1);
 
+                setStyle("-fx-background-color: #B00A3A;");
+
                 return;
 
             }

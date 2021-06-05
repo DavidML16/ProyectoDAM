@@ -39,6 +39,14 @@ public class SchedulerPair {
             return schedulerAfternoon;
     }
 
+    public Scheduler getSchedulerMorning() {
+        return schedulerMorning;
+    }
+
+    public Scheduler getSchedulerAfternoon() {
+        return schedulerAfternoon;
+    }
+
     public List<SchedulerItem> getScheduleList() { return scheduleList; }
 
     public List<Day> getDayList() {

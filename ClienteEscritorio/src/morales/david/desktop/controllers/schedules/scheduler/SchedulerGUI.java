@@ -437,6 +437,8 @@ public class SchedulerGUI {
         infoButton.setMinSize(100, 40);
         infoButton.setPrefSize(500, 500);
         infoButton.setMouseTransparent(true);
+        infoButton.setDisableVisualFocus(true);
+        infoButton.setFocusTraversable(false);
         scheduleGrid.add(infoButton, 0, 0, 1, 2);
 
         int pos = 0;

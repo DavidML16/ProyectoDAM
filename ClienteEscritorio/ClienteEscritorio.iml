@@ -12,5 +12,6 @@
     <orderEntry type="library" name="controlsfx-8.20.8" level="project" />
     <orderEntry type="library" name="fontawesomefx-8.9" level="project" />
     <orderEntry type="library" name="jfoenix-8.0.10" level="project" />
+    <orderEntry type="library" name="iText" level="application" />
   </component>
 </module>

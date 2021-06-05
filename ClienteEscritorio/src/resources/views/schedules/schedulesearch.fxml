@@ -169,14 +169,35 @@
                                     <Insets top="15.0" />
                                  </VBox.margin>
                               </StackPane>
-                              <Button fx:id="searchButton" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="55.0" prefWidth="200.0" styleClass="searchButton" text="Buscar horario">
+                              <HBox alignment="CENTER" prefHeight="75.0" prefWidth="200.0" VBox.vgrow="NEVER">
+                                 <children>
+                                    <Button fx:id="searchButton" graphicTextGap="15.0" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="55.0" prefWidth="200.0" styleClass="searchButton" text="Abrir horario">
+                                       <font>
+                                          <Font name="System Bold" size="18.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets right="25.0" />
+                                       </HBox.margin>
+                                       <graphic>
+                                          <FontAwesomeIconView fill="WHITE" glyphName="SEARCH" size="25" />
+                                       </graphic>
+                                    </Button>
+                                    <Button fx:id="exportButton" graphicTextGap="15.0" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="55.0" prefWidth="200.0" styleClass="searchButton" text="Exportar PDF">
+                                       <font>
+                                          <Font name="System Bold" size="18.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="25.0" />
+                                       </HBox.margin>
+                                       <graphic>
+                                          <FontAwesomeIconView fill="WHITE" glyphName="CLOUD_DOWNLOAD" size="25" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
                                  <VBox.margin>
                                     <Insets top="30.0" />
                                  </VBox.margin>
-                                 <font>
-                                    <Font name="System Bold" size="18.0" />
-                                 </font>
-                              </Button>
+                              </HBox>
                            </children>
                            <padding>
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
