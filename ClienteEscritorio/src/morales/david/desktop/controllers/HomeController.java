@@ -50,7 +50,7 @@ public class HomeController implements Initializable, Controller {
                 groupsLabel.setText(Integer.toString(DataManager.getInstance().getGroups().size()));
                 subjectsLabel.setText(Integer.toString(DataManager.getInstance().getSubjects().size()));
                 classroomsLabel.setText(Integer.toString(DataManager.getInstance().getClassrooms().size()));
-                schedulesLabel.setText(Integer.toString(DataManager.getInstance().getSchedules().size()));
+                schedulesLabel.setText(Integer.toString(DataManager.getInstance().getSchedules().get(0)));
             });
         }
 
@@ -86,9 +86,9 @@ public class HomeController implements Initializable, Controller {
             });
         });
 
-        DataManager.getInstance().getSchedules().addListener((ListChangeListener<Schedule>) c -> {
+        DataManager.getInstance().getSchedules().addListener((ListChangeListener<Integer>) c -> {
             Platform.runLater(() -> {
-                schedulesLabel.setText(Integer.toString(DataManager.getInstance().getSchedules().size()));
+                schedulesLabel.setText(Integer.toString(DataManager.getInstance().getSchedules().get(0)));
             });
         });
 

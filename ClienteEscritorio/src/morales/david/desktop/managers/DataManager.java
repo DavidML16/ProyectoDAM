@@ -124,13 +124,13 @@ public final class DataManager {
     }
 
 
-    private ObservableList<Schedule> schedules = FXCollections.observableArrayList();
+    private ObservableList<Integer> schedules = FXCollections.observableArrayList();
 
-    public synchronized ObservableList<Schedule> getSchedules() {
+    public synchronized ObservableList<Integer> getSchedules() {
         return schedules;
     }
 
-    public synchronized void setSchedules(ObservableList<Schedule> schedules) {
+    public synchronized void setSchedules(ObservableList<Integer> schedules) {
         this.schedules = schedules;
     }
 

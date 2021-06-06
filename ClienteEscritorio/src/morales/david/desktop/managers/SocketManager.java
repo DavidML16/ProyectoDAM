@@ -383,16 +383,10 @@ public final class SocketManager extends Thread {
 
                             if(receivedPacket.getType().equalsIgnoreCase(PacketType.SCHEDULES.getConfirmation())) {
 
-                                List<LinkedTreeMap> schedules = (List<LinkedTreeMap>) receivedPacket.getArgument("schedules");
-
-                                final List<Schedule> scheduleList = new ArrayList<>();
+                                Double schedules = (Double) receivedPacket.getArgument("schedules");
 
                                 DataManager.getInstance().getSchedules().clear();
-
-                                for (LinkedTreeMap scheduleMap : schedules)
-                                    scheduleList.add(Schedule.parse(scheduleMap));
-
-                                DataManager.getInstance().getSchedules().addAll(scheduleList);
+                                DataManager.getInstance().getSchedules().add(schedules.intValue());
 
                             }
 

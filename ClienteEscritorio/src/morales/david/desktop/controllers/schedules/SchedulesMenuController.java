@@ -52,8 +52,6 @@ public class SchedulesMenuController implements Initializable, Controller {
         Platform.runLater(() -> loadView("schedules/schedulesearch.fxml", "Horarios", null));
         schedulesNavigationButton.getStyleClass().add("buttonPressed");
 
-        DataManager.getInstance().getDays().add(new Day(1, "Lunes"));
-
     }
 
     @FXML

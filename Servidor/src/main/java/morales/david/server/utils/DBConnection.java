@@ -2195,9 +2195,9 @@ public class DBConnection {
      * Get schedules from database
      * @return list of schedules
      */
-    public List<Schedule> getSchedules() {
+    public Integer getSchedulesAmount() {
 
-        List<Schedule> schedules = new ArrayList<>();
+        Integer schedules = 0;
 
         PreparedStatement stm = null;
         ResultSet rs = null;
@@ -2208,22 +2208,9 @@ public class DBConnection {
 
             rs = stm.executeQuery();
 
-            while (rs.next()) {
+            if (rs.next()) {
 
-                int id_teacher = rs.getInt("profesor");
-                int id_subject = rs.getInt("asignatura");
-                int id_group = rs.getInt("grupo");
-                int id_classroom = rs.getInt("aula");
-                int id_timezone = rs.getInt("franja");
-                String uuid = rs.getString("uuid");
-
-                Teacher teacher = getTeacher(id_teacher);
-                Subject subject = getSubject(id_subject);
-                Group group = getGroup(id_group);
-                Classroom classroom = getClassroom(id_classroom);
-                TimeZone timeZone = getTimeZone(id_timezone);
-
-                schedules.add(new Schedule(uuid, teacher, subject, group, classroom, timeZone));
+                schedules = rs.getInt("amount");
 
             }
 

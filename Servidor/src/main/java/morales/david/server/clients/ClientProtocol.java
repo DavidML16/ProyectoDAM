@@ -1022,7 +1022,7 @@ public class ClientProtocol {
      */
     private void scheduleList() {
 
-        List<Schedule> schedules = clientThread.getDbConnection().getSchedules();
+        Integer schedules = clientThread.getDbConnection().getSchedulesAmount();
 
         Packet schedulesConfirmationPacket = new PacketBuilder()
                 .ofType(PacketType.SCHEDULES.getConfirmation())

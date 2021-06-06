@@ -120,6 +120,20 @@ public class Scheduler {
         return schedules;
     }
 
+    public SchedulerItem[] getScheduleItemsByHour(int hour) {
+
+        SchedulerItem[] schedulesHour = new SchedulerItem[days.length];
+
+        for(int day = 0; day < 5; day++) {
+
+            schedulesHour[day] = schedules[day][hour];
+
+        }
+
+        return schedulesHour;
+
+    }
+
     public SchedulerItem getScheduleItem(int day, int hour) {
         return schedules[day][hour];
     }
