@@ -17,6 +17,7 @@ import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.Constants;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -418,6 +419,8 @@ public final class SocketManager extends Thread {
                                         try {
                                             ExportManager.getInstance().exportSchedule(scheduleList, searchType, searchQuery);
                                         } catch (FileNotFoundException e) {
+                                            e.printStackTrace();
+                                        } catch (MalformedURLException e) {
                                             e.printStackTrace();
                                         }
                                     });
