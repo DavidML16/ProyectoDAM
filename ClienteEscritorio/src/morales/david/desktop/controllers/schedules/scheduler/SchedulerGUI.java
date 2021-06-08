@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
@@ -392,7 +393,7 @@ public class SchedulerGUI {
         double h = hours[0].getHeight();
 
         Font font1 = Font.font("System", FontWeight.BOLD, (h + w) * 0.09);
-        Font font2 = Font.font("System", FontWeight.BOLD, h * 0.3);
+        Font font2 = Font.font("System", FontWeight.BOLD, h * 0.2);
 
         for (JFXButton b : days)
             b.setFont(font1);
@@ -425,7 +426,7 @@ public class SchedulerGUI {
         scheduleGrid.getChildren().remove(tabBox);
         scheduleGrid.getRowConstraints().clear();
         RowConstraints rc = new RowConstraints();
-        rc.setPercentHeight(10);
+        rc.setPercentHeight(7.5);
         scheduleGrid.getRowConstraints().add(rc);
         scheduleGrid.add(tabBox, 1, 0, 5, 1);
 
@@ -443,6 +444,9 @@ public class SchedulerGUI {
 
         int pos = 0;
         Day[] dayArray = schedulerManager.getCurrentTable().getDays();
+        RowConstraints rc2 = new RowConstraints();
+        rc2.setPercentHeight(8.5);
+        scheduleGrid.getRowConstraints().add(rc2);
         for (int i = 0; i < days.length; i++) {
             scheduleGrid.add(days[i], pos + 1, 1, 1, 1);
             if(dayArray[i] != null)
@@ -472,6 +476,11 @@ public class SchedulerGUI {
                     breakTime.setPrefSize(2000, 110);
                     scheduleGrid.add(breakTime, pos + 1, 5, 5, 1);
                 }
+
+                Rectangle clip = new Rectangle();
+                clip.widthProperty().bind(schedules[i][j].widthProperty());
+                clip.heightProperty().bind(schedules[i][j].heightProperty());
+                schedules[i][j].setClip(clip);
 
                 scheduleGrid.add(schedules[i][j], pos + 1, j + (j >= 3 ? 3 : 2), 1, 1);
 

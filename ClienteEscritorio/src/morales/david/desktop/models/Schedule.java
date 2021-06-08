@@ -121,7 +121,7 @@ public class Schedule {
         return new Schedule(uuid, teacher, subject, group, classroom, timeZone);
     }
 
-    public String getText(int type) {
+    public String getText(int type, boolean plain) {
 
         if(teacher == null || group == null || subject == null || classroom == null || timeZone == null)
             return "";
@@ -129,19 +129,31 @@ public class Schedule {
         StringBuilder sb = new StringBuilder();
 
         if(type == 0) {
-            sb.append(teacher.getName());
-            sb.append("\n");
-            sb.append(subject.getAbreviation() + "     " + classroom.toString());
-            sb.append("\n");
+            sb.append(teacher.getAbreviation());
+            if(!plain)
+                sb.append("\n");
+            else
+                sb.append("   ");
+            sb.append(subject.getAbreviation() + "   " + classroom.toString());
+            if(!plain)
+                sb.append("\n");
+            else
+                sb.append("   ");
             sb.append(group.toString());
         } else if(type == 1) {
-            sb.append(subject.getAbreviation() + "     " + classroom.toString());
-            sb.append("\n");
+            sb.append(subject.getAbreviation() + "   " + classroom.toString());
+            if(!plain)
+                sb.append("\n");
+            else
+                sb.append("   ");
             sb.append(group.toString());
         } else if(type == 2) {
-            sb.append(teacher.getName());
-            sb.append("\n");
-            sb.append(subject.getAbreviation() + "     " + classroom.toString());
+            sb.append(teacher.getAbreviation());
+            if(!plain)
+                sb.append("\n");
+            else
+                sb.append("   ");
+            sb.append(subject.getAbreviation() + "   " + classroom.toString());
         }
 
         return sb.toString();

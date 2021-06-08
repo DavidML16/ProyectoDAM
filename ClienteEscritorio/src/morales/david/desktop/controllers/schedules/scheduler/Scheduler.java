@@ -86,6 +86,10 @@ public class Scheduler {
 
                         schedules[day][hour] = schedulerItem;
 
+                    } else {
+
+                        schedules[day][hour] = new SchedulerItem();
+
                     }
 
                 }
@@ -284,6 +288,7 @@ public class Scheduler {
                 if(scheduleListenerType instanceof ScheduleConfirmationListener) {
 
                     schedules[indexDay][indexHour] = null;
+                    schedules[indexDay][indexHour] = new SchedulerItem();
                     parentPair.getTimetableManager().getGui().displayCurrentTimetable();
 
                 } else if (scheduleListenerType instanceof ScheduleErrorListener) {

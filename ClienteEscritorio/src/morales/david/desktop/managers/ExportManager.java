@@ -92,7 +92,7 @@ public class ExportManager {
                             .setPaddingTop(7f)
                             .setPaddingBottom(7f)
                             .setPaddingRight(15f)
-                            .setFontSize(12f)
+                            .setFontSize(10f)
                             .setFontColor(new DeviceRgb(255, 255, 255))
                             .setBorder(Border.NO_BORDER)
 
@@ -107,7 +107,7 @@ public class ExportManager {
                         .setTextAlignment(TextAlignment.CENTER)
                         .setBackgroundColor(new DeviceRgb(240, 240, 240))
                         .setPadding(5f)
-                        .setFontSize(12f)
+                        .setFontSize(9f)
                         .setMargins(10.5f, 2.5f, 8, 2.5f));
 
         {
@@ -162,11 +162,10 @@ public class ExportManager {
                 schedulerTable.addCell(
                         new Cell()
                                 .add(new Paragraph(day.getName()))
-                                .setBold()
-                                .setPadding(10f)
+                                .setPaddings(5f, 10f, 5f, 10f)
                                 .setWidth(71.5f)
                                 .setMinWidth(71f)
-                                .setFontSize(10f)
+                                .setFontSize(8f)
                                 .setBackgroundColor(new DeviceRgb(17, 178, 59))
                                 .setFontColor(new DeviceRgb(255, 255, 255))
                                 .setBorder(Border.NO_BORDER)
@@ -195,7 +194,7 @@ public class ExportManager {
                                 .setMinWidth(40)
                                 .setBackgroundColor(new DeviceRgb(14, 158, 180))
                                 .setFontColor(new DeviceRgb(255, 255, 255))
-                                .setFontSize(10f)
+                                .setFontSize(8f)
                                 .setBorder(Border.NO_BORDER)
                                 .setTextAlignment(TextAlignment.CENTER)
                                 .setVerticalAlignment(VerticalAlignment.MIDDLE)
@@ -290,14 +289,14 @@ public class ExportManager {
         cell.setMinWidth(65.5f);
         cell.setBorder(Border.NO_BORDER);
         cell.setBackgroundColor(new DeviceRgb(java.awt.Color.decode(schedule.getSubject().getColor())));
-        cell.add(new Paragraph(schedule.getText(schedulerManager.getSearchTypeNumber())));
+        cell.add(new Paragraph(schedule.getText(schedulerManager.getSearchTypeNumber(), multiple)));
+
+        cell.setPaddings(5, 7, 5, 7);
 
         if(multiple) {
-            cell.setPaddings(5, 7, 5, 7);
-            cell.setFontSize(6f);
+            cell.setFontSize(5f);
         } else {
-            cell.setPadding(5);
-            cell.setFontSize(7f);
+            cell.setFontSize(6f);
         }
 
         return cell;

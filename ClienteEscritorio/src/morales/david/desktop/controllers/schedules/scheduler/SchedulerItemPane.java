@@ -120,7 +120,7 @@ public class SchedulerItemPane extends AnchorPane {
 
                 Schedule schedule = schedulerItem.getScheduleList().get(0);
 
-                JFXButton button = getButton(schedule);
+                JFXButton button = getButton(schedule, false);
 
                 GridPane.setHgrow(button, Priority.ALWAYS);
                 GridPane.setFillWidth(button, true);
@@ -146,7 +146,7 @@ public class SchedulerItemPane extends AnchorPane {
 
             for(Schedule schedule : schedulerItem.getScheduleList()) {
 
-                JFXButton button = getButton(schedule);
+                JFXButton button = getButton(schedule, schedulerItem.getScheduleList().size() > 2);
 
                 if(index < schedulerItem.getScheduleList().size() || column != 0)
                     gridPane.add(button, column, row, 1, 1);
@@ -167,7 +167,7 @@ public class SchedulerItemPane extends AnchorPane {
 
     }
 
-    private JFXButton getButton(Schedule schedule) {
+    private JFXButton getButton(Schedule schedule, boolean plain) {
 
         JFXButton button = new JFXButton();
 
@@ -179,7 +179,7 @@ public class SchedulerItemPane extends AnchorPane {
         button.setTextAlignment(TextAlignment.CENTER);
         button.setStyle("-fx-background-color: " + schedule.getSubject().getColor() + ";");
 
-        button.setText(schedule.getText(schedulerManager.getSearchTypeNumber()));
+        button.setText(schedule.getText(schedulerManager.getSearchTypeNumber(), plain));
 
         showedButtons.add(button);
 

@@ -65,7 +65,7 @@ public class SchedulerItemController implements Initializable {
         this.schedule = schedule;
 
         if(schedule.getTeacher() != null)
-            teacherLabel.setText(schedule.getTeacher().getName());
+            teacherLabel.setText(schedule.getTeacher().getName() + ", " + schedule.getTeacher().getAbreviation());
 
         if(schedule.getSubject() != null) {
             subjectLabel.setText(schedule.getSubject().getName());

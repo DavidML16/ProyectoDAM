@@ -68,7 +68,7 @@ public class DBConstants {
     public static final String DB_QUERY_REMOVESCHEDULE = "DELETE FROM imparte WHERE `uuid` = ?";
     public static final String DB_QUERY_REMOVESCHEDULE_SB = "DELETE FROM imparte WHERE `uuid` IN ";
     public static final String DB_QUERY_UPDATESCHEDULE = "UPDATE imparte SET `profesor` = ?, `asignatura` = ?, `grupo` = ?, `aula` = ?, `franja` = ? WHERE uuid = ?";
-    public static final String DB_QUERY_INSERTSCHEDULE = "INSERT INTO imparte VALUES (?,?,?,?,?,?)";
+    public static final String DB_QUERY_INSERTSCHEDULE = "REPLACE INTO imparte VALUES (?,?,?,?,?,?)";
 
     public static final String DB_QUERY_CLEAR_DAYS = "DELETE FROM numero_dia";
     public static final String DB_QUERY_CLEAR_HOURS = "DELETE FROM numero_hora";
