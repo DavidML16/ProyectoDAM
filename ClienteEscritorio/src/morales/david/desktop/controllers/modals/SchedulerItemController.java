@@ -18,6 +18,7 @@ import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.FxUtilTest;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class SchedulerItemController implements Initializable {
@@ -53,16 +54,20 @@ public class SchedulerItemController implements Initializable {
     private TimeZone timeZone;
     private Schedule schedule;
 
+    private List<Classroom> emptyClassrooms;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) { }
 
-    public void setData(SchedulerItemModalController controller, SchedulerManager schedulerManager, SchedulerItem schedulerItem, TimeZone timeZone, Schedule schedule) {
+    public void setData(SchedulerItemModalController controller, SchedulerManager schedulerManager,
+                        SchedulerItem schedulerItem, TimeZone timeZone, Schedule schedule, List<Classroom> emptyClassrooms) {
 
         this.controller = controller;
         this.schedulerManager = schedulerManager;
         this.schedulerItem = schedulerItem;
         this.timeZone = timeZone;
         this.schedule = schedule;
+        this.emptyClassrooms = emptyClassrooms;
 
         if(schedule.getTeacher() != null)
             teacherLabel.setText(schedule.getTeacher().getName() + ", " + schedule.getTeacher().getAbreviation());
@@ -92,7 +97,7 @@ public class SchedulerItemController implements Initializable {
 
         } else if(event.getSource() == editButton) {
 
-            controller.editSchedule(schedule);
+            controller.editSchedule(schedule, emptyClassrooms);
 
         }
 

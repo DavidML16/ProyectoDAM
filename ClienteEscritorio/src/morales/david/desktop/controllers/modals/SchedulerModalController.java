@@ -1,5 +1,8 @@
 package morales.david.desktop.controllers.modals;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -12,6 +15,7 @@ import morales.david.desktop.utils.Utils;
 import org.controlsfx.control.ListSelectionView;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class SchedulerModalController implements Initializable {
@@ -31,7 +35,12 @@ public class SchedulerModalController implements Initializable {
     @FXML
     private ComboBox<Group> groupField;
 
+    @FXML
+    private CheckBox showAllCheckBox;
+
     private Schedule schedule;
+
+    private List<Classroom> emptyClassrooms;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -73,7 +82,7 @@ public class SchedulerModalController implements Initializable {
                 || Integer.toString(itemToCompare.getNumber()).toLowerCase().contains(typedText.toLowerCase())
         );
 
-        classroomField.setItems(DataManager.getInstance().getClassrooms());
+        classroomField.setItems(FXCollections.emptyObservableList());
         classroomField.setConverter(new StringConverter<Classroom>() {
             @Override
             public String toString(Classroom object) {
@@ -86,6 +95,16 @@ public class SchedulerModalController implements Initializable {
             }
         });
         FxUtilTest.autoCompleteComboBoxPlus(classroomField, (typedText, itemToCompare) -> itemToCompare.getName().toLowerCase().contains(typedText.toLowerCase()));
+
+        showAllCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue)
+                if(emptyClassrooms != null)
+                    classroomField.setItems(FXCollections.observableArrayList(emptyClassrooms));
+                else
+                    classroomField.setItems(FXCollections.emptyObservableList());
+            else
+                classroomField.setItems(DataManager.getInstance().getClassrooms());
+        });
 
         groupField.setItems(DataManager.getInstance().getGroups());
         groupField.setConverter(new StringConverter<Group>() {
@@ -103,9 +122,13 @@ public class SchedulerModalController implements Initializable {
 
     }
 
-    public void setData(Schedule schedule, boolean edit) {
+    public void setData(Schedule schedule, boolean edit, List<Classroom> emptyClassrooms) {
 
         this.schedule = schedule;
+        this.emptyClassrooms = emptyClassrooms;
+
+        if(emptyClassrooms != null)
+            classroomField.setItems(FXCollections.observableArrayList(emptyClassrooms));
 
         titleLabel.setText("Añadir nuevo turno");
 

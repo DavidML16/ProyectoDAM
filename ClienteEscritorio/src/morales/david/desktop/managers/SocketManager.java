@@ -7,10 +7,7 @@ import javafx.scene.paint.Color;
 import morales.david.desktop.Client;
 import morales.david.desktop.controllers.ImportController;
 import morales.david.desktop.controllers.LoginController;
-import morales.david.desktop.managers.eventcallbacks.ScheduleConfirmationListener;
-import morales.david.desktop.managers.eventcallbacks.ScheduleErrorListener;
-import morales.david.desktop.managers.eventcallbacks.EventManager;
-import morales.david.desktop.managers.eventcallbacks.ScheduleSwitchConfirmationListener;
+import morales.david.desktop.managers.eventcallbacks.*;
 import morales.david.desktop.models.*;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketType;
@@ -578,6 +575,34 @@ public final class SocketManager extends Thread {
                                     EventManager.getInstance().notify(uuid, new ScheduleConfirmationListener(uuid, schedulerItem));
 
                             } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.DELETESCHEDULE.getError())) {
+
+                                String uuid = (String) receivedPacket.getArgument("uuid");
+                                String message = (String) receivedPacket.getArgument("message");
+
+                                EventManager.getInstance().notify(uuid, new ScheduleErrorListener(uuid, message));
+
+                            }
+
+                            break;
+
+                        }
+
+                        case EMPTYCLASSROOMSTIMEZONE: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.EMPTYCLASSROOMSTIMEZONE.getConfirmation())) {
+
+                                String uuid = (String) receivedPacket.getArgument("uuid");
+
+                                List<LinkedTreeMap> classrooms = (List<LinkedTreeMap>) receivedPacket.getArgument("classrooms");
+
+                                List<Classroom> emptyClassrooms = new ArrayList<>();
+
+                                for (LinkedTreeMap classroomMap : classrooms)
+                                    emptyClassrooms.add(Classroom.parse(classroomMap));
+
+                                EventManager.getInstance().notify(uuid, new EmptyClassroomsConfirmationListener(uuid, emptyClassrooms));
+
+                            } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.EMPTYCLASSROOMSTIMEZONE.getError())) {
 
                                 String uuid = (String) receivedPacket.getArgument("uuid");
                                 String message = (String) receivedPacket.getArgument("message");

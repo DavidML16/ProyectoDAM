@@ -207,6 +207,10 @@ public class ClientProtocol {
                 deleteSchedule();
                 break;
 
+            case EMPTYCLASSROOMSTIMEZONE:
+                emptyClassroomsListTimeZone();
+                break;
+
         }
 
         clientThread.getDbConnection().close();
@@ -1374,6 +1378,47 @@ public class ClientProtocol {
             sendPacketIO(deleteScheduleErrorPacket);
 
         }
+
+    }
+
+
+    /**
+     * Get empty classrooms list from database in a specified timezone
+     * Send classrooms list packet to client
+     */
+    private void emptyClassroomsListTimeZone() {
+
+        String uuid = (String) lastPacket.getArgument("uuid");
+
+        Packet classroomErrorPacket = new PacketBuilder()
+                .ofType(PacketType.EMPTYCLASSROOMSTIMEZONE.getError())
+                .addArgument("uuid", uuid)
+                .addArgument("message", "No se ha podido buscar las aulas vacías")
+                .build();
+
+        LinkedTreeMap timeZoneMap = (LinkedTreeMap) lastPacket.getArgument("timeZone");
+
+        if(timeZoneMap == null) {
+            sendPacketIO(classroomErrorPacket);
+            return;
+        }
+
+        TimeZone timeZone = TimeZone.parse(timeZoneMap);
+
+        if(timeZone == null) {
+            sendPacketIO(classroomErrorPacket);
+            return;
+        }
+
+        List<Classroom> classrooms = clientThread.getDbConnection().getEmptyClassroomsTimeZone(timeZone);
+
+        Packet classroomsConfirmationPacket = new PacketBuilder()
+                .ofType(PacketType.EMPTYCLASSROOMSTIMEZONE.getConfirmation())
+                .addArgument("uuid", uuid)
+                .addArgument("classrooms", classrooms)
+                .build();
+
+        sendPacketIO(classroomsConfirmationPacket);
 
     }
 

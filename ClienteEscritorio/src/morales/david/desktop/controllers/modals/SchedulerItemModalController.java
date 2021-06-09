@@ -26,6 +26,7 @@ import org.controlsfx.control.ListSelectionView;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -44,6 +45,8 @@ public class SchedulerItemModalController implements Initializable {
     private SchedulerItem schedulerItem;
     private TimeZone timeZone;
 
+    private List<Classroom> emptyClassrooms;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -60,11 +63,12 @@ public class SchedulerItemModalController implements Initializable {
 
     }
 
-    public void setData(SchedulerManager schedulerManager, SchedulerItem schedulerItem, TimeZone timeZone) {
+    public void setData(SchedulerManager schedulerManager, SchedulerItem schedulerItem, TimeZone timeZone, List<Classroom> emptyClassrooms) {
 
         this.schedulerManager = schedulerManager;
         this.schedulerItem = schedulerItem;
         this.timeZone = timeZone;
+        this.emptyClassrooms = emptyClassrooms;
 
         this.dialogTitle.setText("Turnos del " + timeZone.getDay().getName() + " de " + timeZone.getHour().getName());
 
@@ -84,7 +88,7 @@ public class SchedulerItemModalController implements Initializable {
                 AnchorPane parent = loader.load();
 
                 SchedulerItemController controller = loader.getController();
-                controller.setData(this, schedulerManager, schedulerItem, timeZone, schedule);
+                controller.setData(this, schedulerManager, schedulerItem, timeZone, schedule, emptyClassrooms);
 
                 vBox.getChildren().add(parent);
 
@@ -104,7 +108,7 @@ public class SchedulerItemModalController implements Initializable {
             DialogPane parent = loader.load();
             SchedulerModalController controller = loader.getController();
 
-            controller.setData(new Schedule(), false);
+            controller.setData(new Schedule(), false, emptyClassrooms);
 
             Dialog<ButtonType> dialog = new Dialog<>();
 
@@ -150,7 +154,7 @@ public class SchedulerItemModalController implements Initializable {
 
     }
 
-    public void editSchedule(Schedule schedule) {
+    public void editSchedule(Schedule schedule, List<Classroom> emptyClassrooms) {
 
         if(schedule == null)
             return;
@@ -161,7 +165,7 @@ public class SchedulerItemModalController implements Initializable {
             DialogPane parent = loader.load();
             SchedulerModalController controller = loader.getController();
 
-            controller.setData(schedule.duplicateUUID(), true);
+            controller.setData(schedule.duplicateUUID(), true, emptyClassrooms);
 
             Dialog<ButtonType> dialog = new Dialog<>();
 

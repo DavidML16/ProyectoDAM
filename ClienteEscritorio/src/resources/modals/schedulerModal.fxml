@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
@@ -36,7 +37,7 @@
                 <RowConstraints maxHeight="125.0" minHeight="10.0" prefHeight="125.0" valignment="CENTER" vgrow="NEVER" />
               </rowConstraints>
                <children>
-                  <VBox alignment="CENTER_LEFT" prefHeight="28.0" prefWidth="392.0" spacing="5.0">
+                  <VBox alignment="CENTER_LEFT" prefHeight="28.0" prefWidth="392.0" spacing="5.0" GridPane.halignment="CENTER" GridPane.valignment="TOP">
                      <children>
                         <Label text="Profesor:">
                            <font>
@@ -46,7 +47,7 @@
                         <ComboBox fx:id="teacherField" prefHeight="38.0" prefWidth="553.0" />
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER_LEFT" prefHeight="28.0" prefWidth="392.0" spacing="5.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                  <VBox alignment="CENTER_LEFT" prefHeight="28.0" prefWidth="392.0" spacing="5.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="TOP">
                      <children>
                         <Label text="Asignatura:">
                            <font>
@@ -56,7 +57,7 @@
                         <ComboBox fx:id="subjectField" prefHeight="38.0" prefWidth="553.0" />
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER_LEFT" prefHeight="28.0" prefWidth="392.0" spacing="5.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                  <VBox alignment="CENTER_LEFT" prefHeight="28.0" prefWidth="392.0" spacing="5.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                      <children>
                         <Label text="Aula:">
                            <font>
@@ -64,16 +65,27 @@
                            </font>
                         </Label>
                         <ComboBox fx:id="classroomField" prefHeight="38.0" prefWidth="553.0" />
+                        <CheckBox fx:id="showAllCheckBox" mnemonicParsing="false" text="Mostrar todas las aulas">
+                           <VBox.margin>
+                              <Insets left="10.0" top="15.0" />
+                           </VBox.margin>
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </CheckBox>
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER_LEFT" prefHeight="28.0" prefWidth="392.0" spacing="5.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                  <VBox alignment="CENTER_LEFT" prefHeight="28.0" prefWidth="392.0" spacing="5.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                      <children>
                         <Label text="Grupo:">
                            <font>
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <ComboBox fx:id="groupField" prefHeight="38.0" prefWidth="553.0" />
+                        <ComboBox fx:id="groupField" prefHeight="38.0" prefWidth="553.0">
+                           <VBox.margin>
+                              <Insets bottom="39.0" />
+                           </VBox.margin></ComboBox>
                      </children>
                   </VBox>
                </children>

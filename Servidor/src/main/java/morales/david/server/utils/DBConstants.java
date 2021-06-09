@@ -28,6 +28,7 @@ public class DBConstants {
     public static final String DB_QUERY_ADDCLASSROOM = "INSERT INTO aula (`nombre`) VALUES (?)";
     public static final String DB_QUERY_UPDATECLASSROOM = "UPDATE aula SET `nombre` = ? WHERE `id_aula` = ?";
     public static final String DB_QUERY_REMOVECLASSROOM = "DELETE FROM aula WHERE `id_aula` = ?";
+    public static final String DB_QUERY_EMPTYCLASSROOMSTIMEZONE = "SELECT * FROM aula WHERE aula.id_aula NOT IN (SELECT aula FROM imparte WHERE franja = ?)";
 
     public static final String DB_QUERY_COURSES = "SELECT * FROM curso";
     public static final String DB_QUERY_COURSE_BY_ID = "SELECT * FROM curso WHERE `id_curso` = ?";

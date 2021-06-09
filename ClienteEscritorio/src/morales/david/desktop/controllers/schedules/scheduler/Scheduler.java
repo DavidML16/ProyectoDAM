@@ -6,11 +6,8 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import morales.david.desktop.controllers.modals.SchedulerItemModalController;
 import morales.david.desktop.managers.DataManager;
-import morales.david.desktop.managers.eventcallbacks.ScheduleConfirmationListener;
-import morales.david.desktop.managers.eventcallbacks.ScheduleErrorListener;
-import morales.david.desktop.managers.eventcallbacks.EventManager;
+import morales.david.desktop.managers.eventcallbacks.*;
 import morales.david.desktop.managers.SocketManager;
-import morales.david.desktop.managers.eventcallbacks.ScheduleSwitchConfirmationListener;
 import morales.david.desktop.models.*;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
@@ -18,6 +15,7 @@ import morales.david.desktop.models.packets.PacketType;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Scheduler {
 
@@ -438,37 +436,61 @@ public class Scheduler {
 
     public void openSchedulerItemModal(SchedulerItem schedulerItem, TimeZone timeZone) {
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/schedulerItemModal.fxml"));
-        try {
+        EventManager.getInstance().subscribe(schedulerItem.getUuid(), (eventType, scheduleListenerType) -> {
 
-            DialogPane parent = loader.load();
-            SchedulerItemModalController controller = loader.getController();
+            if(scheduleListenerType instanceof EmptyClassroomsConfirmationListener) {
 
-            controller.setData(parentPair.getTimetableManager(), schedulerItem, timeZone);
+                List<Classroom> emptyClassrooms = ((EmptyClassroomsConfirmationListener) scheduleListenerType).getClassroomList();
 
-            Dialog<ButtonType> dialog = new Dialog<>();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/schedulerItemModal.fxml"));
+                try {
 
-            dialog.setDialogPane(parent);
-            dialog.setTitle("");
+                    DialogPane parent = loader.load();
+                    SchedulerItemModalController controller = loader.getController();
 
-            ButtonType cancelBtn = new ButtonType("Cerrar", ButtonBar.ButtonData.NO);
+                    controller.setData(parentPair.getTimetableManager(), schedulerItem, timeZone, emptyClassrooms);
 
-            dialog.getDialogPane().getButtonTypes().addAll(cancelBtn);
+                    Dialog<ButtonType> dialog = new Dialog<>();
 
-            Button cancelButton = (Button) dialog.getDialogPane().lookupButton(cancelBtn);
-            cancelButton.getStyleClass().addAll("dialogButton", "cancelButton");
+                    dialog.setDialogPane(parent);
+                    dialog.setTitle("");
 
-            ((Stage)dialog.getDialogPane().getScene().getWindow()).getIcons().add(new Image("/resources/images/schedule-icon-inverted.png"));
+                    ButtonType cancelBtn = new ButtonType("Cerrar", ButtonBar.ButtonData.NO);
 
-            parentPair.getTimetableManager().setOpenedItemModal(controller);
+                    dialog.getDialogPane().getButtonTypes().addAll(cancelBtn);
 
-            dialog.showAndWait();
+                    Button cancelButton = (Button) dialog.getDialogPane().lookupButton(cancelBtn);
+                    cancelButton.getStyleClass().addAll("dialogButton", "cancelButton");
 
-            parentPair.getTimetableManager().setOpenedItemModal(null);
+                    ((Stage)dialog.getDialogPane().getScene().getWindow()).getIcons().add(new Image("/resources/images/schedule-icon-inverted.png"));
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                    parentPair.getTimetableManager().setOpenedItemModal(controller);
+
+                    dialog.showAndWait();
+
+                    parentPair.getTimetableManager().setOpenedItemModal(null);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } else if (scheduleListenerType instanceof ScheduleErrorListener) {
+
+                ScheduleErrorListener errorListener = (ScheduleErrorListener) scheduleListenerType;
+
+                System.out.println(errorListener.getMessage());
+
+            }
+
+        });
+
+        Packet emptyClassroomsRequestPacket = new PacketBuilder()
+                .ofType(PacketType.EMPTYCLASSROOMSTIMEZONE.getRequest())
+                .addArgument("uuid", schedulerItem.getUuid())
+                .addArgument("timeZone", timeZone)
+                .build();
+
+        SocketManager.getInstance().sendPacketIO(emptyClassroomsRequestPacket);
 
     }
 

@@ -802,6 +802,56 @@ public class DBConnection {
 
     }
 
+    /**
+     * Get classrooms from database
+     * @return list of classrooms
+     */
+    public List<Classroom> getEmptyClassroomsTimeZone(TimeZone timeZone) {
+
+        List<Classroom> classrooms = new ArrayList<>();
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_EMPTYCLASSROOMSTIMEZONE);
+            stm.setInt(1, timeZone.getId());
+
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+
+                int id = rs.getInt("id_aula");
+                String name = rs.getString("nombre");
+
+                classrooms.add(new Classroom(id, name));
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return classrooms;
+
+    }
+
 
     /**
      * Get courses from database
