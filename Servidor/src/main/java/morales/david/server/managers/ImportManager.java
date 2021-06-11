@@ -1039,7 +1039,7 @@ public class ImportManager {
 
             for(String table : DBConstants.SCHEDULE_TABLES) {
 
-                stm = acon.prepareStatement("SELECT ASIG, PROF, CURSO, NIVEL, GRUPO, AULA, DIA, HORA FROM `" + table + "` WHERE AULA IS NOT NULL AND CODGRUPO IS NOT NULL AND ASIG IS NOT NULL");
+                stm = acon.prepareStatement("SELECT ASIG, PROF, CURSO, NIVEL, GRUPO, AULA, DIA, HORA FROM `" + table + "` WHERE ASIG IS NOT NULL");
                 rs = stm.executeQuery();
 
                 while (rs.next()) {
@@ -1059,9 +1059,24 @@ public class ImportManager {
                     Classroom classroom = getClassroomBy(aulas, aula);
                     TimeZone timeZone = getTimeZoneBy(zonashorarias, dia, hora);
 
-                    if(subject != null && teacher != null && group != null && classroom != null && timeZone != null) {
-                        scheduleList.add(new Schedule(teacher, subject, group, classroom, timeZone));
-                    }
+                    Schedule schedule = new Schedule();
+
+                    if(subject != null)
+                        schedule.setSubject(subject);
+
+                    if(teacher != null)
+                        schedule.setTeacher(teacher);
+
+                    if(group != null)
+                        schedule.setGroup(group);
+
+                    if(classroom != null)
+                        schedule.setClassroom(classroom);
+
+                    if(timeZone != null)
+                        schedule.setTimeZone(timeZone);
+
+                    scheduleList.add(schedule);
 
                 }
 
@@ -1098,29 +1113,8 @@ public class ImportManager {
      */
     private void insertSchedules() {
 
-        StringBuilder insertString = new StringBuilder();
-        for(Schedule schedule : scheduleList) {
-
-            if(insertString.toString().equalsIgnoreCase("")) insertString.append("(");
-            else insertString.append(", (");
-
-            insertString
-                    .append(schedule.getTeacher().getId())
-                    .append(",")
-                    .append(schedule.getSubject().getId())
-                    .append(",")
-                    .append(schedule.getGroup().getId())
-                    .append(",")
-                    .append(schedule.getClassroom().getId())
-                    .append(",")
-                    .append(schedule.getTimeZone().getId())
-                    .append(",'")
-                    .append(schedule.getUuid())
-                    .append("')");
-
-        }
-
-        dbConnection.insertSchedulesSB(insertString);
+        for(Schedule schedule : scheduleList)
+            dbConnection.insertSchedule(schedule);
 
     }
 

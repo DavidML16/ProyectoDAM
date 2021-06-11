@@ -85,13 +85,12 @@ CREATE TABLE grupo (
 
 
 CREATE TABLE imparte (
+	uuid VARCHAR(36) PRIMARY KEY,
 	profesor INTEGER(11) NOT NULL,
 	asignatura INTEGER(11) NOT NULL,
-	grupo INTEGER(11) NOT NULL,
-	aula INTEGER(11) NOT NULL,
+	grupo INTEGER(11) NULL,
+	aula INTEGER(11) NULL,
 	franja INTEGER(11) NOT NULL,
-	uuid VARCHAR(36) NOT NULL,
-	CONSTRAINT imparte_pk PRIMARY KEY (profesor, asignatura, grupo, aula, franja),
 	CONSTRAINT imparte_profesor_fk FOREIGN KEY (profesor) REFERENCES profesor(id_profesor),
 	CONSTRAINT imparte_asignatura_fk FOREIGN KEY (asignatura) REFERENCES asignatura(id_asignatura),
 	CONSTRAINT imparte_grupo_fk FOREIGN KEY (grupo) REFERENCES grupo(id_grupo),

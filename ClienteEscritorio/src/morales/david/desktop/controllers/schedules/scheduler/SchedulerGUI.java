@@ -196,7 +196,7 @@ public class SchedulerGUI {
             scheduleReleased(event);
         };
 
-        schedules = new SchedulerItemPane[DAY_LENGTH][HOURS_LENGTH - 1];
+        schedules = new SchedulerItemPane[DAY_LENGTH][HOURS_LENGTH];
         for (int i = 0; i < schedules.length; i++) {
             for (int j = 0; j < schedules[0].length; j++) {
                 SchedulerItemPane schedule = new SchedulerItemPane(null, false, schedulerManager);
@@ -318,12 +318,7 @@ public class SchedulerGUI {
     }
 
     private void edit(Event event) {
-        TimeZone timeZone = schedulerManager.getSelectedTimeZone();
-        if(selectedScheduleItem != null) {
-            schedulerManager.getCurrentTable().openSchedulerItemModal(selectedScheduleItem, timeZone);
-        } else {
-            schedulerManager.getCurrentTable().openSchedulerItemModal(new SchedulerItem(), timeZone);
-        }
+        schedulerManager.getCurrentTable().openSchedulerItemModal(selectedScheduleItem, schedulerManager.getSelectedTimeZone());
     }
 
     private void copy(Event event) {
@@ -466,23 +461,12 @@ public class SchedulerGUI {
         for (int i = 0; i < schedules.length; i++) {
             for (int j = 0; j < schedules[0].length; j++) {
 
-                if(i == 0 && j == 3) {
-                    JFXButton breakTime = new JFXButton();
-                    breakTime.setText("R  E  C  R  E  O");
-                    breakTime.getStyleClass().add("breakTimeButton");
-                    breakTime.setTextAlignment(TextAlignment.CENTER);
-                    breakTime.setAlignment(Pos.CENTER);
-                    breakTime.setMinSize(0, 0);
-                    breakTime.setPrefSize(2000, 110);
-                    scheduleGrid.add(breakTime, pos + 1, 5, 5, 1);
-                }
-
                 Rectangle clip = new Rectangle();
                 clip.widthProperty().bind(schedules[i][j].widthProperty());
                 clip.heightProperty().bind(schedules[i][j].heightProperty());
                 schedules[i][j].setClip(clip);
 
-                scheduleGrid.add(schedules[i][j], pos + 1, j + (j >= 3 ? 3 : 2), 1, 1);
+                scheduleGrid.add(schedules[i][j], pos + 1, j + 2, 1, 1);
 
                 SchedulerItem schedule = scheduleArray[i][j];
 

@@ -76,9 +76,15 @@ public class Scheduler {
 
             for(int day = 0; day < DAY_LENGTH; day++) {
 
+                Day dayObject = days[day];
+
                 for(int hour = 0; hour < HOURS_LENGTH; hour++) {
 
-                    SchedulerItem schedulerItem = findSchedule(day + 1, hour + 1);
+                    Hour hourObject = hours[hour];
+
+                    TimeZone timeZone = getTimeZoneBy(dayObject.getId(), hourObject.getId());
+
+                    SchedulerItem schedulerItem = findSchedule(dayObject, hourObject);
 
                     if(schedulerItem != null) {
 
@@ -87,6 +93,7 @@ public class Scheduler {
                     } else {
 
                         schedules[day][hour] = new SchedulerItem();
+                        schedules[day][hour].setTimeZone(timeZone);
 
                     }
 
@@ -94,23 +101,45 @@ public class Scheduler {
 
             }
 
-           
-
         }
 
     }
 
-    private SchedulerItem findSchedule(int day, int hour) {
-        int displacement = isMorning ? 0 : 6;
+    private SchedulerItem findSchedule(Day day, Hour hour) {
         for(SchedulerItem schedulerItem : parentPair.getScheduleList()) {
-            for(Schedule schedule : schedulerItem.getScheduleList()) {
-                if (schedule.getTimeZone().getDay().getId() == day && schedule.getTimeZone().getHour().getId() == (hour + displacement)) {
-                    return schedulerItem;
-                }
+            if (schedulerItem.getTimeZone().getDay().getId() == day.getId() && schedulerItem.getTimeZone().getHour().getId() == hour.getId()) {
+                return schedulerItem;
             }
         }
         return null;
     }
+
+    public TimeZone getTimeZoneBy(int day, int hour) {
+        for(TimeZone timeZone : new ArrayList<>(DataManager.getInstance().getTimeZones())) {
+            if(timeZone.getDay().getId() == day && timeZone.getHour().getId() == hour) {
+                return timeZone;
+            }
+        }
+        return null;
+    }
+
+    public TimeZone getTimeZoneByIndex(int day, int hour) {
+
+        int tempHour = hour + (hour > 3 ? 0 : 1) + (isMorning ? 0 : 6);
+
+        if(hour == 3) {
+            if(isMorning)
+                tempHour = 13;
+            else
+                tempHour = 14;
+        }
+
+        TimeZone timeZone = getTimeZoneBy(day + 1, tempHour);
+
+        return timeZone;
+
+    }
+
 
     public Day[] getDays() {
         return days;
@@ -183,8 +212,8 @@ public class Scheduler {
     }
     private void setScheduleItemFinal(SchedulerItem schedulerItem, int day, int hour) {
 
-        TimeZone newTimeZone = getTimeZoneBy(day + 1, hour + 1);
-        TimeZone oldTimeZone = schedulerItem.getScheduleList().get(0).getTimeZone();
+        TimeZone newTimeZone = getTimeZoneByIndex(day, hour);
+        TimeZone oldTimeZone = schedulerItem.getTimeZone();
 
         for(Schedule schedule : schedulerItem.getScheduleList())
             schedule.setTimeZone(newTimeZone);
@@ -195,6 +224,7 @@ public class Scheduler {
 
                 if (scheduleListenerType instanceof ScheduleConfirmationListener) {
 
+                    schedulerItem.setTimeZone(newTimeZone);
                     schedules[day][hour] = schedulerItem;
                     parentPair.getTimetableManager().getGui().displayCurrentTimetable();
 
@@ -206,6 +236,8 @@ public class Scheduler {
 
                     for(Schedule schedule : schedulerItem.getScheduleList())
                         schedule.setTimeZone(oldTimeZone);
+
+                    schedulerItem.setTimeZone(oldTimeZone);
 
                 }
 
@@ -283,12 +315,15 @@ public class Scheduler {
 
         if(schedulerItem != null && schedulerItem.getScheduleList().size() > 0) {
 
+            TimeZone timeZone = getTimeZoneByIndex(indexDay, indexHour);
+
             EventManager.getInstance().subscribe(schedulerItem.getUuid(), (eventType, scheduleListenerType) -> {
 
                 if(scheduleListenerType instanceof ScheduleConfirmationListener) {
 
                     schedules[indexDay][indexHour] = null;
                     schedules[indexDay][indexHour] = new SchedulerItem();
+                    schedules[indexDay][indexHour].setTimeZone(timeZone);
                     parentPair.getTimetableManager().getGui().displayCurrentTimetable();
 
                 } else if (scheduleListenerType instanceof ScheduleErrorListener) {
@@ -427,15 +462,6 @@ public class Scheduler {
 
     }
 
-    public TimeZone getTimeZoneBy(int day, int hour) {
-        for(TimeZone timeZone : new ArrayList<>(DataManager.getInstance().getTimeZones())) {
-            if(timeZone.getDay().getId() == day && timeZone.getHour().getId() == hour) {
-                return timeZone;
-            }
-        }
-        return null;
-    }
-
     public void openSchedulerItemModal(SchedulerItem schedulerItem, TimeZone timeZone) {
 
         EventManager.getInstance().subscribe(schedulerItem.getUuid(), (eventType, scheduleListenerType) -> {
@@ -489,7 +515,7 @@ public class Scheduler {
         Packet emptyClassroomsRequestPacket = new PacketBuilder()
                 .ofType(PacketType.EMPTYCLASSROOMSTIMEZONE.getRequest())
                 .addArgument("uuid", schedulerItem.getUuid())
-                .addArgument("timeZone", timeZone)
+                .addArgument("timeZone", schedulerItem.getTimeZone())
                 .build();
 
         SocketManager.getInstance().sendPacketIO(emptyClassroomsRequestPacket);

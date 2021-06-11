@@ -49,10 +49,6 @@ public class SchedulerManager {
         return selectedIndexHour;
     }
 
-    public TimeZone getSelectedTimeZone() {
-        return getCurrentTable().getTimeZoneBy(selectedIndexDay + 1, (selectedIndexHour + 1) + (isMorning ? 0 : 6));
-    }
-
     public void setSelectedIndexHour(int selectedIndexHour) {
         this.selectedIndexHour = selectedIndexHour;
     }
@@ -75,22 +71,14 @@ public class SchedulerManager {
         }
     }
 
-    public void copy(int day, int hour) {
-        if(getCurrentTable().getScheduleItem(day, hour) != null) {
-            clipBoard = getCurrentTable().getScheduleItem(day, hour).duplicate();
-        }
-    }
-
     public void pasteCurrentClipboard() {
         if (clipBoard != null) {
             getCurrentTable().setScheduleItem(clipBoard.duplicate(), selectedIndexDay, selectedIndexHour);
         }
     }
 
-    public void paste(int day, int hour) {
-        if (clipBoard != null) {
-            getCurrentTable().setScheduleItem(clipBoard.duplicate(), day, hour);
-        }
+    public TimeZone getSelectedTimeZone() {
+        return getCurrentTable().getTimeZoneByIndex(selectedIndexDay, selectedIndexHour);
     }
 
     public boolean isMorning() {

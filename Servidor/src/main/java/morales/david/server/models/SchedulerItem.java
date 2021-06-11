@@ -9,14 +9,19 @@ import java.util.UUID;
 public class SchedulerItem {
 
     private String uuid;
+    private TimeZone timeZone;
     private List<Schedule> scheduleList;
+
+    public SchedulerItem() {
+        this(new TimeZone(), new ArrayList<>());
+    }
 
     /**
      * Create a new instance of SchedulerItem with given params, and a random UUID
      * @param scheduleList
      */
-    public SchedulerItem(List<Schedule> scheduleList) {
-        this(UUID.randomUUID().toString(), scheduleList);
+    public SchedulerItem(TimeZone timeZone, List<Schedule> scheduleList) {
+        this(UUID.randomUUID().toString(), timeZone, scheduleList);
     }
 
     /**
@@ -24,8 +29,9 @@ public class SchedulerItem {
      * @param uuid
      * @param scheduleList
      */
-    public SchedulerItem(String uuid, List<Schedule> scheduleList) {
+    public SchedulerItem(String uuid, TimeZone timeZone, List<Schedule> scheduleList) {
         this.uuid = uuid;
+        this.timeZone = timeZone;
         this.scheduleList = scheduleList;
     }
 
@@ -61,10 +67,27 @@ public class SchedulerItem {
         this.scheduleList = scheduleList;
     }
 
+    /**
+     * Get timeZone of the schedulerItem
+     * @return uuid
+     */
+    public TimeZone getTimeZone() {
+        return timeZone;
+    }
+
+    /**
+     * Set timeZone of the schedulerItem
+     * @param timeZone
+     */
+    public void setTimeZone(TimeZone timeZone) {
+        this.timeZone = timeZone;
+    }
+
     @Override
     public String toString() {
         return "SchedulerItem{" +
                 "uuid='" + uuid + '\'' +
+                ", timeZone=" + timeZone +
                 ", scheduleList=" + scheduleList +
                 '}';
     }
@@ -85,7 +108,10 @@ public class SchedulerItem {
         for(LinkedTreeMap scheduleMap : schs)
             schedules.add(Schedule.parse(scheduleMap));
 
-        return new SchedulerItem(uuid, schedules);
+        LinkedTreeMap timeZoneMap = (LinkedTreeMap) schedulerItemMap.get("timeZone");
+        TimeZone timeZone = TimeZone.parse(timeZoneMap);
+
+        return new SchedulerItem(uuid, timeZone, schedules);
 
     }
 
@@ -94,7 +120,10 @@ public class SchedulerItem {
      * @return schedulerItem object
      */
     public SchedulerItem duplicate() {
-        return new SchedulerItem(scheduleList);
+        List<Schedule> temp = new ArrayList<>();
+        for(Schedule schedule : scheduleList)
+            temp.add(schedule.duplicate());
+        return new SchedulerItem(timeZone, temp);
     }
 
     /**
@@ -102,7 +131,10 @@ public class SchedulerItem {
      * @return schedulerItem object
      */
     public SchedulerItem duplicateUUID() {
-        return new SchedulerItem(uuid, scheduleList);
+        List<Schedule> temp = new ArrayList<>();
+        for(Schedule schedule : scheduleList)
+            temp.add(schedule.duplicate());
+        return new SchedulerItem(uuid, timeZone, temp);
     }
 
 }

@@ -153,34 +153,39 @@ public class Schedule {
      */
     public static Schedule parse(LinkedTreeMap scheduleMap) {
 
+        Schedule schedule = new Schedule();
+
         String uuid = (String) scheduleMap.get("uuid");
 
         LinkedTreeMap teacherMap = (LinkedTreeMap) scheduleMap.get("teacher");
-        if(teacherMap == null)
-            return null;
-        Teacher teacher = Teacher.parse(teacherMap);
+        if(teacherMap != null) {
+            Teacher teacher = Teacher.parse(teacherMap);
+            schedule.setTeacher(teacher);
+        }
 
         LinkedTreeMap subjectMap = (LinkedTreeMap) scheduleMap.get("subject");
-        if(subjectMap == null)
-            return null;
-        Subject subject = Subject.parse(subjectMap);
+        if(subjectMap != null) {
+            Subject subject = Subject.parse(subjectMap);
+            schedule.setSubject(subject);
+        }
 
         LinkedTreeMap groupMap = (LinkedTreeMap) scheduleMap.get("group");
-        if(groupMap == null)
-            return null;
-        Group group = Group.parse(groupMap);
+        if(groupMap != null) {
+            Group group = Group.parse(groupMap);
+            schedule.setGroup(group);
+        }
 
         LinkedTreeMap classroomMap = (LinkedTreeMap) scheduleMap.get("classroom");
-        if(classroomMap == null)
-            return null;
-        Classroom classroom = Classroom.parse(classroomMap);
+        if(classroomMap != null) {
+            Classroom classroom = Classroom.parse(classroomMap);
+            schedule.setClassroom(classroom);
+        }
 
         LinkedTreeMap timeZoneMap = (LinkedTreeMap) scheduleMap.get("timeZone");
-        if(timeZoneMap == null)
-            return null;
         TimeZone timeZone = TimeZone.parse(timeZoneMap);
+        schedule.setTimeZone(timeZone);
 
-        return new Schedule(uuid, teacher, subject, group, classroom, timeZone);
+        return schedule;
 
     }
 
@@ -195,5 +200,83 @@ public class Schedule {
                 ", timeZone=" + timeZone +
                 '}';
     }
+
+    public Schedule duplicate() {
+        return new Schedule(teacher, subject, group, classroom, timeZone);
+    }
+
+    public Schedule duplicateUUID() {
+        return new Schedule(uuid, teacher, subject, group, classroom, timeZone);
+    }
+
+    public String getText(int type, boolean plain) {
+
+        if(teacher == null || subject == null || timeZone == null)
+            return "";
+
+        StringBuilder sb = new StringBuilder();
+
+        if(type == 0) {
+
+            sb.append(teacher.getAbreviation());
+
+            if(!plain)
+                sb.append("\n");
+            else
+                sb.append("   ");
+
+            if(classroom != null) {
+                sb.append(subject.getAbreviation() + "   " + classroom.toString());
+            } else {
+                sb.append(subject.getName());
+            }
+
+            if(!plain)
+                sb.append("\n");
+            else
+                sb.append("   ");
+
+            if(group != null) {
+                sb.append(group);
+            }
+
+        } else if(type == 1) {
+
+            if(classroom != null) {
+                sb.append(subject.getAbreviation() + "   " + classroom.toString());
+            } else {
+                sb.append(subject.getName());
+            }
+
+            if(!plain)
+                sb.append("\n");
+            else
+                sb.append("   ");
+
+            if(group != null) {
+                sb.append(group);
+            }
+
+        } else if(type == 2) {
+
+            sb.append(teacher.getAbreviation());
+
+            if(!plain)
+                sb.append("\n");
+            else
+                sb.append("   ");
+
+            if(classroom != null) {
+                sb.append(subject.getAbreviation() + "   " + classroom.toString());
+            } else {
+                sb.append(subject.getName());
+            }
+
+        }
+
+        return sb.toString();
+
+    }
+
 
 }

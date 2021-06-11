@@ -2327,10 +2327,10 @@ public class DBConnection {
             rs = stm.executeQuery();
 
             List<Schedule> tempSchedule = new ArrayList<>();
-            int tempTimezone = 0;
+            int tempTimezoneId = 0;
             boolean first = true;
 
-            int i = 1;
+            TimeZone tempTimeZone = null;
 
             while (rs.next()) {
 
@@ -2343,7 +2343,7 @@ public class DBConnection {
 
                 if(first) {
                     first = false;
-                    tempTimezone = id_timezone;
+                    tempTimezoneId = id_timezone;
                     tempSchedule = new ArrayList<>();
                 }
 
@@ -2353,15 +2353,19 @@ public class DBConnection {
                 Classroom classroom = getClassroom(id_classroom);
                 TimeZone timeZone = getTimeZone(id_timezone);
 
-                if(id_timezone == tempTimezone) {
+                if(id_timezone == tempTimezoneId) {
 
                     tempSchedule.add(new Schedule(uuid, teacher, subject, group, classroom, timeZone));
 
+                    tempTimeZone = timeZone;
+
                 } else {
 
-                    schedules.add(new SchedulerItem(tempSchedule));
+                    schedules.add(new SchedulerItem(tempTimeZone, tempSchedule));
 
-                    tempTimezone = id_timezone;
+                    tempTimeZone = timeZone;
+
+                    tempTimezoneId = id_timezone;
                     tempSchedule = new ArrayList<>();
 
                     tempSchedule.add(new Schedule(uuid, teacher, subject, group, classroom, timeZone));
@@ -2370,7 +2374,8 @@ public class DBConnection {
 
             }
 
-            schedules.add(new SchedulerItem(tempSchedule));
+            if(!first)
+                schedules.add(new SchedulerItem(tempTimeZone, tempSchedule));
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -2409,12 +2414,29 @@ public class DBConnection {
 
             stm = connection.prepareStatement(DBConstants.DB_QUERY_INSERTSCHEDULE);
 
-            stm.setInt(1, schedule.getTeacher().getId());
-            stm.setInt(2, schedule.getSubject().getId());
-            stm.setInt(3, schedule.getGroup().getId());
-            stm.setInt(4, schedule.getClassroom().getId());
-            stm.setInt(5, schedule.getTimeZone().getId());
-            stm.setString(6, schedule.getUuid());
+            stm.setString(1, schedule.getUuid());
+
+            if(schedule.getTeacher() != null)
+                stm.setInt(2, schedule.getTeacher().getId());
+            else
+                stm.setNull(2, Types.INTEGER);
+
+            if(schedule.getSubject() != null)
+                stm.setInt(3, schedule.getSubject().getId());
+            else
+                stm.setNull(3, Types.INTEGER);
+
+            if(schedule.getGroup() != null)
+                stm.setInt(4, schedule.getGroup().getId());
+            else
+                stm.setNull(4, Types.INTEGER);
+
+            if(schedule.getClassroom() != null)
+                stm.setInt(5, schedule.getClassroom().getId());
+            else
+                stm.setNull(5, Types.INTEGER);
+
+            stm.setInt(6, schedule.getTimeZone().getId());
 
             rs = stm.executeUpdate();
 

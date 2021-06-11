@@ -91,7 +91,7 @@ public class DBConstants {
     public static final String DB_QUERY_INSERTSB_GROUPS = "INSERT INTO grupo VALUES ";
     public static final String DB_QUERY_INSERTSB_COURSE_SUBJECTS = "INSERT IGNORE INTO curso_asignatura VALUES ";
     public static final String DB_QUERY_INSERTSB_TEACHERS = "INSERT IGNORE INTO profesor VALUES ";
-    public static final String DB_QUERY_INSERTSB_SCHEDULES = "INSERT IGNORE INTO imparte VALUES ";
+    public static final String DB_QUERY_INSERTSB_SCHEDULES = "INSERT INTO imparte VALUES ";
 
 
     //public static final String[] SCHEDULE_TABLES = {"Soluc fp", "Soluc1 fpbasica", "Soluc inf", "Soluc esoycam", "solucion total"};
