@@ -112,9 +112,27 @@ public class ExportManager {
 
         {
 
-            Table morningScheduleTable = getScheduleTable(schedulerManager);
+            if(schedulerManager.getSearchType().equalsIgnoreCase("TEACHER")) {
 
-            document.add(morningScheduleTable);
+                Table morningScheduleTable = getScheduleTable(schedulerManager);
+
+                document.add(morningScheduleTable);
+
+                document.add(new Paragraph("\n"));
+
+                schedulerManager.setMorning(false);
+
+                Table afternoonScheduleTable = getScheduleTable(schedulerManager);
+
+                document.add(afternoonScheduleTable);
+
+            } else {
+
+                Table morningScheduleTable = getScheduleTable(schedulerManager);
+
+                document.add(morningScheduleTable);
+
+            }
 
         }
 
@@ -186,9 +204,15 @@ public class ExportManager {
 
                 String[] parts = hour.getName().split("-");
 
+                String name = "";
+                if(schedulerManager.getSearchType().equalsIgnoreCase("TEACHER"))
+                    name = parts[0];
+                else
+                    name = parts[0] + "\n" + parts[1];
+
                 schedulerTable.addCell(
                         new Cell()
-                                .add(new Paragraph(parts[0] + "\n" + parts[1]))
+                                .add(new Paragraph(name))
                                 .setPadding(5)
                                 .setWidth(40)
                                 .setMinWidth(40)
@@ -205,7 +229,7 @@ public class ExportManager {
                     schedulerTable.addCell(new Cell(1, 5)
                             .add(new Paragraph("R  E  C  R  E  O"))
                             .setPadding(5)
-                            .setBackgroundColor(new DeviceRgb(234, 234, 234))
+                            .setBackgroundColor(new DeviceRgb(220, 220, 220))
                             .setBorder(Border.NO_BORDER)
                             .setTextAlignment(TextAlignment.CENTER)
                             .setVerticalAlignment(VerticalAlignment.MIDDLE));
@@ -260,6 +284,7 @@ public class ExportManager {
                                         .setPadding(10)
                                         .setWidth(71.5f)
                                         .setMinWidth(71f)
+                                        .setBackgroundColor(new DeviceRgb(234, 234, 234))
                                         .setBorder(Border.NO_BORDER)
                                         .setTextAlignment(TextAlignment.CENTER)
                                         .setVerticalAlignment(VerticalAlignment.MIDDLE)
