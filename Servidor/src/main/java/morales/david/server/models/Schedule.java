@@ -156,6 +156,7 @@ public class Schedule {
         Schedule schedule = new Schedule();
 
         String uuid = (String) scheduleMap.get("uuid");
+        schedule.setUuid(uuid);
 
         LinkedTreeMap teacherMap = (LinkedTreeMap) scheduleMap.get("teacher");
         if(teacherMap != null) {

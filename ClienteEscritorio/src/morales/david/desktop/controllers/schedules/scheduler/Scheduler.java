@@ -258,7 +258,7 @@ public class Scheduler {
 
         SchedulerItem schedule1 = schedules[i1][j1];
 
-        if(schedule1 == null)
+        if(schedule1 == null || schedule1.getScheduleList().size() <= 0)
             return;
 
         SchedulerItem schedule2 = schedules[i2][j2];

@@ -8,6 +8,7 @@ import morales.david.server.models.packets.PacketBuilder;
 import morales.david.server.models.packets.PacketType;
 import morales.david.server.utils.Constants;
 
+import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
@@ -39,7 +40,7 @@ public class ClientsManager extends Thread {
             Packet pingPacket = new PacketBuilder().ofType(PacketType.PING.getRequest()).build();
 
             try {
-                for(ClientThread clientThread : clientRepository.getClients())
+                for(ClientThread clientThread : new ArrayList<>(clientRepository.getClients()))
                     clientThread.getClientProtocol().sendPacketIO(pingPacket);
             } catch (ConcurrentModificationException e) {
                 e.printStackTrace();

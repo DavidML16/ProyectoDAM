@@ -461,17 +461,33 @@ public class SchedulerGUI {
         for (int i = 0; i < schedules.length; i++) {
             for (int j = 0; j < schedules[0].length; j++) {
 
-                Rectangle clip = new Rectangle();
-                clip.widthProperty().bind(schedules[i][j].widthProperty());
-                clip.heightProperty().bind(schedules[i][j].heightProperty());
-                schedules[i][j].setClip(clip);
+                if(!schedulerManager.getSearchType().equalsIgnoreCase("TEACHER") && j == 3) {
+                    if(i == 0) {
+                        JFXButton breakTime = new JFXButton();
+                        breakTime.setText("R  E  C  R  E  O");
+                        breakTime.getStyleClass().add("breakTimeButton");
+                        breakTime.setTextAlignment(TextAlignment.CENTER);
+                        breakTime.setAlignment(Pos.CENTER);
+                        breakTime.setMinSize(0, 0);
+                        breakTime.setPrefSize(2000, 110);
+                        scheduleGrid.add(breakTime, pos + 1, 5, 5, 1);
+                    }
+                    continue;
+                }
 
-                scheduleGrid.add(schedules[i][j], pos + 1, j + 2, 1, 1);
+                SchedulerItemPane button = schedules[i][j];
+
+                Rectangle clip = new Rectangle();
+                clip.widthProperty().bind(button.widthProperty());
+                clip.heightProperty().bind(button.heightProperty());
+                button.setClip(clip);
+
+                scheduleGrid.add(button, pos + 1, j + 2, 1, 1);
 
                 SchedulerItem schedule = scheduleArray[i][j];
 
-                schedules[i][j].setSchedulerItem(schedule);
-                schedules[i][j].setReferenceButton(hours[0]);
+                button.setSchedulerItem(schedule);
+                button.setReferenceButton(hours[0]);
 
             }
             pos++;
