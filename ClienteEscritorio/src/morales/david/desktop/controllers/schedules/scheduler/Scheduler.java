@@ -15,7 +15,9 @@ import morales.david.desktop.models.packets.PacketType;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Scheduler {
 
@@ -153,13 +155,23 @@ public class Scheduler {
         return schedules;
     }
 
-    public SchedulerItem[] getScheduleItemsByHour(int hour) {
+    public SchedulerItem[] getScheduleItemsByHour(Hour hourObject) {
 
         SchedulerItem[] schedulesHour = new SchedulerItem[days.length];
 
-        for(int day = 0; day < 5; day++) {
+        for(int day = 0; day < days.length; day++) {
 
-            schedulesHour[day] = schedules[day][hour];
+            for(int hour = 0; hour < hours.length; hour++) {
+
+                SchedulerItem schedulerItem = schedules[day][hour];
+
+                if(schedulerItem.getTimeZone().getHour().getId() == hourObject.getId()) {
+
+                    schedulesHour[day] = schedulerItem;
+
+                }
+
+            }
 
         }
 
@@ -169,6 +181,55 @@ public class Scheduler {
 
     public SchedulerItem getScheduleItem(int day, int hour) {
         return schedules[day][hour];
+    }
+
+    public boolean haveSchedules() {
+
+        for(int i = 0; i < schedules.length; i++) {
+
+            for(int j = 0; j < schedules[0].length; j++) {
+
+                SchedulerItem schedulerItem = schedules[i][j];
+
+                if(schedulerItem.getScheduleList().size() > 0)
+                    return true;
+
+            }
+
+        }
+
+        return false;
+
+    }
+
+    public List<Teacher> getTeachers() {
+
+        List<Teacher> teachers = new ArrayList<>();
+        List<Integer> teachersIds = new ArrayList<>();
+
+        for(int i = 0; i < schedules.length; i++) {
+
+            for(int j = 0; j < schedules[0].length; j++) {
+
+                SchedulerItem schedulerItem = schedules[i][j];
+
+                for(Schedule schedule : schedulerItem.getScheduleList()) {
+
+                    if(schedule.getTeacher() != null && !teachersIds.contains(schedule.getTeacher().getId())) {
+
+                        teachers.add(schedule.getTeacher());
+                        teachersIds.add(schedule.getTeacher().getId());
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        return teachers;
+
     }
 
 

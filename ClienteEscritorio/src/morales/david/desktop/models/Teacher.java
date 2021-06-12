@@ -2,7 +2,7 @@ package morales.david.desktop.models;
 
 import com.google.gson.internal.LinkedTreeMap;
 
-public class Teacher {
+public class Teacher implements Comparable {
 
     private int id;
     private int number;
@@ -99,6 +99,11 @@ public class Teacher {
 
         return new Teacher(id, number, name, abreviation, minDayHours, maxDayHours, department);
 
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return abreviation.compareTo(((Teacher) o).getAbreviation());
     }
 
 }

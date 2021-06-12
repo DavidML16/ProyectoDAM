@@ -1,35 +1,28 @@
 package morales.david.desktop.managers;
 
 import com.itextpdf.io.image.ImageDataFactory;
-import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
-import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.element.Image;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.element.Text;
-import com.itextpdf.layout.property.BorderCollapsePropertyValue;
-import com.itextpdf.layout.property.HorizontalAlignment;
-import com.itextpdf.layout.property.TextAlignment;
-import com.itextpdf.layout.property.VerticalAlignment;
-import com.jfoenix.controls.JFXButton;
+import com.itextpdf.layout.property.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import morales.david.desktop.controllers.schedules.scheduler.SchedulerManager;
-import morales.david.desktop.models.Day;
-import morales.david.desktop.models.Hour;
-import morales.david.desktop.models.Schedule;
-import morales.david.desktop.models.SchedulerItem;
+import morales.david.desktop.models.*;
 
 import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ExportManager {
@@ -63,6 +56,7 @@ public class ExportManager {
 
         Document document = new Document(pdfDocument);
 
+        // SCHEDULE HEADER
         {
 
             float[] headerColumnWidth = { 280f, 280f };
@@ -102,14 +96,20 @@ public class ExportManager {
 
         }
 
-        document.add(
-                new Paragraph(getScheduleInfoText(schedulerManager))
-                        .setTextAlignment(TextAlignment.CENTER)
-                        .setBackgroundColor(new DeviceRgb(240, 240, 240))
-                        .setPadding(5f)
-                        .setFontSize(9f)
-                        .setMargins(10.5f, 2.5f, 8, 2.5f));
+        // SCHEDULE INFO PARAGRAPH
+        {
 
+            document.add(
+                    new Paragraph(getScheduleInfoText(schedulerManager))
+                            .setTextAlignment(TextAlignment.CENTER)
+                            .setBackgroundColor(new DeviceRgb(240, 240, 240))
+                            .setPadding(5f)
+                            .setFontSize(9f)
+                            .setMargins(10.5f, 2.5f, 8, 2.5f));
+
+        }
+
+        // SCHEDULE TABLES
         {
 
             if(schedulerManager.getSearchType().equalsIgnoreCase("TEACHER")) {
@@ -128,9 +128,53 @@ public class ExportManager {
 
             } else {
 
-                Table morningScheduleTable = getScheduleTable(schedulerManager);
+                boolean first = false;
 
-                document.add(morningScheduleTable);
+                if(schedulerManager.getCurrentTimetable().getSchedulerMorning().haveSchedules()) {
+
+                    Table morningScheduleTable = getScheduleTable(schedulerManager);
+
+                    document.add(morningScheduleTable);
+
+                    first = true;
+
+                }
+
+                if(schedulerManager.getCurrentTimetable().getSchedulerAfternoon().haveSchedules()) {
+
+                    if(first) {
+                        document.add(new Paragraph("\n"));
+                    }
+
+                    schedulerManager.setMorning(false);
+
+                    Table afternoonScheduleTable = getScheduleTable(schedulerManager);
+
+                    document.add(afternoonScheduleTable);
+
+                }
+
+            }
+
+        }
+
+        // SCHEDULE INFO TABLE
+        {
+
+            document.add(new Paragraph("\n"));
+
+            Table infoTable = getInfoTable(schedulerManager);
+            document.add(infoTable);
+
+        }
+
+        // SCHEDULE TEACHERS LIST
+        {
+
+            if(!schedulerManager.getSearchType().equalsIgnoreCase("TEACHER")) {
+
+                document.add(new Paragraph("\n"));
+                document.add(getTeacherList(schedulerManager));
 
             }
 
@@ -149,6 +193,13 @@ public class ExportManager {
     }
 
     private Table getScheduleTable(SchedulerManager schedulerManager) {
+
+        boolean multiple = false;
+        if(!schedulerManager.getSearchType().equalsIgnoreCase("TEACHER")) {
+            if (schedulerManager.getCurrentTimetable().getSchedulerMorning().haveSchedules() &&
+                    schedulerManager.getCurrentTimetable().getSchedulerAfternoon().haveSchedules())
+                multiple = true;
+        }
 
         float columnWidth[] = {40f, 71.5f, 71.5f, 71.5f, 71.5f, 71.5f};
 
@@ -199,13 +250,12 @@ public class ExportManager {
 
         {
 
-            int hourindex = 0;
             for(Hour hour : schedulerManager.getCurrentTable().getHours()) {
 
                 String[] parts = hour.getName().split("-");
 
                 String name = "";
-                if(schedulerManager.getSearchType().equalsIgnoreCase("TEACHER"))
+                if(schedulerManager.getSearchType().equalsIgnoreCase("TEACHER") || multiple)
                     name = parts[0];
                 else
                     name = parts[0] + "\n" + parts[1];
@@ -224,11 +274,12 @@ public class ExportManager {
                                 .setVerticalAlignment(VerticalAlignment.MIDDLE)
                 );
 
-                if(hour.getId() == 13 || hour.getId() == 14) {
+                if(!schedulerManager.getSearchType().equalsIgnoreCase("TEACHER") && (hour.getId() == 13 || hour.getId() == 14)) {
 
                     schedulerTable.addCell(new Cell(1, 5)
                             .add(new Paragraph("R  E  C  R  E  O"))
                             .setPadding(5)
+                            .setFontSize(10f)
                             .setBackgroundColor(new DeviceRgb(220, 220, 220))
                             .setBorder(Border.NO_BORDER)
                             .setTextAlignment(TextAlignment.CENTER)
@@ -238,7 +289,7 @@ public class ExportManager {
 
                 }
 
-                SchedulerItem[] hourSchedules = schedulerManager.getCurrentTable().getScheduleItemsByHour(hourindex);
+                SchedulerItem[] hourSchedules = schedulerManager.getCurrentTable().getScheduleItemsByHour(hour);
 
                 for(SchedulerItem schedulerItem : hourSchedules) {
 
@@ -246,7 +297,8 @@ public class ExportManager {
 
                         if(schedulerItem.getScheduleList().size() == 1) {
 
-                            schedulerTable.addCell(getCell(schedulerManager, schedulerItem.getScheduleList().get(0), false));
+                            Cell uniqueCell = getScheduleCell(schedulerManager, schedulerItem.getScheduleList().get(0), multiple);
+                            schedulerTable.addCell(uniqueCell);
 
                         } else {
 
@@ -259,42 +311,49 @@ public class ExportManager {
 
                             for(Schedule schedule : schedulerItem.getScheduleList()) {
 
-                                schedulerItemTable.addCell(getCell(schedulerManager, schedule, true));
+                                schedulerItemTable.addCell(getScheduleCell(schedulerManager, schedule, true));
 
                             }
 
-                            schedulerTable.addCell(
-                                    new Cell()
-                                        .add(schedulerItemTable)
-                                        .setBackgroundColor(new DeviceRgb(247, 247, 247))
-                                        .setBorder(Border.NO_BORDER)
-                                        .setMargin(0)
-                                        .setPadding(0)
-                                        .setHorizontalAlignment(HorizontalAlignment.CENTER)
-                                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
-                            );
+                            Cell multipleCell = new Cell()
+                                    .add(schedulerItemTable)
+                                    .setBorder(Border.NO_BORDER)
+                                    .setMargin(0)
+                                    .setPadding(0)
+                                    .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                                    .setVerticalAlignment(VerticalAlignment.MIDDLE);
+
+                            if(hour.getId() == 13 || hour.getId() == 14)
+                                multipleCell.setBackgroundColor(new DeviceRgb(220, 220, 220));
+                            else
+                                multipleCell.setBackgroundColor(new DeviceRgb(247, 247, 247));
+
+                            schedulerTable.addCell(multipleCell);
 
                         }
 
                     } else {
 
-                        schedulerTable.addCell(
-                                new Cell()
-                                        .add(new Paragraph(""))
-                                        .setPadding(10)
-                                        .setWidth(71.5f)
-                                        .setMinWidth(71f)
-                                        .setBackgroundColor(new DeviceRgb(234, 234, 234))
-                                        .setBorder(Border.NO_BORDER)
-                                        .setTextAlignment(TextAlignment.CENTER)
-                                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
-                        );
+                        Cell emptyCell = new Cell()
+                                .add(new Paragraph(""))
+                                .setPadding(10)
+                                .setWidth(71.5f)
+                                .setMinWidth(71f)
+
+                                .setBorder(Border.NO_BORDER)
+                                .setTextAlignment(TextAlignment.CENTER)
+                                .setVerticalAlignment(VerticalAlignment.MIDDLE);
+
+                        if(hour.getId() == 13 || hour.getId() == 14)
+                            emptyCell.setBackgroundColor(new DeviceRgb(220, 220, 220));
+                        else
+                            emptyCell.setBackgroundColor(new DeviceRgb(234, 234, 234));
+
+                        schedulerTable.addCell(emptyCell);
 
                     }
 
                 }
-
-                hourindex++;
 
             }
 
@@ -304,7 +363,76 @@ public class ExportManager {
 
     }
 
-    private Cell getCell(SchedulerManager schedulerManager, Schedule schedule, boolean multiple) {
+    private Paragraph getTeacherList(SchedulerManager schedulerManager) {
+
+        Paragraph paragraph = new Paragraph();
+        paragraph.setFontSize(7.5f);
+        paragraph.setMargins(0, 0, 0, 15);
+
+        List<Teacher> teachers = new ArrayList<>();
+        teachers.addAll(schedulerManager.getCurrentTimetable().getSchedulerMorning().getTeachers());
+        teachers.addAll(schedulerManager.getCurrentTimetable().getSchedulerAfternoon().getTeachers());
+
+        Collections.sort(teachers);
+
+        for(Teacher teacher : teachers) {
+
+            paragraph.add(new Text(teacher.getAbreviation() + " - " + teacher.getName() + "\n"));
+
+        }
+
+        return paragraph;
+
+    }
+
+    private Table getInfoTable(SchedulerManager schedulerManager) {
+
+        float columnWidth[] = {150f, 150f};
+
+        Table infoTable = new Table(columnWidth);
+        infoTable.setHorizontalBorderSpacing(15f);
+        infoTable.setBorderCollapse(BorderCollapsePropertyValue.SEPARATE);
+
+        if(schedulerManager.getSearchType().equalsIgnoreCase("TEACHER")) {
+
+            Cell unique = getInfoCell();
+            unique.add(new Paragraph("Asignatura   Aula\nGrupo"));
+            infoTable.addCell(unique);
+
+            Cell multiple = getInfoCell();
+            multiple.add(new Paragraph("Asignatura   Aula   Grupo"));
+            infoTable.addCell(multiple);
+
+
+        } else if(schedulerManager.getSearchType().equalsIgnoreCase("GROUP")) {
+
+            Cell unique = getInfoCell();
+            unique.add(new Paragraph("Profesor\nAsignatura   Aula"));
+            infoTable.addCell(unique);
+
+            Cell multiple = getInfoCell();
+            multiple.add(new Paragraph("Profesor   Asignatura   Aula"));
+            infoTable.addCell(multiple);
+
+
+        } else if(schedulerManager.getSearchType().equalsIgnoreCase("CLASSROOM")) {
+
+            Cell unique = getInfoCell();
+            unique.add(new Paragraph("Profesor\nAsignatura   Aula\nGrupo"));
+            infoTable.addCell(unique);
+
+            Cell multiple = getInfoCell();
+            multiple.add(new Paragraph("Profesor   Asignatura   Aula   Grupo"));
+            infoTable.addCell(multiple);
+
+
+        }
+
+        return infoTable;
+
+    }
+
+    private Cell getScheduleCell(SchedulerManager schedulerManager, Schedule schedule, boolean multiple) {
 
         Cell cell = new Cell();
         cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
@@ -323,6 +451,23 @@ public class ExportManager {
         } else {
             cell.setFontSize(6f);
         }
+
+        return cell;
+
+    }
+
+    private Cell getInfoCell() {
+
+        Cell cell = new Cell();
+        cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
+        cell.setHorizontalAlignment(HorizontalAlignment.CENTER);
+        cell.setTextAlignment(TextAlignment.CENTER);
+        cell.setWidth(140f);
+        cell.setMinWidth(140f);
+        cell.setBorder(Border.NO_BORDER);
+        cell.setBackgroundColor(new DeviceRgb(235, 235, 235));
+        cell.setPaddings(5, 7, 5, 7);
+        cell.setFontSize(8.5f);
 
         return cell;
 
