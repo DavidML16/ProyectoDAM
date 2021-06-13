@@ -75,7 +75,7 @@ public class DashboardController implements Initializable, Controller {
         else if (event.getSource() == coursesGroupsNavigationButton)
             loadView("courses/coursesmenu.fxml", "Cursos", event);
         else if (event.getSource() == classroomsNavigationButton)
-            loadView("classrooms.fxml", "Aulas", event);
+            loadView("classrooms/classroomsmenu.fxml", "Aulas", event);
         else if (event.getSource() == scheduleNavigationButton)
             loadView("schedules/schedulesmenu.fxml", "Horarios", event);
         else if (event.getSource() == importNavigationButton)

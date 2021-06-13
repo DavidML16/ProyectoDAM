@@ -1,4 +1,4 @@
-package morales.david.desktop.controllers;
+package morales.david.desktop.controllers.classrooms;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

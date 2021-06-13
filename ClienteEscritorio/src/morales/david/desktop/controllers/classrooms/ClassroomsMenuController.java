@@ -1,43 +1,32 @@
-package morales.david.desktop.controllers.schedules;
+package morales.david.desktop.controllers.classrooms;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 import morales.david.desktop.interfaces.Controller;
-import morales.david.desktop.managers.DataManager;
 import morales.david.desktop.managers.ScreenManager;
 import morales.david.desktop.managers.SocketManager;
-import morales.david.desktop.models.Day;
-import morales.david.desktop.models.Schedule;
-import morales.david.desktop.models.SchedulerItem;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.Constants;
-import morales.david.desktop.utils.Utils;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
-public class SchedulesMenuController implements Initializable, Controller {
+public class ClassroomsMenuController implements Initializable, Controller {
 
     @FXML
-    private Button schedulesNavigationButton;
+    private Button classroomsNavigationButton;
 
     @FXML
-    private Button daysHoursNavigationButton;
+    private Button searchNavigationButton;
 
     @FXML
     private BorderPane viewPane;
@@ -49,25 +38,33 @@ public class SchedulesMenuController implements Initializable, Controller {
 
         actualView = "";
 
-        Platform.runLater(() -> loadView("schedules/schedulesearch.fxml", "Horarios", null));
-        schedulesNavigationButton.getStyleClass().add("buttonPressed");
+        Platform.runLater(() -> loadView("classrooms/classrooms.fxml", "Aulas", null));
+        classroomsNavigationButton.getStyleClass().add("buttonPressed");
+
+        Platform.runLater(() -> {
+
+            Packet coursesRequestPacket = new PacketBuilder().ofType(PacketType.COURSES.getRequest()).build();
+
+            SocketManager.getInstance().sendPacketIO(coursesRequestPacket);
+
+        });
 
     }
 
     @FXML
     public void handleButtonAction(MouseEvent event) {
 
-        if(event.getSource() == schedulesNavigationButton)
-            loadView("schedules/schedulesearch.fxml", "Horarios", event);
-        else if (event.getSource() == daysHoursNavigationButton)
-            loadView("schedules/dayshoursmenu.fxml", "Días", event);
+        if(event.getSource() == classroomsNavigationButton)
+            loadView("classrooms/classrooms.fxml", "Aulas", event);
+        else if (event.getSource() == searchNavigationButton)
+            loadView("classrooms/classroomssearch.fxml", "Aulas libres", event);
 
     }
 
     private void removePressed() {
 
-        schedulesNavigationButton.getStyleClass().remove("buttonPressed");
-        daysHoursNavigationButton.getStyleClass().remove("buttonPressed");
+        classroomsNavigationButton.getStyleClass().remove("buttonPressed");
+        searchNavigationButton.getStyleClass().remove("buttonPressed");
 
     }
 

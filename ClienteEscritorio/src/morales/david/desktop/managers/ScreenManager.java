@@ -5,9 +5,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import morales.david.desktop.controllers.DashboardController;
+import morales.david.desktop.controllers.classrooms.EmptyClassroomsTimezoneController;
 import morales.david.desktop.controllers.schedules.SchedulesController;
 import morales.david.desktop.interfaces.Controller;
+import morales.david.desktop.models.Classroom;
 import morales.david.desktop.models.SchedulerItem;
+import morales.david.desktop.models.TimeZone;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,8 +27,8 @@ public final class ScreenManager {
 
     private Stage stage;
     private Scene scene;
-    private Controller controller, dashboardController, controllerBeforeScheduleOpen;
-    private Parent sceneBeforeScheduleOpen;
+    private Controller controller, dashboardController, controllerBeforeOpen;
+    private Parent sceneBeforeOpen;
 
     public synchronized Stage getStage() {
         return stage;
@@ -55,20 +58,20 @@ public final class ScreenManager {
 
     public synchronized void setDashboardController(Controller dashboardController) { this.dashboardController = dashboardController; }
 
-    public synchronized Parent getSceneBeforeScheduleOpen() {
-        return sceneBeforeScheduleOpen;
+    public synchronized Parent getSceneBeforeOpen() {
+        return sceneBeforeOpen;
     }
 
-    public synchronized void setSceneBeforeScheduleOpen(Parent sceneBeforeScheduleOpen) {
-        this.sceneBeforeScheduleOpen = sceneBeforeScheduleOpen;
+    public synchronized void setSceneBeforeOpen(Parent sceneBeforeOpen) {
+        this.sceneBeforeOpen = sceneBeforeOpen;
     }
 
-    public Controller getControllerBeforeScheduleOpen() {
-        return controllerBeforeScheduleOpen;
+    public Controller getControllerBeforeOpen() {
+        return controllerBeforeOpen;
     }
 
-    public void setControllerBeforeScheduleOpen(Controller controllerBeforeScheduleOpen) {
-        this.controllerBeforeScheduleOpen = controllerBeforeScheduleOpen;
+    public void setControllerBeforeOpen(Controller controllerBeforeOpen) {
+        this.controllerBeforeOpen = controllerBeforeOpen;
     }
 
     public synchronized void openScene(String url, String title) {
@@ -96,12 +99,19 @@ public final class ScreenManager {
 
     }
 
+    public synchronized void closeOpenView() {
+
+        setController(getControllerBeforeOpen());
+        scene.setRoot(getSceneBeforeOpen());
+
+    }
+
     public synchronized void openScheduleView(List<SchedulerItem> scheduleList, String searchType, String searchQuery) {
 
         try {
 
-            setSceneBeforeScheduleOpen(scene.getRoot());
-            setControllerBeforeScheduleOpen(getController());
+            setSceneBeforeOpen(scene.getRoot());
+            setControllerBeforeOpen(getController());
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/views/schedules/schedules.fxml"));
             Parent parent = loader.load();
@@ -121,10 +131,28 @@ public final class ScreenManager {
 
     }
 
-    public synchronized void closeScheduleView() {
+    public synchronized void openEmptyClassroomsView(TimeZone timeZone, List<Classroom> classrooms) {
 
-        setController(getControllerBeforeScheduleOpen());
-        scene.setRoot(getSceneBeforeScheduleOpen());
+        try {
+
+            setSceneBeforeOpen(scene.getRoot());
+            setControllerBeforeOpen(getController());
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/views/classrooms/classrooms_timezone.fxml"));
+            Parent parent = loader.load();
+
+            EmptyClassroomsTimezoneController controller = loader.getController();
+            controller.init(timeZone, classrooms);
+
+            setController(controller);
+
+            stage.setTitle("AULAS LIBRES");
+
+            scene.setRoot(parent);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

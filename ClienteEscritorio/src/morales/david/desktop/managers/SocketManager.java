@@ -414,7 +414,7 @@ public final class SocketManager extends Thread {
                                 else if(callback.equalsIgnoreCase("EXPORT"))
                                     Platform.runLater(() -> {
                                         try {
-                                            ExportManager.getInstance().exportSchedule(scheduleList, searchType, searchQuery);
+                                            ExportSchedulerManager.getInstance().exportSchedule(scheduleList, searchType, searchQuery);
                                         } catch (FileNotFoundException e) {
                                             e.printStackTrace();
                                         } catch (MalformedURLException e) {

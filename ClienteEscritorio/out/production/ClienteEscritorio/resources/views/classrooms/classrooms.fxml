@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="907.0" styleClass="mainPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morales.david.desktop.controllers.ClassroomsController">
+<AnchorPane prefHeight="600.0" prefWidth="907.0" styleClass="mainPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="morales.david.desktop.controllers.classrooms.ClassroomsController">
    <children>
       <TableView fx:id="classroomsTable" prefHeight="600.0" prefWidth="814.0" AnchorPane.bottomAnchor="105.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="25.0">
         <columns>
@@ -63,7 +63,7 @@
       </HBox>
    </children>
    <stylesheets>
-      <URL value="@../css/table_view.css" />
-      <URL value="@../css/table.css" />
+      <URL value="@../../css/table_view.css" />
+      <URL value="@../../css/table.css" />
    </stylesheets>
 </AnchorPane>

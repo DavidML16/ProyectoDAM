@@ -3,15 +3,12 @@ package morales.david.desktop;
 import com.google.gson.Gson;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import morales.david.desktop.controllers.LoginController;
+import morales.david.desktop.controllers.classrooms.EmptyClassroomsTimezoneController;
 import morales.david.desktop.controllers.schedules.SchedulesController;
 import morales.david.desktop.managers.ScreenManager;
 import morales.david.desktop.managers.SocketManager;
@@ -54,8 +51,9 @@ public class Client extends Application {
 
             event.consume();
 
-            if(ScreenManager.getInstance().getController() instanceof SchedulesController) {
-                ScreenManager.getInstance().closeScheduleView();
+            if(ScreenManager.getInstance().getController() instanceof SchedulesController
+                    || ScreenManager.getInstance().getController() instanceof EmptyClassroomsTimezoneController) {
+                ScreenManager.getInstance().closeOpenView();
                 return;
             }
 

@@ -10,8 +10,6 @@ import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.property.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import morales.david.desktop.controllers.schedules.scheduler.SchedulerManager;
 import morales.david.desktop.models.*;
@@ -25,13 +23,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ExportManager {
+public class ExportSchedulerManager {
 
-    private static ExportManager INSTANCE = null;
+    private static ExportSchedulerManager INSTANCE = null;
 
-    public static ExportManager getInstance() {
+    public static ExportSchedulerManager getInstance() {
         if(INSTANCE == null)
-            INSTANCE = new ExportManager();
+            INSTANCE = new ExportSchedulerManager();
         return INSTANCE;
     }
 
