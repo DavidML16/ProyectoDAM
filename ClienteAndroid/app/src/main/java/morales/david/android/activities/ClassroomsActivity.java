@@ -1,29 +1,46 @@
 package morales.david.android.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import morales.david.android.R;
 import morales.david.android.adapters.ClassroomsAdapter;
+import morales.david.android.fragments.EmptyClassroomsDialogFragment;
+import morales.david.android.fragments.SearchEmptyClassroomsDialogFragment;
+import morales.david.android.interfaces.OptionClicked;
 import morales.david.android.managers.DataManager;
+import morales.david.android.managers.SocketManager;
+import morales.david.android.managers.eventcallbacks.EmptyClassroomsConfirmationListener;
+import morales.david.android.managers.eventcallbacks.ErrorEventListener;
+import morales.david.android.managers.eventcallbacks.EventManager;
 import morales.david.android.models.Classroom;
+import morales.david.android.models.TimeZone;
+import morales.david.android.models.packets.Packet;
+import morales.david.android.models.packets.PacketBuilder;
+import morales.david.android.models.packets.PacketType;
 import morales.david.android.utils.ActionBarUtil;
 
-public class ClassroomsActivity extends AppCompatActivity {
+public class ClassroomsActivity extends AppCompatActivity implements OptionClicked {
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -52,6 +69,12 @@ public class ClassroomsActivity extends AppCompatActivity {
 
         DataManager.getInstance().getClassrooms().observe(this, classrooms -> {
             adapter.setClassrooms(classrooms);
+        });
+
+        CardView searchButton = findViewById(R.id.act_classrooms_searcheempty_cardview);
+        searchButton.setOnClickListener((v) -> {
+            SearchEmptyClassroomsDialogFragment dialogFragment = SearchEmptyClassroomsDialogFragment.newInstance();
+            dialogFragment.show(getSupportFragmentManager(), "SearchEmptyClassroomsDialogFragment");
         });
 
     }
@@ -90,6 +113,45 @@ public class ClassroomsActivity extends AppCompatActivity {
             }
         });
         return true;
+    }
+
+    @Override
+    public void onClick(View item, Object argument) {
+
+        if(!(argument instanceof TimeZone)) return;
+
+        TimeZone timeZone = (TimeZone) argument;
+
+        String uuid = UUID.randomUUID().toString();
+
+        EventManager.getInstance().subscribe(uuid, (eventType, eventListenerType) -> {
+
+            if(eventListenerType instanceof EmptyClassroomsConfirmationListener) {
+
+                List<Classroom> emptyClassrooms = ((EmptyClassroomsConfirmationListener) eventListenerType).getClassroomList();
+
+                EmptyClassroomsDialogFragment dialogFragment = EmptyClassroomsDialogFragment.newInstance(timeZone, emptyClassrooms);
+                dialogFragment.show(getSupportFragmentManager(), "EmptyClassroomsDialogFragment");
+
+            } else if (eventListenerType instanceof ErrorEventListener) {
+
+                ErrorEventListener errorListener = (ErrorEventListener) eventListenerType;
+
+                Toast.makeText(this, errorListener.getMessage(), Toast.LENGTH_SHORT).show();
+
+            }
+
+        });
+
+        Packet emptyClassroomsRequestPacket = new PacketBuilder()
+                .ofType(PacketType.EMPTYCLASSROOMSTIMEZONE.getRequest())
+                .addArgument("uuid", uuid)
+                .addArgument("timeZone", timeZone)
+                .build();
+
+        SocketManager.getInstance().sendPacketIO(emptyClassroomsRequestPacket);
+
+
     }
 
 }

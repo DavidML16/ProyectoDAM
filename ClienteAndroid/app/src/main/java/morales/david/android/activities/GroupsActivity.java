@@ -156,7 +156,7 @@ public class GroupsActivity extends AppCompatActivity {
             return courses;
 
         for (Course course : DataManager.getInstance().getCourses().getValue())
-            courses.add(course.toString());
+            courses.add(course.toString().toUpperCase());
 
         return courses;
 

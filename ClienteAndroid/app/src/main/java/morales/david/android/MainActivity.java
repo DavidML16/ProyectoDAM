@@ -3,17 +3,20 @@ package morales.david.android;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Button;
+import android.os.Handler;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import morales.david.android.interfaces.MessageListener;
-import morales.david.android.managers.DataManager;
-import morales.david.android.managers.EventManager;
+import morales.david.android.activities.DashboardActivity;
 import morales.david.android.managers.ScreenManager;
 import morales.david.android.managers.SocketManager;
+import morales.david.android.managers.eventcallbacks.ConfirmationEventListener;
+import morales.david.android.managers.eventcallbacks.ErrorEventListener;
+import morales.david.android.managers.eventcallbacks.EventManager;
 import morales.david.android.models.packets.Packet;
 import morales.david.android.models.packets.PacketBuilder;
 import morales.david.android.models.packets.PacketType;
@@ -47,25 +50,34 @@ public class MainActivity extends AppCompatActivity {
         passwordInput = findViewById(R.id.act_login_input_password);
         loginButton = findViewById(R.id.act_login_button_login);
 
-        loginButton.setOnClickListener(v -> login());
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.sgh_preference_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
 
-        EventManager.getInstance().subscribe("login", (eventType, message) -> {
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        if(sharedPref.contains(getString(R.string.sgh_preference_user)) && sharedPref.contains(getString(R.string.sgh_preference_user))) {
+
+            String user = sharedPref.getString(getString(R.string.sgh_preference_user), "");
+            String pass = sharedPref.getString(getString(R.string.sgh_preference_pass), "");
+
+            new Handler().postDelayed(() -> {
+                login(editor, user, pass);
+            }, 100);
+
+        }
+
+        loginButton.setOnClickListener(v -> {
+            login(editor, usernameInput.getText().toString(), HashUtil.sha1(passwordInput.getText().toString()));
         });
 
     }
 
-    public void login() {
+    public void login(SharedPreferences.Editor editor, String user, String pass) {
 
-        final String username = usernameInput.getText().toString();
-        final String password = HashUtil.sha1(passwordInput.getText().toString());
+        final String username = user;
+        final String password = pass;
 
-        if(username.isEmpty() || passwordInput.getText().toString().isEmpty()) {
-
+        if(username.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, getString(R.string.act_login_message_error_empty), Toast.LENGTH_SHORT).show();
-
             return;
-
         }
 
         Packet loginRequestPacket = new PacketBuilder()
@@ -75,6 +87,27 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         SocketManager.getInstance().sendPacketIO(loginRequestPacket);
+
+        EventManager.getInstance().subscribe("login", (eventType, eventListenerType) -> {
+
+            if(eventListenerType instanceof ConfirmationEventListener) {
+
+                editor.putString(getString(R.string.sgh_preference_user), username);
+                editor.putString(getString(R.string.sgh_preference_pass), password);
+                editor.commit();
+
+                Intent intent = new Intent(this, DashboardActivity.class);
+                startActivity(intent);
+
+            } else if (eventListenerType instanceof ErrorEventListener) {
+
+                ErrorEventListener errorListener = (ErrorEventListener) eventListenerType;
+
+                Toast.makeText(this, errorListener.getMessage(), Toast.LENGTH_SHORT).show();
+
+            }
+
+        });
 
     }
 

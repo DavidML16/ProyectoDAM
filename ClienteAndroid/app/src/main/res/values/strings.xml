@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
     <string name="app_name">SGH</string>
+
     <string name="act_login_button_login">Iniciar sesión</string>
     <string name="act_login_input_username">Nombre de usuario</string>
     <string name="act_login_input_password">Contraseña</string>
     <string name="act_login_checkbox_remember">Recordar credenciales</string>
     <string name="act_login_message_error_credentials">Usuario o contraseña incorrecta</string>
     <string name="act_login_message_error_empty">Usuario o contraseña en blanco</string>
+
     <string name="act_dashboard_message_teachers">Profesores</string>
     <string name="act_dashboard_message_courses">Cursos</string>
     <string name="act_dashboard_message_classrooms">Aulas</string>
@@ -17,26 +20,48 @@
     <string name="act_dashboard_message_app">Sistema de gestión de horarios</string>
     <string name="act_dashboard_message_exit">Desconexión</string>
     <string name="act_dashboard_message_disconnected">Desconectándote del sistema...</string>
+
     <string name="item_teacher_name">Nombre</string>
     <string name="item_teacher_department" translatable="false">Departamento: <xliff:g example="-" id="department">%s</xliff:g></string>
     <string name="item_teacher_abreviation">Abreviación: <xliff:g example="-" id="abreviation">%s</xliff:g></string>
+
     <string name="act_teachers_title">Profesores</string>
     <string name="act_teachers_department">Departamento</string>
+
     <string name="item_classroom_name">Nombre: <xliff:g example="" id="name">%s</xliff:g></string>
     <string name="item_classroom_floor">Planta: <xliff:g example="0" id="floor">%s</xliff:g></string>
+
     <string name="act_classrooms_title">Aulas</string>
     <string name="act_classrooms_floor">Planta</string>
+    <string name="act_classrooms_search_day">Día</string>
+    <string name="act_classrooms_search_hour">Hora</string>
+    <string name="act_classrooms_search_button">Buscar aulas</string>
+
     <string name="item_course_name"><xliff:g example="" id="course">%s</xliff:g></string>
+
     <string name="act_courses_title">Cursos</string>
+
     <string name="act_groups_title">Grupos</string>
+
     <string name="act_subjects_title">Asignaturas</string>
+
     <string name="course_options_name">Grupos y asignaturas de <xliff:g example="" id="course">%s</xliff:g></string>
+
     <string name="item_subject_number">Número: <xliff:g example="-" id="number">%s</xliff:g></string>
     <string name="item_subject_abreviation">Abreviación: <xliff:g example="-" id="abreviation">%s</xliff:g></string>
     <string name="item_subject_courses">Cursos asignados: <xliff:g example="-" id="courses">%s</xliff:g></string>
+
     <string name="act_subjects_course">Curso</string>
+
     <string name="fragment_subjectcourses_info">Cursos asignados de la asignatura</string>
+
     <string name="item_group_course">Curso: <xliff:g example="" id="course">%s</xliff:g></string>
     <string name="item_group_letter">Letra: <xliff:g example="" id="letter">%s</xliff:g></string>
+
     <string name="act_groups_course">Curso</string>
+
+    <string name="sgh_preference_key">sgh_preference_key</string>
+    <string name="sgh_preference_user">sgh_preference_user</string>
+    <string name="sgh_preference_pass">sgh_preference_pass</string>
+
 </resources>

@@ -2,8 +2,6 @@ package morales.david.android.managers;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.internal.LinkedTreeMap;
 
@@ -17,8 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import morales.david.android.R;
-import morales.david.android.activities.DashboardActivity;
 import morales.david.android.activities.DisconnectedActivity;
+import morales.david.android.managers.eventcallbacks.EmptyClassroomsConfirmationListener;
+import morales.david.android.managers.eventcallbacks.EventManager;
+import morales.david.android.managers.eventcallbacks.ConfirmationEventListener;
+import morales.david.android.managers.eventcallbacks.ErrorEventListener;
 import morales.david.android.models.Classroom;
 import morales.david.android.models.ClientSession;
 import morales.david.android.models.Course;
@@ -28,6 +29,7 @@ import morales.david.android.models.Group;
 import morales.david.android.models.Hour;
 import morales.david.android.models.Subject;
 import morales.david.android.models.Teacher;
+import morales.david.android.models.TimeZone;
 import morales.david.android.models.packets.Packet;
 import morales.david.android.models.packets.PacketBuilder;
 import morales.david.android.models.packets.PacketType;
@@ -58,8 +60,6 @@ public class SocketManager extends Thread {
     public SocketManager() {
 
         this.clientSession = new ClientSession();
-
-        EventManager.getInstance().addEventTypes("login");
 
     }
 
@@ -133,24 +133,13 @@ public class SocketManager extends Thread {
                                 clientSession.setName((String) receivedPacket.getArgument("name"));
                                 clientSession.setRole((String) receivedPacket.getArgument("role"));
 
-                                context.runOnUiThread(() -> {
-                                    Intent intent = new Intent(context, DashboardActivity.class);
-                                    context.startActivity(intent);
-                                });
-
-                                DataManager.getInstance().getTeachers();
-                                DataManager.getInstance().getClassrooms();
-                                DataManager.getInstance().getGroups();
-                                DataManager.getInstance().getSubjects();
-                                DataManager.getInstance().getCourses();
-                                DataManager.getInstance().getCredentials();
-                                DataManager.getInstance().getDays();
-                                DataManager.getInstance().getHours();
                                 sendPackets();
+
+                                EventManager.getInstance().notify(context, "login", new ConfirmationEventListener("login", "SUCCESS"));
 
                             } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.LOGIN.LOGIN.getError())) {
 
-                                EventManager.getInstance().notify(context, "login", context.getString(R.string.act_login_message_error_credentials));
+                                EventManager.getInstance().notify(context, "login", new ErrorEventListener("login", context.getString(R.string.act_login_message_error_credentials)));
 
                             }
 
@@ -347,6 +336,55 @@ public class SocketManager extends Thread {
                                 context.runOnUiThread(() -> {
                                     DataManager.getInstance().setHours(temp);
                                 });
+
+                            }
+
+                            break;
+
+                        }
+
+                        case TIMEZONES: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.TIMEZONES.getConfirmation())) {
+
+                                List<LinkedTreeMap> timeZones = (List<LinkedTreeMap>) receivedPacket.getArgument("timeZones");
+
+                                final List<TimeZone> temp = new ArrayList<>();
+
+                                for (LinkedTreeMap timeZonesMap : timeZones)
+                                    temp.add(TimeZone.parse(timeZonesMap));
+
+                                context.runOnUiThread(() -> {
+                                    DataManager.getInstance().setTimeZones(temp);
+                                });
+
+                            }
+
+                            break;
+
+                        }
+
+                        case EMPTYCLASSROOMSTIMEZONE: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.EMPTYCLASSROOMSTIMEZONE.getConfirmation())) {
+
+                                String uuid = (String) receivedPacket.getArgument("uuid");
+
+                                List<LinkedTreeMap> classrooms = (List<LinkedTreeMap>) receivedPacket.getArgument("classrooms");
+
+                                List<Classroom> emptyClassrooms = new ArrayList<>();
+
+                                for (LinkedTreeMap classroomMap : classrooms)
+                                    emptyClassrooms.add(Classroom.parse(classroomMap));
+
+                                EventManager.getInstance().notify(context, uuid, new EmptyClassroomsConfirmationListener(uuid, emptyClassrooms));
+
+                            } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.EMPTYCLASSROOMSTIMEZONE.getError())) {
+
+                                String uuid = (String) receivedPacket.getArgument("uuid");
+                                String message = (String) receivedPacket.getArgument("message");
+
+                                EventManager.getInstance().notify(context, uuid, new ErrorEventListener(uuid, message));
 
                             }
 

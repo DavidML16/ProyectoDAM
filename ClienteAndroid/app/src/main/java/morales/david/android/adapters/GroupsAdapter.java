@@ -2,6 +2,7 @@ package morales.david.android.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,11 +90,10 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.SubjectVie
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(groupsOriginal);
             } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
+                String filterPattern = constraint.toString().trim();
 
                 for (Group item : groupsOriginal) {
-                    if (item.getCourse().toString().contains(filterPattern)
-                            || item.getLetter().contains(filterPattern)) {
+                    if (item.getCourse().toString().contains(filterPattern) || item.getLetter().contains(filterPattern)) {
                         filteredList.add(item);
                     }
                 }
@@ -121,17 +121,14 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.SubjectVie
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(groupsOriginal);
             } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
+                String filterPattern = constraint.toString().trim();
 
                 for (Group item : groupsOriginal) {
-                    for(Course course : DataManager.getInstance().getCourses().getValue()) {
-                        if (course.toString().contains(filterPattern)) {
-                            filteredList.add(item);
-                            break;
-                        }
+                    if (item.getCourse().toString().contains(filterPattern)) {
+                        filteredList.add(item);
                     }
-
                 }
+
             }
 
             FilterResults results = new FilterResults();

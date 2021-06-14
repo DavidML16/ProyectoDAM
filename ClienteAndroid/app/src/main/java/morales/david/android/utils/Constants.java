@@ -8,8 +8,8 @@ public class Constants {
     public static final int SERVER_PORT = 6565;
 
     public static final PacketType[] INIT_PACKETS = {
-            PacketType.CLASSROOMS, PacketType.TEACHERS, PacketType.CREDENTIALS, PacketType.COURSES,
-            PacketType.GROUPS, PacketType.SUBJECTS, PacketType.DAYS, PacketType.HOURS
+            PacketType.DAYS, PacketType.HOURS, PacketType.TIMEZONES, PacketType.CLASSROOMS, PacketType.TEACHERS,
+            PacketType.CREDENTIALS, PacketType.COURSES, PacketType.GROUPS, PacketType.SUBJECTS,
     };
 
 }

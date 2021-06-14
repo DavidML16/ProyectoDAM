@@ -39,6 +39,14 @@ public class ClassroomsAdapter extends RecyclerView.Adapter<ClassroomsAdapter.Cl
         this.classroomsOriginal = new ArrayList<>(classrooms);
     }
 
+    public ClassroomsAdapter(Activity activity, List<Classroom> classrooms) {
+        this.activity = activity;
+        this.inflater = LayoutInflater.from(activity);
+        this.classrooms = new ArrayList<>(classrooms);
+        this.classroomsOriginal = new ArrayList<>(classrooms);
+        getFilter().filter(null);
+    }
+
     @NonNull
     @Override
     public ClassroomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -79,7 +87,7 @@ public class ClassroomsAdapter extends RecyclerView.Adapter<ClassroomsAdapter.Cl
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(classroomsOriginal);
             } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
+                String filterPattern = constraint.toString().trim();
 
                 for (Classroom item : classroomsOriginal) {
                     if (item.getName().toLowerCase().contains(filterPattern)) {
