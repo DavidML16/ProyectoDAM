@@ -54,7 +54,7 @@ public class ExportSchedulerManager {
 
         Document document = new Document(pdfDocument);
 
-        // SCHEDULE HEADER
+        // PAGE HEADER
         {
 
             float[] headerColumnWidth = { 280f, 280f };

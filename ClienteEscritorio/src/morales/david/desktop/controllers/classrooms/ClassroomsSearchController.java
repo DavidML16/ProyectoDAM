@@ -42,9 +42,6 @@ public class ClassroomsSearchController implements Initializable, Controller {
     private ComboBox<Hour> hourComboBox;
 
     @FXML
-    private VBox hourPanel;
-
-    @FXML
     private Button searchButton;
 
     @Override
@@ -84,17 +81,17 @@ public class ClassroomsSearchController implements Initializable, Controller {
         FxUtilTest.autoCompleteComboBoxPlus(hourComboBox, (typedText, itemToCompare) -> itemToCompare.getName().toLowerCase().contains(typedText.toLowerCase()));
 
         dayComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            hourComboBox.setDisable(false);
+        });
+
+        hourComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             searchButton.setDisable(false);
         });
 
     }
 
     private void removePressed() {
-
-        hourPanel.setVisible(false);
-        hourComboBox.getSelectionModel().clearSelection();
-        hourComboBox.setItems(DataManager.getInstance().getHours());
-
+        hourComboBox.setDisable(true);
         searchButton.setDisable(true);
     }
 

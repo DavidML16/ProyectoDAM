@@ -21,6 +21,7 @@ import morales.david.desktop.models.Day;
 import morales.david.desktop.models.Hour;
 import morales.david.desktop.models.SchedulerItem;
 import morales.david.desktop.models.TimeZone;
+import morales.david.desktop.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,6 @@ public class SchedulerGUI {
     public static final int ANIMATION_DURATION = 100;
     public static final int ANIMATION_DISTANCE = 50;
     public static final double FOCUS_ANIMATION_OFFSET_FACTOR = 0.6;
-    public static final double GAP_SIZE = 5;
 
     private static final int DAY_LENGTH = 5;
     private static final int HOURS_LENGTH = 7;
@@ -82,18 +82,18 @@ public class SchedulerGUI {
     public void init() {
 
         scheduleGrid = new GridPane();
-        scheduleGrid.setVgap(GAP_SIZE);
-        scheduleGrid.setHgap(GAP_SIZE);
+        scheduleGrid.setVgap(Constants.GAP_SIZE);
+        scheduleGrid.setHgap(Constants.GAP_SIZE);
         if(background.getChildren().size() > 1)
             background.getChildren().remove(0);
         background.setPrefSize(900, 600);
         background.getChildren().add(scheduleGrid);
         background.getStyleClass().clear();
         background.getStyleClass().add("mainPane");
-        background.setTopAnchor(scheduleGrid, GAP_SIZE * 4);
-        background.setRightAnchor(scheduleGrid, GAP_SIZE * 4);
-        background.setBottomAnchor(scheduleGrid, GAP_SIZE * 4);
-        background.setLeftAnchor(scheduleGrid, GAP_SIZE * 4);
+        background.setTopAnchor(scheduleGrid, Constants.GAP_SIZE * 4);
+        background.setRightAnchor(scheduleGrid, Constants.GAP_SIZE * 4);
+        background.setBottomAnchor(scheduleGrid, Constants.GAP_SIZE * 4);
+        background.setLeftAnchor(scheduleGrid, Constants.GAP_SIZE * 4);
 
         initControlArrays();
 
@@ -164,7 +164,7 @@ public class SchedulerGUI {
 
         tabBox = new HBox();
         tabBox.getStyleClass().add("mainPane");
-        tabBox.setSpacing(GAP_SIZE);
+        tabBox.setSpacing(Constants.GAP_SIZE);
 
         tabMorning = new Label("TURNO DE MAÑANA");
         tabMorning.setAlignment(Pos.CENTER);

@@ -15,11 +15,15 @@ import javafx.scene.layout.Priority;
 import morales.david.desktop.controllers.schedules.scheduler.SchedulerGUI;
 import morales.david.desktop.controllers.schedules.scheduler.SchedulerManager;
 import morales.david.desktop.interfaces.Controller;
+import morales.david.desktop.managers.ExportEmptyClassroomsManager;
 import morales.david.desktop.models.Classroom;
 import morales.david.desktop.models.Course;
 import morales.david.desktop.models.SchedulerItem;
 import morales.david.desktop.models.TimeZone;
+import morales.david.desktop.utils.Constants;
 
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Time;
 import java.util.ArrayList;
@@ -49,17 +53,15 @@ public class EmptyClassroomsTimezoneController implements Initializable, Control
 
     private GridPane classroomsGrid;
 
-    private static final double GAP_SIZE = 5;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         classroomsGrid = new GridPane();
-        classroomsGrid.setVgap(GAP_SIZE);
-        classroomsGrid.setHgap(GAP_SIZE);
+        classroomsGrid.setVgap(Constants.GAP_SIZE);
+        classroomsGrid.setHgap(Constants.GAP_SIZE);
 
-        anchorPane.setRightAnchor(scrollPane, GAP_SIZE * 4);
-        anchorPane.setLeftAnchor(scrollPane, GAP_SIZE * 4);
+        anchorPane.setRightAnchor(scrollPane, Constants.GAP_SIZE * 4);
+        anchorPane.setLeftAnchor(scrollPane, Constants.GAP_SIZE * 4);
 
     }
 
@@ -73,8 +75,8 @@ public class EmptyClassroomsTimezoneController implements Initializable, Control
         this.filteredClassrooms = new ArrayList<>(classrooms);
         this.timeZone = timeZone;
 
-        classroomsGrid.setVgap(GAP_SIZE * 4);
-        classroomsGrid.setHgap(GAP_SIZE * 4);
+        classroomsGrid.setVgap(Constants.GAP_SIZE * 4);
+        classroomsGrid.setHgap(Constants.GAP_SIZE * 4);
 
         classroomsGrid.setPadding(new Insets(10));
 
@@ -143,6 +145,18 @@ public class EmptyClassroomsTimezoneController implements Initializable, Control
 
     @FXML
     public void handleButtonAction(MouseEvent event) {
+
+        if(event.getSource() == exportButton) {
+
+            try {
+                ExportEmptyClassroomsManager.getInstance().exportTimeZone(timeZone, classrooms);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+
+        }
 
     }
 

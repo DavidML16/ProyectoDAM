@@ -45,9 +45,9 @@
                                     <Insets top="25.0" />
                                  </VBox.margin>
                               </VBox>
-                              <VBox fx:id="hourPanel" alignment="CENTER">
+                              <VBox alignment="CENTER">
                                  <children>
-                                    <Label alignment="CENTER" contentDisplay="CENTER" text="Selecciona una hora (Opcional)" textAlignment="CENTER" textFill="WHITE">
+                                    <Label alignment="CENTER" contentDisplay="CENTER" text="Selecciona una hora" textAlignment="CENTER" textFill="WHITE">
                                        <font>
                                           <Font name="System Bold" size="18.0" />
                                        </font>
