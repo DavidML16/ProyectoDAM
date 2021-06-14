@@ -66,7 +66,7 @@ public class ExportEmptyClassroomsManager {
 
             headerTable.addCell(
                     new Cell()
-                            .add(new Image(ImageDataFactory.create("src/resources/images/logo@x1.png")).setWidth(50).setHeight(16))
+                            .add(new Image(ImageDataFactory.create(getClass().getResource("/resources/images/logo@x1.png"))).setWidth(50).setHeight(16))
                             .setHorizontalAlignment(HorizontalAlignment.LEFT)
                             .setVerticalAlignment(VerticalAlignment.MIDDLE)
                             .setPaddingTop(7f)

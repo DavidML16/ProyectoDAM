@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="ClienteEscritorio.jar" size="4880907" download="eager" />
+    <jar href="ClienteEscritorio.jar" size="9208738" download="eager" />
   </resources>
   <jfx:javafx-desc  width="1280" height="720" main-class="morales.david.desktop.Client"  name="ClienteEscritorio" />
   <update check="background"/>

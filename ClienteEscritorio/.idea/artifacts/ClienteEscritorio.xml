@@ -20,6 +20,18 @@
         <element id="extracted-dir" path="$PROJECT_DIR$/libs/controlsfx-8.20.8.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/libs/fontawesomefx-8.9.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/libs/jfoenix-8.0.10.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/barcodes-7.1.15.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/kernel-7.1.15.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/forms-7.1.15.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/io-7.1.15.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/svg-7.1.15.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/styled-xml-parser-7.1.15.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/sign-7.1.15.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/pdftest-7.1.15.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/pdfa-7.1.15.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/layout-7.1.15.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/slf4j.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/logback.jar" path-in-jar="/" />
       </element>
     </root>
   </artifact>
