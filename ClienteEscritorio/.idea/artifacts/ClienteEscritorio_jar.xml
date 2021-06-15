@@ -22,6 +22,7 @@
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/itextpdf/svg/7.1.15/svg-7.1.15.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/itextpdf/styled-xml-parser/7.1.15/styled-xml-parser-7.1.15.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/bouncycastle/bcprov-jdk15on/1.68/bcprov-jdk15on-1.68.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/json/json/20210307/json-20210307.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

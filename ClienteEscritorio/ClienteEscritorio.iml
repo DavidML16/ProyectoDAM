@@ -30,5 +30,6 @@
     <orderEntry type="library" name="Maven: com.itextpdf:sign:7.1.15" level="project" />
     <orderEntry type="library" name="Maven: com.itextpdf:styled-xml-parser:7.1.15" level="project" />
     <orderEntry type="library" name="Maven: com.itextpdf:svg:7.1.15" level="project" />
+    <orderEntry type="library" name="Maven: org.json:json:20210307" level="project" />
   </component>
 </module>

@@ -15,8 +15,11 @@ import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
+import morales.david.desktop.utils.ConfigUtil;
 import morales.david.desktop.utils.Constants;
 import morales.david.desktop.utils.Utils;
+
+import java.util.Map;
 
 public class Client extends Application {
 
@@ -24,6 +27,14 @@ public class Client extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+
+        ConfigUtil configUtil = new ConfigUtil();
+        configUtil.getConfigString(configString -> {
+            Map<String, String> parameters = configUtil.getConfigParams(configString);
+            Constants.SERVER_IP = parameters.get("server_ip");
+            Constants.SERVER_PORT = Integer.parseInt(parameters.get("server_port"));
+            Constants.SERVER_FILE_TRANSFER_PORT = Integer.parseInt(parameters.get("server_file_transfer_port"));
+        });
 
         SocketManager socketManager = SocketManager.getInstance();
         socketManager.setDaemon(true);

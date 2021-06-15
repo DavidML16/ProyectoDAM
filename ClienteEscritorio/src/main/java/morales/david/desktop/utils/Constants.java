@@ -6,9 +6,9 @@ public class Constants {
 
     public static final String WINDOW_TITLE = " (SGH)";
 
-    public static final String SERVER_IP = "localhost";
-    public static final int SERVER_PORT = 6565;
-    public static final int SERVER_FILE_TRANSFER_PORT = SERVER_PORT + 1;
+    public static String SERVER_IP = "localhost";
+    public static int SERVER_PORT = 6565;
+    public static int SERVER_FILE_TRANSFER_PORT = SERVER_PORT + 1;
 
 
     public static final String MESSAGES_ERROR_LOGIN = "Usuario o contraseña incorrecta";
