@@ -75,6 +75,12 @@ public class SubjectsController implements Initializable, Controller {
 
         });
 
+        if(SocketManager.getInstance().getClientSession().isTeacherRole()) {
+            newButton.setVisible(false);
+            editButton.setVisible(false);
+            deleteButton.setVisible(false);
+        }
+
     }
 
     @FXML
@@ -163,6 +169,9 @@ public class SubjectsController implements Initializable, Controller {
 
     private void deleteSubject() {
 
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
+
         Subject subject = subjectsTable.getSelectionModel().getSelectedItem();
 
         Packet removeSubjectRequestPacket = new PacketBuilder()
@@ -175,6 +184,9 @@ public class SubjectsController implements Initializable, Controller {
     }
 
     private void editSubject(Subject subject) {
+
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
 
         if(subject == null)
             return;
@@ -236,6 +248,9 @@ public class SubjectsController implements Initializable, Controller {
     }
 
     private void newSubject() {
+
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/newSubjectModal.fxml"));
         try {

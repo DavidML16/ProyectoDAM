@@ -11,6 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import morales.david.desktop.controllers.schedules.scheduler.SchedulerManager;
+import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.models.*;
 
 import java.io.IOException;
@@ -38,7 +39,9 @@ public class SchedulerItemModalController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        if(SocketManager.getInstance().getClientSession().isTeacherRole()) {
+            newScheduleButton.setVisible(false);
+        }
     }
 
     @FXML

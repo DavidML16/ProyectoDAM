@@ -122,7 +122,7 @@ public final class SocketManager extends Thread {
 
                                     }
 
-                                } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.LOGIN.LOGIN.getError())) {
+                                } else if(receivedPacket.getType().equalsIgnoreCase(PacketType.LOGIN.getError())) {
 
                                     if (screenManager.getController() instanceof LoginController) {
 
@@ -135,7 +135,7 @@ public final class SocketManager extends Thread {
 
                                 }
 
-                                });
+                            });
 
                             break;
 

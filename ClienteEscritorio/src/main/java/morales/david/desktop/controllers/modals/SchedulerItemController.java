@@ -57,7 +57,12 @@ public class SchedulerItemController implements Initializable {
     private List<Classroom> emptyClassrooms;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) { }
+    public void initialize(URL location, ResourceBundle resources) {
+        if(SocketManager.getInstance().getClientSession().isTeacherRole()) {
+            deleteButton.setVisible(false);
+            editButton.setVisible(false);
+        }
+    }
 
     public void setData(SchedulerItemModalController controller, SchedulerManager schedulerManager,
                         SchedulerItem schedulerItem, TimeZone timeZone, Schedule schedule, List<Classroom> emptyClassrooms) {

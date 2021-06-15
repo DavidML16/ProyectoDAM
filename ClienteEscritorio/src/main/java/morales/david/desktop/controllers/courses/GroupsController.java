@@ -69,6 +69,12 @@ public class GroupsController implements Initializable, Controller {
 
         });
 
+        if(SocketManager.getInstance().getClientSession().isTeacherRole()) {
+            newButton.setVisible(false);
+            editButton.setVisible(false);
+            deleteButton.setVisible(false);
+        }
+
     }
 
     @FXML
@@ -154,6 +160,9 @@ public class GroupsController implements Initializable, Controller {
 
     private void deleteGroup() {
 
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
+
         Group group = groupsTable.getSelectionModel().getSelectedItem();
 
         Packet removeGroupRequestPacket = new PacketBuilder()
@@ -166,6 +175,9 @@ public class GroupsController implements Initializable, Controller {
     }
 
     private void editGroup(Group group) {
+
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
 
         if(group == null)
             return;
@@ -227,6 +239,9 @@ public class GroupsController implements Initializable, Controller {
     }
 
     private void newGroup() {
+
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/newGroupModal.fxml"));
         try {

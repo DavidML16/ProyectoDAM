@@ -348,8 +348,8 @@ public class DBConnection {
 
             if(rs.next()) {
 
-                clientSession.setId(rs.getInt("id_profesor"));
-                clientSession.setName(rs.getString("nombre"));
+                clientSession.setId(rs.getInt("id"));
+                clientSession.setName(rs.getString("usuario"));
                 clientSession.setRole(rs.getString("rol"));
 
             }

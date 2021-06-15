@@ -68,6 +68,12 @@ public class CoursesController implements Initializable, Controller {
 
         });
 
+        if(SocketManager.getInstance().getClientSession().isTeacherRole()) {
+            newButton.setVisible(false);
+            editButton.setVisible(false);
+            deleteButton.setVisible(false);
+        }
+
     }
 
     @FXML
@@ -152,6 +158,9 @@ public class CoursesController implements Initializable, Controller {
 
     private void deleteCourse() {
 
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
+
         Course course = coursesTable.getSelectionModel().getSelectedItem();
 
         Packet removeCourseRequestPacket = new PacketBuilder()
@@ -164,6 +173,9 @@ public class CoursesController implements Initializable, Controller {
     }
 
     private void editCourse(Course course) {
+
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
 
         if(course == null)
             return;
@@ -225,6 +237,9 @@ public class CoursesController implements Initializable, Controller {
     }
 
     private void newCourse() {
+
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/newCourseModal.fxml"));
         try {

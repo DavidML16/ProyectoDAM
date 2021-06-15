@@ -59,6 +59,10 @@ public class DashboardController implements Initializable, Controller {
 
         Platform.runLater(() -> sendPackets());
 
+        if(SocketManager.getInstance().getClientSession().isTeacherRole()) {
+            importNavigationButton.setVisible(false);
+        }
+
     }
 
     @FXML

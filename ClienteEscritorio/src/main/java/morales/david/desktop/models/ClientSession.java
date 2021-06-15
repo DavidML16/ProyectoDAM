@@ -40,6 +40,10 @@ public class ClientSession {
         this.role = role;
     }
 
+    public boolean isTeacherRole() {
+        return getRole().equalsIgnoreCase("profesor");
+    }
+
     @Override
     public String toString() {
         return "ClientSession{" +

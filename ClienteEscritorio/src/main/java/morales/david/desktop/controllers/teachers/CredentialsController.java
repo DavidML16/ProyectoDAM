@@ -72,6 +72,12 @@ public class CredentialsController implements Initializable, Controller {
 
         });
 
+        if(SocketManager.getInstance().getClientSession().isTeacherRole()) {
+            newButton.setVisible(false);
+            editButton.setVisible(false);
+            deleteButton.setVisible(false);
+        }
+
     }
 
     @FXML
@@ -158,6 +164,9 @@ public class CredentialsController implements Initializable, Controller {
 
     private void deleteCredential() {
 
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
+
         Credential credential = credentialsTable.getSelectionModel().getSelectedItem();
 
         Packet removeCredentialRequestPacket = new PacketBuilder()
@@ -170,6 +179,9 @@ public class CredentialsController implements Initializable, Controller {
     }
 
     private void editCredential(Credential credential) {
+
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
 
         if(credential == null)
             return;
@@ -231,6 +243,9 @@ public class CredentialsController implements Initializable, Controller {
     }
 
     private void newCredential() {
+
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/newCredentialModal.fxml"));
         try {

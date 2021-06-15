@@ -70,6 +70,9 @@ public class DaysController implements Initializable, Controller {
 
         nameColumn.setOnEditCommit(event -> {
 
+            if(SocketManager.getInstance().getClientSession().isTeacherRole())
+                return;
+
             Day day = event.getTableView().getItems().get(event.getTablePosition().getRow());
             day.setName(event.getNewValue());
 
@@ -84,7 +87,11 @@ public class DaysController implements Initializable, Controller {
 
         daysTable.setItems(list);
 
-        daysTable.setEditable(true);
+        if(SocketManager.getInstance().getClientSession().isTeacherRole()) {
+            daysTable.setEditable(false);
+        } else {
+            daysTable.setEditable(true);
+        }
 
         daysTable.setPlaceholder(new Label("No existe ningun día registrado"));
 

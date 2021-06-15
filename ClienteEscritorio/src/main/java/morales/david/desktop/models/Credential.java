@@ -63,6 +63,10 @@ public class Credential {
         this.teacher = teacher;
     }
 
+    public boolean isTeacherRole() {
+        return getRole().equalsIgnoreCase("profesor");
+    }
+
     @Override
     public String toString() {
         return "Credential{" +

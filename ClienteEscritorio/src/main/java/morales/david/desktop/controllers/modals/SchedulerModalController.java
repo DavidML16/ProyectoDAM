@@ -82,7 +82,7 @@ public class SchedulerModalController implements Initializable {
                 || Integer.toString(itemToCompare.getNumber()).toLowerCase().contains(typedText.toLowerCase())
         );
 
-        classroomField.setItems(FXCollections.emptyObservableList());
+        classroomField.setItems(DataManager.getInstance().getClassrooms());
         classroomField.setConverter(new StringConverter<Classroom>() {
             @Override
             public String toString(Classroom object) {
@@ -104,6 +104,7 @@ public class SchedulerModalController implements Initializable {
                     classroomField.setItems(FXCollections.emptyObservableList());
             else
                 classroomField.setItems(DataManager.getInstance().getClassrooms());
+            FxUtilTest.autoCompleteComboBoxPlus(classroomField, (typedText, itemToCompare) -> itemToCompare.getName().toLowerCase().contains(typedText.toLowerCase()));
         });
 
         groupField.setItems(DataManager.getInstance().getGroups());
@@ -127,8 +128,10 @@ public class SchedulerModalController implements Initializable {
         this.schedule = schedule;
         this.emptyClassrooms = emptyClassrooms;
 
-        if(emptyClassrooms != null)
+        if(emptyClassrooms != null) {
             classroomField.setItems(FXCollections.observableArrayList(emptyClassrooms));
+            FxUtilTest.autoCompleteComboBoxPlus(classroomField, (typedText, itemToCompare) -> itemToCompare.getName().toLowerCase().contains(typedText.toLowerCase()));
+        }
 
         titleLabel.setText("Añadir nuevo turno");
 

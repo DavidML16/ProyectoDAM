@@ -80,6 +80,12 @@ public class TeachersController implements Initializable, Controller {
 
         });
 
+        if(SocketManager.getInstance().getClientSession().isTeacherRole()) {
+            newButton.setVisible(false);
+            editButton.setVisible(false);
+            deleteButton.setVisible(false);
+        }
+
     }
 
     @FXML
@@ -169,6 +175,9 @@ public class TeachersController implements Initializable, Controller {
 
     private void deleteTeacher() {
 
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
+
         Teacher teacher = teachersTable.getSelectionModel().getSelectedItem();
 
         Packet removeTeacherRequestPacket = new PacketBuilder()
@@ -181,6 +190,9 @@ public class TeachersController implements Initializable, Controller {
     }
 
     private void editTeacher(Teacher teacher) {
+
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
 
         if(teacher == null)
             return;
@@ -242,6 +254,9 @@ public class TeachersController implements Initializable, Controller {
     }
 
     private void newTeacher() {
+
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/newTeacherModal.fxml"));
         try {

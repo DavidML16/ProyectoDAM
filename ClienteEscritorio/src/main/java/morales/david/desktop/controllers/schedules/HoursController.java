@@ -61,6 +61,9 @@ public class HoursController implements Initializable, Controller {
 
         nameColumn.setOnEditCommit(event -> {
 
+            if(SocketManager.getInstance().getClientSession().isTeacherRole())
+                return;
+
             Hour hour = event.getTableView().getItems().get(event.getTablePosition().getRow());
             hour.setName(event.getNewValue());
 
@@ -75,7 +78,11 @@ public class HoursController implements Initializable, Controller {
 
         hoursTable.setItems(list);
 
-        hoursTable.setEditable(true);
+        if(SocketManager.getInstance().getClientSession().isTeacherRole()) {
+            hoursTable.setEditable(false);
+        } else {
+            hoursTable.setEditable(true);
+        }
 
         hoursTable.setPlaceholder(new Label("No existe ninguna hora registrada"));
 

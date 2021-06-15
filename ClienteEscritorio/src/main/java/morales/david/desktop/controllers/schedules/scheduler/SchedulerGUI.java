@@ -17,6 +17,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import morales.david.desktop.interfaces.Hideable;
 import morales.david.desktop.managers.ScreenManager;
+import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.models.Day;
 import morales.david.desktop.models.Hour;
 import morales.david.desktop.models.SchedulerItem;
@@ -119,31 +120,38 @@ public class SchedulerGUI {
 
         scheduleContextMenu = new OptionsPane(background);
         menus.add(scheduleContextMenu);
-        edit = new JFXButton("Editar");
+        if(!SocketManager.getInstance().getClientSession().isTeacherRole())
+            edit = new JFXButton("Editar");
+        else
+            edit = new JFXButton("Ver más");
+
         edit.setOnAction(event -> {
             edit(event);
         });
-        copy = new JFXButton("Copiar");
-        copy.setOnAction(event -> {
-            copy(event);
-        });
-        cut = new JFXButton("Cortar");
-        cut.setOnAction(event -> {
-            cut(event);
-        });
-        paste = new JFXButton("Pegar");
-        paste.setOnAction(event -> {
-            paste(event);
-        });
-        delete = new JFXButton("Eliminar");
-        delete.setOnAction(event -> {
-            delete();
-        });
+
         scheduleContextMenu.addButton(edit);
-        scheduleContextMenu.addButton(copy);
-        scheduleContextMenu.addButton(cut);
-        scheduleContextMenu.addButton(paste);
-        scheduleContextMenu.addButton(delete);
+        if(!SocketManager.getInstance().getClientSession().isTeacherRole()) {
+            copy = new JFXButton("Copiar");
+            copy.setOnAction(event -> {
+                copy(event);
+            });
+            cut = new JFXButton("Cortar");
+            cut.setOnAction(event -> {
+                cut(event);
+            });
+            paste = new JFXButton("Pegar");
+            paste.setOnAction(event -> {
+                paste(event);
+            });
+            delete = new JFXButton("Eliminar");
+            delete.setOnAction(event -> {
+                delete();
+            });
+            scheduleContextMenu.addButton(copy);
+            scheduleContextMenu.addButton(cut);
+            scheduleContextMenu.addButton(paste);
+            scheduleContextMenu.addButton(delete);
+        }
 
         schedulePreview = new SchedulerItemPane(null, true, schedulerManager);
         schedulePreview.prefWidthProperty().bind(schedules[0][0].widthProperty());
@@ -227,6 +235,9 @@ public class SchedulerGUI {
 
     private void scheduleReleased(MouseEvent event) {
 
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
+
         if(primaryButton) {
 
             boolean onSubject = false;
@@ -270,6 +281,9 @@ public class SchedulerGUI {
 
     private void scheduleDragged(MouseEvent event) {
 
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
+
         if (primaryButton) {
 
             if (firstDrag) {
@@ -302,18 +316,18 @@ public class SchedulerGUI {
     }
 
     private void schedulePressed(MouseEvent event) {
-        if(event.getClickCount() <= 1) {
-            if (event.isSecondaryButtonDown()) {
-                primaryButton = false;
-                getSelectedScheduleButton(event);
-                selectedScheduleItem = getSelectedSchedule(event);
-                scheduleContextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), selectedScheduleButton);
-            } else {
-                hideAllMenus();
-                primaryButton = true;
-                scheduleInnerX = event.getX();
-                scheduleInnerY = event.getY();
-            }
+        if (event.isSecondaryButtonDown()) {
+            primaryButton = false;
+            getSelectedScheduleButton(event);
+            selectedScheduleItem = getSelectedSchedule(event);
+            scheduleContextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), selectedScheduleButton);
+        } else {
+            if(SocketManager.getInstance().getClientSession().isTeacherRole())
+                return;
+            hideAllMenus();
+            primaryButton = true;
+            scheduleInnerX = event.getX();
+            scheduleInnerY = event.getY();
         }
     }
 
@@ -322,12 +336,16 @@ public class SchedulerGUI {
     }
 
     private void copy(Event event) {
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
         getSelectedScheduleButton(event);
         schedulerManager.copyCurrentClipboard();
         displayCurrentTimetable();
     }
 
     private void cut(Event event) {
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
         getSelectedScheduleButton(event);
         schedulerManager.copyCurrentClipboard();
         schedulerManager.deleteSchedule();
@@ -335,12 +353,16 @@ public class SchedulerGUI {
     }
 
     private void paste(Event event) {
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
         getSelectedScheduleButton(event);
         schedulerManager.pasteCurrentClipboard();
         displayCurrentTimetable();
     }
 
     public void delete() {
+        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            return;
         schedulerManager.deleteSchedule();
         displayCurrentTimetable();
     }

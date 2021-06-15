@@ -342,6 +342,9 @@ public class ClientProtocol {
      */
     private void addCredential() {
 
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
+
         LinkedTreeMap credentialMap = (LinkedTreeMap) lastPacket.getArgument("credential");
 
         Credential credential = Credential.parse(credentialMap);
@@ -369,6 +372,9 @@ public class ClientProtocol {
      */
     private void updateCredential() {
 
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
+
         LinkedTreeMap credentialMap = (LinkedTreeMap) lastPacket.getArgument("credential");
 
         Credential credential = Credential.parse(credentialMap);
@@ -395,6 +401,9 @@ public class ClientProtocol {
      * Remove credential from database, and send confirmation or error packet to client
      */
     private void removeCredential() {
+
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
 
         LinkedTreeMap credentialMap = (LinkedTreeMap) lastPacket.getArgument("credential");
 
@@ -441,6 +450,9 @@ public class ClientProtocol {
      */
     private void addTeacher() {
 
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
+
         LinkedTreeMap teacherMap = (LinkedTreeMap) lastPacket.getArgument("teacher");
 
         Teacher teacher = Teacher.parse(teacherMap);
@@ -468,6 +480,9 @@ public class ClientProtocol {
      */
     private void updateTeacher() {
 
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
+
         LinkedTreeMap teacherMap = (LinkedTreeMap) lastPacket.getArgument("teacher");
 
         Teacher teacher = Teacher.parse(teacherMap);
@@ -494,6 +509,9 @@ public class ClientProtocol {
      * Remove teacher from database, and send confirmation or error packet to client
      */
     private void removeTeacher() {
+
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
 
         LinkedTreeMap teacherMap = (LinkedTreeMap) lastPacket.getArgument("teacher");
 
@@ -540,6 +558,9 @@ public class ClientProtocol {
      */
     private void addClassroom() {
 
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
+
         LinkedTreeMap classroomMap = (LinkedTreeMap) lastPacket.getArgument("classroom");
 
         Classroom classroom = Classroom.parse(classroomMap);
@@ -567,6 +588,9 @@ public class ClientProtocol {
      */
     private void updateClassroom() {
 
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
+
         LinkedTreeMap classroomMap = (LinkedTreeMap) lastPacket.getArgument("classroom");
 
         Classroom classroom = Classroom.parse(classroomMap);
@@ -593,6 +617,9 @@ public class ClientProtocol {
      * Remove classroom from database, and send confirmation or error packet to client
      */
     private void removeClassroom() {
+
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
 
         LinkedTreeMap classroomMap = (LinkedTreeMap) lastPacket.getArgument("classroom");
 
@@ -639,6 +666,9 @@ public class ClientProtocol {
      */
     private void addCourse() {
 
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
+
         LinkedTreeMap courseMap = (LinkedTreeMap) lastPacket.getArgument("course");
 
         Course course = Course.parse(courseMap);
@@ -666,6 +696,9 @@ public class ClientProtocol {
      */
     private void updateCourse() {
 
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
+
         LinkedTreeMap courseMap = (LinkedTreeMap) lastPacket.getArgument("course");
 
         Course course = Course.parse(courseMap);
@@ -692,6 +725,9 @@ public class ClientProtocol {
      * Remove course from database, and send confirmation or error packet to client
      */
     private void removeCourse() {
+
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
 
         LinkedTreeMap courseMap = (LinkedTreeMap) lastPacket.getArgument("course");
 
@@ -738,6 +774,9 @@ public class ClientProtocol {
      */
     private void addSubject() {
 
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
+
         LinkedTreeMap subjectMap = (LinkedTreeMap) lastPacket.getArgument("subject");
 
         Subject subject = Subject.parse(subjectMap);
@@ -765,6 +804,9 @@ public class ClientProtocol {
      */
     private void updateSubject() {
 
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
+
         LinkedTreeMap subjectMap = (LinkedTreeMap) lastPacket.getArgument("subject");
 
         Subject subject = Subject.parse(subjectMap);
@@ -791,6 +833,9 @@ public class ClientProtocol {
      * Remove subject from database, and send confirmation or error packet to client
      */
     private void removeSubject() {
+
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
 
         LinkedTreeMap subjectMap = (LinkedTreeMap) lastPacket.getArgument("subject");
 
@@ -837,6 +882,9 @@ public class ClientProtocol {
      */
     private void addGroup() {
 
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
+
         LinkedTreeMap groupMap = (LinkedTreeMap) lastPacket.getArgument("group");
 
         Group group = Group.parse(groupMap);
@@ -864,6 +912,9 @@ public class ClientProtocol {
      */
     private void updateGroup() {
 
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
+
         LinkedTreeMap groupMap = (LinkedTreeMap) lastPacket.getArgument("group");
 
         Group group = Group.parse(groupMap);
@@ -890,6 +941,9 @@ public class ClientProtocol {
      * Remove subject from database, and send confirmation or error packet to client
      */
     private void removeGroup() {
+
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
 
         LinkedTreeMap groupMap = (LinkedTreeMap) lastPacket.getArgument("group");
 
@@ -936,6 +990,9 @@ public class ClientProtocol {
      */
     private void updateDay() {
 
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
+
         LinkedTreeMap dayMap = (LinkedTreeMap) lastPacket.getArgument("day");
 
         Day day = Day.parse(dayMap);
@@ -980,6 +1037,9 @@ public class ClientProtocol {
      * Update hour from database, and send confirmation or error packet to client
      */
     private void updateHour() {
+
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
 
         LinkedTreeMap hourMap = (LinkedTreeMap) lastPacket.getArgument("hour");
 
@@ -1104,6 +1164,9 @@ public class ClientProtocol {
      */
     private void insertScheduleItem() {
 
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
+
         LinkedTreeMap scheduleMap = (LinkedTreeMap) lastPacket.getArgument("scheduleItem");
 
         SchedulerItem schedulerItem = SchedulerItem.parse(scheduleMap);
@@ -1150,6 +1213,9 @@ public class ClientProtocol {
      * Switch schedule items from database, and send confirmation or error packet to client
      */
     private void switchScheduleItems() {
+
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
 
         LinkedTreeMap schedule1Map = (LinkedTreeMap) lastPacket.getArgument("scheduleItem1");
         SchedulerItem schedule1 = SchedulerItem.parse(schedule1Map);
@@ -1218,6 +1284,9 @@ public class ClientProtocol {
      */
     private void removeScheduleItem() {
 
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
+
         LinkedTreeMap scheduleMap = (LinkedTreeMap) lastPacket.getArgument("scheduleItem");
 
         SchedulerItem schedulerItem = SchedulerItem.parse(scheduleMap);
@@ -1266,6 +1335,9 @@ public class ClientProtocol {
      */
     private void addSchedule() {
 
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
+
         LinkedTreeMap scheduleItemMap = (LinkedTreeMap) lastPacket.getArgument("scheduleItem");
         SchedulerItem schedulerItem = SchedulerItem.parse(scheduleItemMap);
 
@@ -1307,6 +1379,9 @@ public class ClientProtocol {
      */
     private void updateSchedule() {
 
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
+
         LinkedTreeMap scheduleItemMap = (LinkedTreeMap) lastPacket.getArgument("scheduleItem");
         SchedulerItem schedulerItem = SchedulerItem.parse(scheduleItemMap);
 
@@ -1347,6 +1422,9 @@ public class ClientProtocol {
      * Remove schedule from database, and send confirmation or error packet to client
      */
     private void deleteSchedule() {
+
+        if(clientThread.getClientSession().isTeacherRole())
+            return;
 
         LinkedTreeMap scheduleItemMap = (LinkedTreeMap) lastPacket.getArgument("scheduleItem");
         SchedulerItem schedulerItem = SchedulerItem.parse(scheduleItemMap);

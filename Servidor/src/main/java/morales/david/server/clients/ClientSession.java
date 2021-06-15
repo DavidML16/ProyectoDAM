@@ -73,4 +73,21 @@ public class ClientSession {
         this.role = role;
     }
 
+    /**
+     * Returns if the role is teacher
+     * @return have role of teacher
+     */
+    public boolean isTeacherRole() {
+        return getRole().equalsIgnoreCase("profesor");
+    }
+
+    @Override
+    public String toString() {
+        return "ClientSession{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", role='" + role + '\'' +
+                '}';
+    }
+
 }

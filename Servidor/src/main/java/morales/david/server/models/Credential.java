@@ -114,6 +114,14 @@ public class Credential {
         this.teacher = teacher;
     }
 
+    /**
+     * Returns if the role is teacher
+     * @return have role of teacher
+     */
+    public boolean isTeacherRole() {
+        return getRole().equalsIgnoreCase("profesor");
+    }
+
     @Override
     public String toString() {
         return "Credential{" +
