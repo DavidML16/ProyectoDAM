@@ -1,1 +1,1 @@
-{ "server_ip": "localhost", "server_port": "6565", "server_file_transfer_port": "6566" }
+{ "server_ip": "192.168.1.46", "server_port": "6565", "server_file_transfer_port": "6566" }
