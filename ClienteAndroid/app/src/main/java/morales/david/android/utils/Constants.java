@@ -4,8 +4,9 @@ import morales.david.android.models.packets.PacketType;
 
 public class Constants {
 
-    public static final String SERVER_IP = "192.168.1.46";
-    public static final int SERVER_PORT = 6565;
+    public static String SERVER_IP = "localhost";
+    public static int SERVER_PORT = 6565;
+    public static int SERVER_FILE_TRANSFER_PORT = SERVER_PORT + 1;
 
     public static final PacketType[] INIT_PACKETS = {
             PacketType.DAYS, PacketType.HOURS, PacketType.TIMEZONES, PacketType.CLASSROOMS, PacketType.TEACHERS,

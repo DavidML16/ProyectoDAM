@@ -1,5 +1,8 @@
 package morales.david.android.utils;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+
 public class Utils {
 
     public static boolean isInteger(String s) {
@@ -16,6 +19,11 @@ public class Utils {
             return original;
         }
         return original.substring(0, 1).toUpperCase() + original.substring(1);
+    }
+
+    public static boolean isNetworkConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null;
     }
 
 }

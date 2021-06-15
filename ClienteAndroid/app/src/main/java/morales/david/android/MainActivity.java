@@ -8,8 +8,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.util.Map;
 
 import morales.david.android.activities.DashboardActivity;
 import morales.david.android.managers.ScreenManager;
@@ -20,7 +23,10 @@ import morales.david.android.managers.eventcallbacks.EventManager;
 import morales.david.android.models.packets.Packet;
 import morales.david.android.models.packets.PacketBuilder;
 import morales.david.android.models.packets.PacketType;
+import morales.david.android.utils.ConfigUtil;
+import morales.david.android.utils.Constants;
 import morales.david.android.utils.HashUtil;
+import morales.david.android.utils.Utils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,11 +45,53 @@ public class MainActivity extends AppCompatActivity {
         ScreenManager screenManager = ScreenManager.getInstance();
         screenManager.setActivity(this);
 
-        SocketManager socketManager = SocketManager.getInstance();
+        if(Utils.isNetworkConnected(this)) {
 
-        if(!socketManager.isOpened()) {
-            socketManager.setDaemon(true);
-            socketManager.start();
+            ConfigUtil configUtil = new ConfigUtil();
+
+            configUtil.getConfigString(this);
+
+            EventManager.getInstance().subscribe("config", (eventType, eventListenerType) -> {
+
+                if(eventListenerType instanceof ConfirmationEventListener) {
+
+                    String configString = ((ConfirmationEventListener) eventListenerType).getMessage();
+
+                    Map<String, String> parameters = configUtil.getConfigParams(configString);
+                    Constants.SERVER_IP = parameters.get("server_ip");
+                    Constants.SERVER_PORT = Integer.parseInt(parameters.get("server_port"));
+                    Constants.SERVER_FILE_TRANSFER_PORT = Integer.parseInt(parameters.get("server_file_transfer_port"));
+
+                    SocketManager socketManager = SocketManager.getInstance();
+                    if(!socketManager.isOpened()) {
+                        socketManager.setDaemon(true);
+                        socketManager.start();
+                    }
+
+                    SharedPreferences sharedPref = getSharedPreferences(getString(R.string.sgh_preference_key), Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+
+                    if(sharedPref.contains(getString(R.string.sgh_preference_user)) && sharedPref.contains(getString(R.string.sgh_preference_user))) {
+
+                        String user = sharedPref.getString(getString(R.string.sgh_preference_user), "");
+                        String pass = sharedPref.getString(getString(R.string.sgh_preference_pass), "");
+
+                        new Handler().postDelayed(() -> {
+                            login(editor, user, pass);
+                        }, 100);
+
+                    }
+
+                } else if (eventListenerType instanceof ErrorEventListener) {
+
+                    ErrorEventListener errorListener = (ErrorEventListener) eventListenerType;
+
+                    Toast.makeText(this, errorListener.getMessage(), Toast.LENGTH_SHORT).show();
+
+                }
+
+            });
+
         }
 
         usernameInput = findViewById(R.id.act_login_input_username);
@@ -52,17 +100,6 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.sgh_preference_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-
-        if(sharedPref.contains(getString(R.string.sgh_preference_user)) && sharedPref.contains(getString(R.string.sgh_preference_user))) {
-
-            String user = sharedPref.getString(getString(R.string.sgh_preference_user), "");
-            String pass = sharedPref.getString(getString(R.string.sgh_preference_pass), "");
-
-            new Handler().postDelayed(() -> {
-                login(editor, user, pass);
-            }, 100);
-
-        }
 
         loginButton.setOnClickListener(v -> {
             login(editor, usernameInput.getText().toString(), HashUtil.sha1(passwordInput.getText().toString()));

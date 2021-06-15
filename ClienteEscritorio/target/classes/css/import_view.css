@@ -1,0 +1,60 @@
+.mainPane {
+    -fx-background-color: #FFF;
+}
+
+.fileDrop {
+    -fx-border-style: dashed, dashed, dashed, dashed;
+    -fx-border-color: #8a8a8a;
+    -fx-border-width: 5;
+    -fx-background-color: #f5f5f5;
+    -fx-cursor: hand;
+}
+
+.importButton {
+    -fx-background-color: #FFF;
+    -fx-border-color: #e60547;
+    -fx-border-width: 2px;
+    -fx-border-radius: 15px;
+    -fx-text-fill: #9a0431;
+    -fx-font-weight: bold;
+}
+
+.importButton:hover {
+    -fx-border-radius: 15px;
+    -fx-background-radius: 15px;
+    -fx-background-color: #e60547;
+    -fx-text-fill: #FFF;
+    -fx-cursor: hand;
+}
+
+.importButton:pressed {
+    -fx-border-color: #B00A3A;
+    -fx-background-color: #B00A3A;
+    -fx-text-fill: #FFF;
+}
+
+.messagePaneInit {
+    -fx-background-color: #4A76A0;
+}
+
+.messagePaneClear {
+    -fx-background-color: #910772;
+}
+
+.messagePaneStep {
+    -fx-background-color: #5DAB4C;
+}
+
+.messagePaneEnd {
+    -fx-background-color: #E59410;
+}
+
+.messagePaneError {
+    -fx-background-color: #FF0000;
+}
+
+.messageLabel {
+    -fx-text-fill: #FFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}

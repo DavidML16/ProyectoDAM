@@ -108,9 +108,6 @@ public class SocketManager extends Thread {
 
         openSocket();
 
-        Packet pingPacket = new PacketBuilder().ofType(PacketType.PING.getRequest()).build();
-        sendPacketIO(pingPacket);
-
         while(!closed[0]) {
 
             try {
