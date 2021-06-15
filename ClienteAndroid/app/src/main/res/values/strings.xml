@@ -64,4 +64,16 @@
     <string name="sgh_preference_user">sgh_preference_user</string>
     <string name="sgh_preference_pass">sgh_preference_pass</string>
 
+    <string name="act_schedules_title">Buscar horario</string>
+    <string name="act_schedules_teacher_info">Profesor / Profesora</string>
+    <string name="act_schedules_group_info">Grupo</string>
+    <string name="act_schedules_classroom_info">Aula</string>
+    <string name="act_schedules_search">Buscar horario</string>
+
+    <string name="act_schedule_title">Horario</string>
+    <string name="item_schedule_teacher">Profesor: <xliff:g example="-" id="teacher">%s</xliff:g></string>
+    <string name="item_schedule_subject">Asignatura: <xliff:g example="-" id="subject">%s</xliff:g></string>
+    <string name="item_schedule_classroom">Aula: <xliff:g example="-" id="classroom">%s</xliff:g></string>
+    <string name="item_schedule_group">Grupo: <xliff:g example="-" id="group">%s</xliff:g></string>
+
 </resources>

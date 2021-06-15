@@ -2,7 +2,9 @@ package morales.david.android.models;
 
 import com.google.gson.internal.LinkedTreeMap;
 
-public class Classroom {
+import java.io.Serializable;
+
+public class Classroom implements Serializable {
 
     private int id;
     private String name;

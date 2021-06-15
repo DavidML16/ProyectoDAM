@@ -2,11 +2,12 @@ package morales.david.android.models;
 
 import com.google.gson.internal.LinkedTreeMap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class SchedulerItem {
+public class SchedulerItem implements Serializable {
 
     private String uuid;
     private TimeZone timeZone;

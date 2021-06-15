@@ -2,7 +2,9 @@ package morales.david.android.models;
 
 import com.google.gson.internal.LinkedTreeMap;
 
-public class Teacher {
+import java.io.Serializable;
+
+public class Teacher implements Serializable {
 
     private int id;
     private int number;

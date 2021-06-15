@@ -2,7 +2,9 @@ package morales.david.android.models;
 
 import com.google.gson.internal.LinkedTreeMap;
 
-public class Hour {
+import java.io.Serializable;
+
+public class Hour implements Serializable {
 
     private int id;
     private String name;

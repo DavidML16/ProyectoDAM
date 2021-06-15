@@ -2,9 +2,10 @@ package morales.david.android.models;
 
 import com.google.gson.internal.LinkedTreeMap;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class Schedule {
+public class Schedule implements Serializable {
 
     private String uuid;
     private Teacher teacher;

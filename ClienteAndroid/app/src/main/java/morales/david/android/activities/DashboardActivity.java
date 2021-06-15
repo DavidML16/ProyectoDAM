@@ -67,6 +67,11 @@ public class DashboardActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        schedulesCard.setOnClickListener((view) -> {
+            Intent intent = new Intent(this, SearchScheduleActivity.class);
+            startActivity(intent);
+        });
+
         disconnectCard.setOnClickListener((view) -> {
             Packet exitRequestPacket = new PacketBuilder().ofType(PacketType.EXIT.getRequest()).build();
             SocketManager.getInstance().sendPacketIO(exitRequestPacket);

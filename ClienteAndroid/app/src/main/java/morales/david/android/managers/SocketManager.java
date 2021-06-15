@@ -2,14 +2,17 @@ package morales.david.android.managers;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +23,7 @@ import morales.david.android.managers.eventcallbacks.EmptyClassroomsConfirmation
 import morales.david.android.managers.eventcallbacks.EventManager;
 import morales.david.android.managers.eventcallbacks.ConfirmationEventListener;
 import morales.david.android.managers.eventcallbacks.ErrorEventListener;
+import morales.david.android.managers.eventcallbacks.SchedulesConfirmationEventListener;
 import morales.david.android.models.Classroom;
 import morales.david.android.models.ClientSession;
 import morales.david.android.models.Course;
@@ -27,6 +31,8 @@ import morales.david.android.models.Credential;
 import morales.david.android.models.Day;
 import morales.david.android.models.Group;
 import morales.david.android.models.Hour;
+import morales.david.android.models.Schedule;
+import morales.david.android.models.SchedulerItem;
 import morales.david.android.models.Subject;
 import morales.david.android.models.Teacher;
 import morales.david.android.models.TimeZone;
@@ -382,6 +388,35 @@ public class SocketManager extends Thread {
                                 String message = (String) receivedPacket.getArgument("message");
 
                                 EventManager.getInstance().notify(context, uuid, new ErrorEventListener(uuid, message));
+
+                            }
+
+                            break;
+
+                        }
+
+                        case SEARCHSCHEDULE: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.SEARCHSCHEDULE.getConfirmation())) {
+
+                                List<LinkedTreeMap> schedules = (List<LinkedTreeMap>) receivedPacket.getArgument("schedules");
+
+                                final List<SchedulerItem> scheduleList = new ArrayList<>();
+
+                                for (LinkedTreeMap scheduleMap : schedules)
+                                    scheduleList.add(SchedulerItem.parse(scheduleMap));
+
+                                final List<Schedule> schedulesList = new ArrayList<>();
+
+                                for(SchedulerItem schedulerItem : scheduleList) {
+                                    if(schedulerItem.getScheduleList() == null || schedulerItem.getScheduleList().size() == 0)
+                                        continue;
+                                    for(Schedule schedule : schedulerItem.getScheduleList()) {
+                                        schedulesList.add(schedule);
+                                    }
+                                }
+
+                                EventManager.getInstance().notify(context, "searchschedule", new SchedulesConfirmationEventListener("searchschedule", schedulesList));
 
                             }
 
