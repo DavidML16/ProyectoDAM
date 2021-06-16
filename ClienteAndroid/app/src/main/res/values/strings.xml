@@ -76,4 +76,6 @@
     <string name="item_schedule_classroom">Aula: <xliff:g example="-" id="classroom">%s</xliff:g></string>
     <string name="item_schedule_group">Grupo: <xliff:g example="-" id="group">%s</xliff:g></string>
 
+    <string name="act_settings_title">Ajustes</string>
+
 </resources>

@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/ClienteAndroid">
-        <activity android:name=".activities.ScheduleActivity"></activity>
+        <activity android:name=".activities.SettingsActivity"/>
+        <activity android:name=".activities.ScheduleActivity" />
         <activity android:name=".activities.SearchScheduleActivity" />
         <activity android:name=".activities.GroupsActivity" />
         <activity android:name=".activities.SubjectsActivity" />

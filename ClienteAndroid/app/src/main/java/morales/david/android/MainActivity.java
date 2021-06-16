@@ -2,19 +2,18 @@ package morales.david.android;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.preference.PreferenceManager;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.util.Map;
-
 import morales.david.android.activities.DashboardActivity;
+import morales.david.android.activities.SettingsActivity;
 import morales.david.android.managers.ScreenManager;
 import morales.david.android.managers.SocketManager;
 import morales.david.android.managers.eventcallbacks.ConfirmationEventListener;
@@ -23,15 +22,14 @@ import morales.david.android.managers.eventcallbacks.EventManager;
 import morales.david.android.models.packets.Packet;
 import morales.david.android.models.packets.PacketBuilder;
 import morales.david.android.models.packets.PacketType;
-import morales.david.android.utils.ConfigUtil;
 import morales.david.android.utils.Constants;
 import morales.david.android.utils.HashUtil;
-import morales.david.android.utils.Utils;
 
 public class MainActivity extends AppCompatActivity {
 
     private EditText usernameInput, passwordInput;
     private CardView loginButton;
+    private ImageView settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,54 +43,12 @@ public class MainActivity extends AppCompatActivity {
         ScreenManager screenManager = ScreenManager.getInstance();
         screenManager.setActivity(this);
 
-        if(Utils.isNetworkConnected(this)) {
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
-            ConfigUtil configUtil = new ConfigUtil();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-            configUtil.getConfigString(this);
-
-            EventManager.getInstance().subscribe("config", (eventType, eventListenerType) -> {
-
-                if(eventListenerType instanceof ConfirmationEventListener) {
-
-                    String configString = ((ConfirmationEventListener) eventListenerType).getMessage();
-
-                    Map<String, String> parameters = configUtil.getConfigParams(configString);
-                    Constants.SERVER_IP = parameters.get("server_ip");
-                    Constants.SERVER_PORT = Integer.parseInt(parameters.get("server_port"));
-                    Constants.SERVER_FILE_TRANSFER_PORT = Integer.parseInt(parameters.get("server_file_transfer_port"));
-
-                    SocketManager socketManager = SocketManager.getInstance();
-                    if(!socketManager.isOpened()) {
-                        socketManager.setDaemon(true);
-                        socketManager.start();
-                    }
-
-                    SharedPreferences sharedPref = getSharedPreferences(getString(R.string.sgh_preference_key), Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPref.edit();
-
-                    if(sharedPref.contains(getString(R.string.sgh_preference_user)) && sharedPref.contains(getString(R.string.sgh_preference_user))) {
-
-                        String user = sharedPref.getString(getString(R.string.sgh_preference_user), "");
-                        String pass = sharedPref.getString(getString(R.string.sgh_preference_pass), "");
-
-                        new Handler().postDelayed(() -> {
-                            login(editor, user, pass);
-                        }, 100);
-
-                    }
-
-                } else if (eventListenerType instanceof ErrorEventListener) {
-
-                    ErrorEventListener errorListener = (ErrorEventListener) eventListenerType;
-
-                    Toast.makeText(this, errorListener.getMessage(), Toast.LENGTH_SHORT).show();
-
-                }
-
-            });
-
-        }
+        Constants.SERVER_IP = preferences.getString("preference_ip", "192.168.1.46");
+        Constants.SERVER_PORT = Integer.parseInt(preferences.getString("preference_port", "6565"));
 
         usernameInput = findViewById(R.id.act_login_input_username);
         passwordInput = findViewById(R.id.act_login_input_password);
@@ -105,6 +61,12 @@ public class MainActivity extends AppCompatActivity {
             login(editor, usernameInput.getText().toString(), HashUtil.sha1(passwordInput.getText().toString()));
         });
 
+        settings = findViewById(R.id.act_login_settings);
+        settings.setOnClickListener(v -> {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        });
+
     }
 
     public void login(SharedPreferences.Editor editor, String user, String pass) {
@@ -115,6 +77,17 @@ public class MainActivity extends AppCompatActivity {
         if(username.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, getString(R.string.act_login_message_error_empty), Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        SocketManager socketManager = SocketManager.getInstance();
+        if(!socketManager.isOpened()) {
+            socketManager.setDaemon(true);
+            socketManager.start();
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         Packet loginRequestPacket = new PacketBuilder()

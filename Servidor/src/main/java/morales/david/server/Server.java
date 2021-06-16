@@ -6,12 +6,14 @@ import morales.david.server.clients.ClientThread;
 import morales.david.server.managers.ClientsManager;
 import morales.david.server.ftp.FileTransferManager;
 import morales.david.server.managers.ImportManager;
+import morales.david.server.utils.ConfigUtil;
 import morales.david.server.utils.Constants;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Map;
 
 public class Server {
 
@@ -31,6 +33,19 @@ public class Server {
      * @throws IOException
      */
     private void init() throws IOException {
+
+        try {
+
+            ConfigUtil configUtil = new ConfigUtil();
+
+            Map<String, String> parameters = configUtil.getConfigParams();
+            Constants.SERVER_PORT = Integer.parseInt(parameters.get("server_port"));
+            Constants.SERVER_FILE_TRANSFER_PORT = Integer.parseInt(parameters.get("server_file_transfer_port"));
+            Constants.CLIENT_CONNECTION_CHECKING_INTERVAL = Integer.parseInt(parameters.get("client_connection_checking_interval"));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         server = new ServerSocket(Constants.SERVER_PORT);
         clientRepository = new ClientRepository();

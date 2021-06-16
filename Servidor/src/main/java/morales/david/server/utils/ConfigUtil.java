@@ -1,15 +1,12 @@
-package morales.david.desktop.utils;
+package morales.david.server.utils;
 
-import org.json.JSONObject;
-
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Scanner;
-import java.util.function.Consumer;
 
 public class ConfigUtil {
 
@@ -24,9 +21,9 @@ public class ConfigUtil {
 
         if(!propertiesFile.exists()) {
 
-            properties.setProperty("server_ip", "localhost");
             properties.setProperty("server_port", "6565");
             properties.setProperty("server_file_transfer_port", "6566");
+            properties.setProperty("client_connection_checking_interval", "5000");
 
             FileOutputStream fr = new FileOutputStream(propertiesFile);
             properties.store(fr, null);
@@ -44,17 +41,14 @@ public class ConfigUtil {
 
         Map<String, String> parameters = new HashMap<>();
 
-        String server_ip = properties.getProperty("server_ip");
-        parameters.put("server_ip", server_ip);
-        System.out.println(server_ip);
-
         String server_port = properties.getProperty("server_port");
         parameters.put("server_port", server_port);
-        System.out.println(server_port);
 
         String server_file_transfer_port = properties.getProperty("server_file_transfer_port");
         parameters.put("server_file_transfer_port", server_file_transfer_port);
-        System.out.println(server_file_transfer_port);
+
+        String client_check_interval = properties.getProperty("client_connection_checking_interval");
+        parameters.put("client_connection_checking_interval", client_check_interval);
 
         return parameters;
 
