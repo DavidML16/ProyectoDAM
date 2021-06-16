@@ -101,6 +101,8 @@ public class ImportManager {
 
         try {
 
+            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+
             acon = DriverManager.getConnection("jdbc:ucanaccess://" + file.getAbsolutePath());
 
             dbConnection.open();
@@ -283,6 +285,8 @@ public class ImportManager {
 
         } catch (SQLException throwables) {
 
+            throwables.printStackTrace();
+
             statusPacket = new PacketBuilder()
                     .ofType(PacketType.IMPORTSTATUS.getConfirmation())
                     .addArgument("importing", isImporting)
@@ -291,6 +295,10 @@ public class ImportManager {
                     .build();
             server.getClientRepository().broadcast(statusPacket);
 
+        } catch (ClassNotFoundException e) {
+
+            e.printStackTrace();
+
         } finally {
 
             isImporting = false;
@@ -298,7 +306,9 @@ public class ImportManager {
             if(file.exists())
                 file.delete();
 
-            File directory = new File("files/");
+            File _directory = new File("");
+
+            File directory = new File(_directory.getAbsolutePath() + File.separator + "files");
             deleteDirectory(directory, directory);
 
             statusPacket = new PacketBuilder()

@@ -57,7 +57,8 @@ public class ClientFTPThread extends Thread {
                         output.write("ok" + "\n");
                         output.flush();
 
-                        String filePath = "files/" + fileName;
+                        File directory = new File("");
+                        String filePath = directory.getAbsolutePath() + File.separator + "files" + File.separator + fileName;
 
                         FileTransferProcessor ftp = new FileTransferProcessor(socket);
                         ftp.receiveFile(filePath);

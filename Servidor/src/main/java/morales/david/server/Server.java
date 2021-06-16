@@ -45,6 +45,11 @@ public class Server {
         fileTransferManager.setDaemon(true);
         fileTransferManager.start();
 
+        File directory = new File("");
+        File fileDir = new File(directory.getAbsolutePath() + File.separator + "files");
+        if(!fileDir.exists())
+            fileDir.mkdir();
+
         System.out.println(String.format(Constants.LOG_SERVER_INIT, Constants.SERVER_PORT));
 
         while(running) {
