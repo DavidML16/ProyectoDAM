@@ -8,6 +8,7 @@ import morales.david.server.ftp.FileTransferManager;
 import morales.david.server.managers.ImportManager;
 import morales.david.server.utils.ConfigUtil;
 import morales.david.server.utils.Constants;
+import morales.david.server.utils.DBConstants;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +43,11 @@ public class Server {
             Constants.SERVER_PORT = Integer.parseInt(parameters.get("server_port"));
             Constants.SERVER_FILE_TRANSFER_PORT = Integer.parseInt(parameters.get("server_file_transfer_port"));
             Constants.CLIENT_CONNECTION_CHECKING_INTERVAL = Integer.parseInt(parameters.get("client_connection_checking_interval"));
+            DBConstants.DB_IP = parameters.get("db_ip");
+            DBConstants.DB_PORT = Integer.parseInt(parameters.get("db_port"));
+            DBConstants.DB_DATABASE = parameters.get("db_database");
+            DBConstants.DB_USER = parameters.get("db_username");
+            DBConstants.DB_PASS = parameters.get("db_password");
 
         } catch (IOException e) {
             e.printStackTrace();

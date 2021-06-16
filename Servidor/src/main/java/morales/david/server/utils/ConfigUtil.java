@@ -25,6 +25,12 @@ public class ConfigUtil {
             properties.setProperty("server_file_transfer_port", "6566");
             properties.setProperty("client_connection_checking_interval", "5000");
 
+            properties.setProperty("db_ip", "localhost");
+            properties.setProperty("db_port", "3306");
+            properties.setProperty("db_database", "db_proyecto");
+            properties.setProperty("db_username", "david");
+            properties.setProperty("db_password", "161100");
+
             FileOutputStream fr = new FileOutputStream(propertiesFile);
             properties.store(fr, null);
             fr.close();
@@ -49,6 +55,21 @@ public class ConfigUtil {
 
         String client_check_interval = properties.getProperty("client_connection_checking_interval");
         parameters.put("client_connection_checking_interval", client_check_interval);
+
+        String db_ip = properties.getProperty("db_ip");
+        parameters.put("db_ip", db_ip);
+
+        String db_port = properties.getProperty("db_port");
+        parameters.put("db_port", db_port);
+
+        String db_database = properties.getProperty("db_database");
+        parameters.put("db_database", db_database);
+
+        String db_username = properties.getProperty("db_username");
+        parameters.put("db_username", db_username);
+
+        String db_password = properties.getProperty("db_password");
+        parameters.put("db_password", db_password);
 
         return parameters;
 

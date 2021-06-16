@@ -3,9 +3,12 @@ package morales.david.server.utils;
 public class DBConstants {
 
 
-    public static final String DB_URL = "jdbc:mysql://localhost/db_proyecto";
-    public static final String DB_USER = "david";
-    public static final String DB_PASS = "161100";
+    public static String DB_URL = "jdbc:mysql://ip:port/database";
+    public static String DB_IP = "localhost";
+    public static int DB_PORT = 3306;
+    public static String DB_DATABASE = "db_proyecto";
+    public static String DB_USER = "david";
+    public static String DB_PASS = "161100";
 
 
     public static final String DB_QUERY_CREDENTIAL = "SELECT id_credencial FROM credencial WHERE usuario = ? AND passwd_hash = ?";

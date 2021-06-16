@@ -24,7 +24,8 @@ public class DBConnection {
         try {
             if(connection != null && !connection.isClosed())
                 return;
-            connection = DriverManager.getConnection(DBConstants.DB_URL, DBConstants.DB_USER, DBConstants.DB_PASS);
+            String url = "jdbc:mysql://" + DBConstants.DB_IP + ":" + DBConstants.DB_PORT + "/" + DBConstants.DB_DATABASE;
+            connection = DriverManager.getConnection(url, DBConstants.DB_USER, DBConstants.DB_PASS);
         } catch (SQLException e) {
             e.printStackTrace();
         }
