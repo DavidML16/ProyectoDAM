@@ -1,5 +1,6 @@
 package morales.david.android.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import morales.david.android.MainActivity;
 import morales.david.android.R;
 import morales.david.android.adapters.ClassroomsAdapter;
 import morales.david.android.fragments.EmptyClassroomsDialogFragment;
@@ -83,11 +85,18 @@ public class ClassroomsActivity extends AppCompatActivity implements OptionClick
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                onBackPressed();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, DashboardActivity.class);
+        startActivity(intent);
+        super.onBackPressed();
     }
 
     @Override

@@ -79,24 +79,33 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        SocketManager socketManager = SocketManager.getInstance();
-        if(!socketManager.isOpened()) {
-            socketManager.setDaemon(true);
-            socketManager.start();
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
         Packet loginRequestPacket = new PacketBuilder()
                 .ofType(PacketType.LOGIN.getRequest())
                 .addArgument("username", username)
                 .addArgument("password", password)
                 .build();
 
-        SocketManager.getInstance().sendPacketIO(loginRequestPacket);
+        EventManager.getInstance().subscribe("start", (eventType, eventListenerType) -> {
+
+            if(eventListenerType instanceof ConfirmationEventListener) {
+
+                SocketManager.getInstance().sendPacketIO(loginRequestPacket);
+
+            }
+
+        });
+
+        SocketManager socketManager = SocketManager.getInstance();
+        if(!socketManager.isOpened()) {
+
+            socketManager.setDaemon(true);
+            socketManager.start();
+
+        } else {
+
+            SocketManager.getInstance().sendPacketIO(loginRequestPacket);
+
+        }
 
         EventManager.getInstance().subscribe("login", (eventType, eventListenerType) -> {
 

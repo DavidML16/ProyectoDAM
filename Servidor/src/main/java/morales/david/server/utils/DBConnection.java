@@ -1930,6 +1930,60 @@ public class DBConnection {
 
     }
 
+    /**
+     * Reset all table from database
+     * @return tables reseted
+     */
+    public boolean resetAll() {
+
+        try {
+
+            Statement scheduleStm = connection.createStatement();
+            scheduleStm.execute(DBConstants.DB_QUERY_RESET_SCHEDULES);
+            scheduleStm.close();
+
+            Statement timezoneStm = connection.createStatement();
+            timezoneStm.execute(DBConstants.DB_QUERY_RESET_TIMEZONE);
+            timezoneStm.close();
+
+            Statement dayStm = connection.createStatement();
+            dayStm.execute(DBConstants.DB_QUERY_RESET_DAYS);
+            dayStm.close();
+
+            Statement hourStm = connection.createStatement();
+            hourStm.execute(DBConstants.DB_QUERY_RESET_HOURS);
+            hourStm.close();
+
+            Statement teacherStm = connection.createStatement();
+            teacherStm.execute(DBConstants.DB_QUERY_RESET_TEACHERS);
+            teacherStm.close();
+
+            Statement subjectStm = connection.createStatement();
+            subjectStm.execute(DBConstants.DB_QUERY_RESET_SUBJECTS);
+            subjectStm.close();
+
+            Statement groupStm = connection.createStatement();
+            groupStm.execute(DBConstants.DB_QUERY_RESET_GROUPS);
+            groupStm.close();
+
+            Statement classroomStm = connection.createStatement();
+            classroomStm.execute(DBConstants.DB_QUERY_RESET_CLASSROOMS);
+            classroomStm.close();
+
+            Statement courseStm = connection.createStatement();
+            courseStm.execute(DBConstants.DB_QUERY_RESET_COURSES);
+            courseStm.close();
+
+            return true;
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return false;
+
+    }
+
 
     /**
      * Insert days information to database
@@ -2407,6 +2461,9 @@ public class DBConnection {
      * @return schedule inserted
      */
     public boolean insertSchedule(Schedule schedule) {
+
+        if(schedule.getSubject() == null)
+            return false;
 
         PreparedStatement stm = null;
         int rs = 0;

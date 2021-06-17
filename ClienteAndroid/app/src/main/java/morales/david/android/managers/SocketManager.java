@@ -114,6 +114,8 @@ public class SocketManager extends Thread {
 
         openSocket();
 
+        EventManager.getInstance().notify(ScreenManager.getInstance().getActivity(), "start", new ConfirmationEventListener("start", "SUCCESS"));
+
         while(!closed[0]) {
 
             try {

@@ -74,16 +74,26 @@ public class DBConstants {
     public static final String DB_QUERY_UPDATESCHEDULE = "UPDATE imparte SET `profesor` = ?, `asignatura` = ?, `grupo` = ?, `aula` = ?, `franja` = ? WHERE uuid = ?";
     public static final String DB_QUERY_INSERTSCHEDULE = "REPLACE INTO imparte VALUES (?,?,?,?,?,?)";
 
-    public static final String DB_QUERY_CLEAR_DAYS = "DELETE FROM numero_dia";
-    public static final String DB_QUERY_CLEAR_HOURS = "DELETE FROM numero_hora";
-    public static final String DB_QUERY_CLEAR_TIMEZONE = "DELETE FROM franja_horaria";
-    public static final String DB_QUERY_CLEAR_SUBJECTS = "DELETE FROM asignatura";
-    public static final String DB_QUERY_CLEAR_CLASSROOMS = "DELETE FROM aula";
-    public static final String DB_QUERY_CLEAR_COURSES = "DELETE FROM curso";
-    public static final String DB_QUERY_CLEAR_GROUPS = "DELETE FROM grupo";
-    public static final String DB_QUERY_CLEAR_COURSE_SUBJECTS = "DELETE FROM curso_asignatura";
-    public static final String DB_QUERY_CLEAR_TEACHERS = "DELETE FROM profesor";
-    public static final String DB_QUERY_CLEAR_SCHEDULES = "DELETE FROM imparte";
+    public static final String DB_QUERY_CLEAR_DAYS = "DELETE FROM `numero_dia`";
+    public static final String DB_QUERY_CLEAR_HOURS = "DELETE FROM `numero_hora`";
+    public static final String DB_QUERY_CLEAR_TIMEZONE = "DELETE FROM `franja_horaria`";
+    public static final String DB_QUERY_CLEAR_SUBJECTS = "DELETE FROM `asignatura`";
+    public static final String DB_QUERY_CLEAR_CLASSROOMS = "DELETE FROM `aula`";
+    public static final String DB_QUERY_CLEAR_COURSES = "DELETE FROM `curso`";
+    public static final String DB_QUERY_CLEAR_GROUPS = "DELETE FROM `grupo`";
+    public static final String DB_QUERY_CLEAR_COURSE_SUBJECTS = "DELETE FROM `curso_asignatura`";
+    public static final String DB_QUERY_CLEAR_TEACHERS = "DELETE FROM `profesor`";
+    public static final String DB_QUERY_CLEAR_SCHEDULES = "DELETE FROM `imparte`";
+
+    public static final String DB_QUERY_RESET_DAYS = "ALTER TABLE `numero_dia` AUTO_INCREMENT = 1";
+    public static final String DB_QUERY_RESET_HOURS = "ALTER TABLE `numero_hora` AUTO_INCREMENT = 1";
+    public static final String DB_QUERY_RESET_TIMEZONE = "ALTER TABLE `franja_horaria` AUTO_INCREMENT = 1";
+    public static final String DB_QUERY_RESET_SUBJECTS = "ALTER TABLE `asignatura` AUTO_INCREMENT = 1";
+    public static final String DB_QUERY_RESET_CLASSROOMS = "ALTER TABLE `aula` AUTO_INCREMENT = 1";
+    public static final String DB_QUERY_RESET_COURSES = "ALTER TABLE `curso` AUTO_INCREMENT = 1";
+    public static final String DB_QUERY_RESET_GROUPS = "ALTER TABLE `grupo` AUTO_INCREMENT = 1";
+    public static final String DB_QUERY_RESET_TEACHERS = "ALTER TABLE `profesor` AUTO_INCREMENT = 1";
+    public static final String DB_QUERY_RESET_SCHEDULES = "ALTER TABLE `imparte` AUTO_INCREMENT = 1";
 
     public static final String DB_QUERY_INSERTSB_DAYS = "INSERT INTO numero_dia VALUES ";
     public static final String DB_QUERY_INSERTSB_HOURS = "INSERT INTO numero_hora VALUES ";

@@ -109,6 +109,8 @@ public class ImportManager {
 
             if(dbConnection.clearAll()) {
 
+                dbConnection.resetAll();
+
                 statusPacket = new PacketBuilder()
                         .ofType(PacketType.IMPORTSTATUS.getConfirmation())
                         .addArgument("importing", isImporting)
@@ -534,9 +536,12 @@ public class ImportManager {
     private List<Subject> getSubjects() {
 
         List<Subject> subjectList = new ArrayList<>();
+        List<Subject> tempList = new ArrayList<>();
 
         PreparedStatement stm = null;
         ResultSet rs = null;
+
+        int i = 1;
 
         try {
 
@@ -550,7 +555,25 @@ public class ImportManager {
                 int number = rs.getInt("N");
                 String abreviation = rs.getString("ABREV");
                 String name = rs.getString("NOMBRE");
-                subjectList.add(new Subject(id, number, abreviation, name, ColorUtil.getColor(), new ArrayList<>()));
+
+                Subject subject = new Subject(id, number, abreviation, name, ColorUtil.getColor(), new ArrayList<>());
+
+                if(subject.getId() > 0) {
+                    subjectList.add(subject);
+                    i++;
+                } else {
+                    tempList.add(subject);
+                }
+
+            }
+
+            for(Subject subject : tempList) {
+
+                subject.setId(i);
+
+                subjectList.add(subject);
+
+                i++;
 
             }
 
