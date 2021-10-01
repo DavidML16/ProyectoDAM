@@ -29,6 +29,9 @@ public class TeachersMenuController implements Initializable, Controller {
     private Button credentialsNavigationButton;
 
     @FXML
+    private Button inspectorReportNavigationButton;
+
+    @FXML
     private BorderPane viewPane;
 
     private String actualView;
@@ -38,7 +41,7 @@ public class TeachersMenuController implements Initializable, Controller {
 
         actualView = "";
 
-        Platform.runLater(() -> loadView("teachers/teachers.fxml", "Cursos", null));
+        Platform.runLater(() -> loadView("teachers/teachers.fxml", "Profesores", null));
         teachersNavigationButton.getStyleClass().add("buttonPressed");
 
         Platform.runLater(() -> {
@@ -55,9 +58,11 @@ public class TeachersMenuController implements Initializable, Controller {
     public void handleButtonAction(MouseEvent event) {
 
         if(event.getSource() == teachersNavigationButton)
-            loadView("teachers/teachers.fxml", "Cursos", event);
+            loadView("teachers/teachers.fxml", "Profesores", event);
         else if (event.getSource() == credentialsNavigationButton)
-            loadView("teachers/credentials.fxml", "Grupos", event);
+            loadView("teachers/credentials.fxml", "Credenciales", event);
+        else if (event.getSource() == inspectorReportNavigationButton)
+            loadView("teachers/teacherreport.fxml", "Parte de guardia", event);
 
     }
 
@@ -65,6 +70,7 @@ public class TeachersMenuController implements Initializable, Controller {
 
         teachersNavigationButton.getStyleClass().remove("buttonPressed");
         credentialsNavigationButton.getStyleClass().remove("buttonPressed");
+        inspectorReportNavigationButton.getStyleClass().remove("buttonPressed");
 
     }
 

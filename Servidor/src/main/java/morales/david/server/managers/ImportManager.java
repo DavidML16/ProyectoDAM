@@ -1092,6 +1092,9 @@ public class ImportManager {
                     Classroom classroom = getClassroomBy(aulas, aula);
                     TimeZone timeZone = getTimeZoneBy(zonashorarias, dia, hora);
 
+                    if(timeZone == null)
+                        timeZone = getTimeZoneBy(zonashorarias, 1, 1);
+
                     Schedule schedule = new Schedule();
 
                     if(subject != null)
@@ -1204,8 +1207,14 @@ public class ImportManager {
      * @return subject
      */
     private Subject getSubjectBy(List<Subject> subjectList, String text) {
+
+        String trimmed = "";
+
+        if(text != null)
+            trimmed = text.trim();
+
         for(Subject subject : subjectList) {
-            if(subject.getAbreviation().equalsIgnoreCase(text) || Integer.toString(subject.getNumber()).equalsIgnoreCase(text)) {
+            if(subject.getAbreviation().equalsIgnoreCase(trimmed) || Integer.toString(subject.getNumber()).equalsIgnoreCase(trimmed)) {
                 return subject;
             }
         }
@@ -1234,8 +1243,14 @@ public class ImportManager {
      * @return classroom
      */
     private Classroom getClassroomBy(List<Classroom> classroomList, String name) {
+
+        String trimmed = "";
+
+        if(name != null)
+            trimmed = name.trim();
+
         for(Classroom classroom : classroomList) {
-            if(classroom.getName().equalsIgnoreCase(name)) {
+            if(classroom.getName().equalsIgnoreCase(trimmed)) {
                 return classroom;
             }
         }

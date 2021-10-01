@@ -34,9 +34,6 @@ public class CredentialsController implements Initializable, Controller {
     private TableView<Credential> credentialsTable;
 
     @FXML
-    private TableColumn<Credential, ?> idColumn;
-
-    @FXML
     private TableColumn<Credential, String> usernameColumn;
 
     @FXML
@@ -105,7 +102,6 @@ public class CredentialsController implements Initializable, Controller {
 
         ObservableList<Credential> list = DataManager.getInstance().getCredentials();
 
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         roleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
         teacherColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTeacher() != null ? cellData.getValue().getTeacher().getName() : "No asignado"));

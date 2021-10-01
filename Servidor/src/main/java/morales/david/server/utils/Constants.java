@@ -2,6 +2,8 @@ package morales.david.server.utils;
 
 public class Constants {
 
+    public static boolean SETUP_FIRST_TIME = false;
+
     public static int SERVER_PORT = 6565;
     public static int SERVER_FILE_TRANSFER_PORT = SERVER_PORT + 1;
 

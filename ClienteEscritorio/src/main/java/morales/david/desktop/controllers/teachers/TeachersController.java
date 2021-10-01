@@ -33,9 +33,6 @@ public class TeachersController implements Initializable, Controller {
     private TableView<Teacher> teachersTable;
 
     @FXML
-    private TableColumn<Teacher, Integer> idColumn;
-
-    @FXML
     private TableColumn<Teacher, Integer> numberColumn;
 
     @FXML
@@ -113,7 +110,6 @@ public class TeachersController implements Initializable, Controller {
 
         ObservableList<Teacher> list = DataManager.getInstance().getTeachers();
 
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         numberColumn.setCellValueFactory(new PropertyValueFactory<>("number"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         abreviationColumn.setCellValueFactory(new PropertyValueFactory<>("abreviation"));

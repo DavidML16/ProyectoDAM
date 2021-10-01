@@ -34,9 +34,6 @@ public class SubjectsController implements Initializable, Controller {
     private TableView<Subject> subjectsTable;
 
     @FXML
-    private TableColumn<Subject, Integer> idColumn;
-
-    @FXML
     private TableColumn<Subject, Integer> numberColumn;
 
     @FXML
@@ -108,7 +105,6 @@ public class SubjectsController implements Initializable, Controller {
 
         ObservableList<Subject> list = DataManager.getInstance().getSubjects();
 
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         numberColumn.setCellValueFactory(new PropertyValueFactory<>("number"));
         abreviationColumn.setCellValueFactory(new PropertyValueFactory<>("abreviation"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));

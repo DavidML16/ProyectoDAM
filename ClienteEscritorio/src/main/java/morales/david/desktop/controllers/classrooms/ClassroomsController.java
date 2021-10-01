@@ -33,9 +33,6 @@ public class ClassroomsController implements Initializable, Controller {
     private TableView<Classroom> classroomsTable;
 
     @FXML
-    private TableColumn<Classroom, Integer> idColumn;
-
-    @FXML
     private TableColumn<Classroom, String> nameColumn;
 
     @FXML
@@ -98,7 +95,6 @@ public class ClassroomsController implements Initializable, Controller {
 
         ObservableList<Classroom> list = DataManager.getInstance().getClassrooms();
 
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
         classroomsTable.setItems(list);

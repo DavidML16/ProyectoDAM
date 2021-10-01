@@ -44,6 +44,72 @@ public class DBConnection {
         }
     }
 
+    public boolean testConnection(String ip, String user, String password) {
+
+        boolean valid = false;
+
+        try {
+
+            String url = "jdbc:mysql://" + ip + ":" + DBConstants.DB_PORT + "/";
+            connection = DriverManager.getConnection(url, user, password);
+
+            if(connection != null)
+                valid = true;
+
+        } catch (SQLException e) {
+
+            valid = false;
+
+        } finally {
+
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+        return valid;
+
+    }
+
+    public boolean createDatabase(String ip, String user, String password, String database) {
+
+        try {
+
+            String url = "jdbc:mysql://" + ip + ":" + DBConstants.DB_PORT + "/";
+            connection = DriverManager.getConnection(url, user, password);
+
+            Statement stmt = connection.createStatement();
+            stmt.executeUpdate("CREATE DATABASE IF NOT EXISTS " + database);
+
+            stmt.close();
+
+            return true;
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        } finally {
+
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+        return false;
+
+    }
+
     /**
      * Get connection instance
      * @return connection
@@ -2456,6 +2522,71 @@ public class DBConnection {
     }
 
     /**
+     * Get schedules turns from database by search query
+     * @return list of schedules
+     */
+    public List<ScheduleTurn> getScheduleTurns(TimeZone timeZone) {
+
+        List<ScheduleTurn> schedules = new ArrayList<>();
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            stm = connection.prepareStatement(DBConstants.DB_QUERY_SEARCH_SCHEDULE_TURNS + " franja = " + timeZone.getId());
+
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+
+                int id_teacher = rs.getInt("profesor");
+                int id_group = rs.getInt("grupo");
+                int id_classroom = rs.getInt("aula");
+
+                Teacher teacher = getTeacher(id_teacher);
+                Group group = getGroup(id_group);
+                Classroom classroom = getClassroom(id_classroom);
+
+                ScheduleTurn scheduleTurn = new ScheduleTurn();
+
+                if(teacher != null)
+                    scheduleTurn.setTeacher(teacher);
+
+                if(group != null && group.getCourse() != null)
+                    scheduleTurn.setCourse(group.getCourse());
+
+                if(classroom != null)
+                    scheduleTurn.setClassroom(classroom);
+
+                schedules.add(scheduleTurn);
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        return schedules;
+
+    }
+
+    /**
      * Insert schedule provided to the database
      * @param schedule
      * @return schedule inserted
@@ -2616,6 +2747,187 @@ public class DBConnection {
 
         return rs == 1;
 
+
+    }
+
+    public void insertTables() {
+
+        try {
+
+            Statement s1 = connection.createStatement();
+            s1.execute(
+                    "CREATE TABLE IF NOT EXISTS profesor (" +
+                    "    id_profesor INTEGER(11) PRIMARY KEY AUTO_INCREMENT," +
+                    "    numero INTEGER(5)," +
+                    "    nombre VARCHAR(150) NOT NULL," +
+                    "    abreviacion VARCHAR(5) NOT NULL," +
+                    "    minhorasdia INTEGER(3)," +
+                    "    maxhorasdia INTEGER(3)," +
+                    "    departamento VARCHAR(50) NOT NULL" +
+                    ");"
+            );
+            s1.close();
+
+            Thread.sleep(250);
+
+            Statement s2 = connection.createStatement();
+            s2.execute(
+                    "CREATE TABLE IF NOT EXISTS credencial (" +
+                    "    id_credencial INTEGER(11) PRIMARY KEY AUTO_INCREMENT," +
+                    "    usuario VARCHAR(255) NOT NULL," +
+                    "    passwd_hash VARCHAR(255) NOT NULL," +
+                    "    profesor INTEGER(11)," +
+                    "    rol VARCHAR(50) NOT NULL," +
+                    "    CONSTRAINT credencial_prof_fk FOREIGN KEY (profesor) REFERENCES profesor(id_profesor) ON DELETE CASCADE" +
+                    ");"
+            );
+            s2.close();
+
+            Thread.sleep(250);
+
+            Statement s3 = connection.createStatement();
+            s3.execute(
+                    "CREATE TABLE IF NOT EXISTS aula (" +
+                    "    id_aula INTEGER(11) PRIMARY KEY AUTO_INCREMENT," +
+                    "    nombre VARCHAR(150) NOT NULL" +
+                    ");"
+            );
+            s3.close();
+
+            Thread.sleep(250);
+
+            Statement s4 = connection.createStatement();
+            s4.execute(
+                    "CREATE TABLE IF NOT EXISTS curso (" +
+                    "    id_curso INTEGER(11) PRIMARY KEY AUTO_INCREMENT," +
+                    "    nivel VARCHAR(10) NOT NULL," +
+                    "    nombre VARCHAR(150) NOT NULL" +
+                    ");"
+            );
+            s4.close();
+
+            Thread.sleep(250);
+
+            Statement s5 = connection.createStatement();
+            s5.execute(
+                    "CREATE TABLE IF NOT EXISTS asignatura (" +
+                    "    id_asignatura INTEGER(11) PRIMARY KEY AUTO_INCREMENT," +
+                    "    numero INTEGER(5) NOT NULL," +
+                    "    abreviacion VARCHAR(150) NOT NULL," +
+                    "    nombre VARCHAR(150) NOT NULL," +
+                    "    color VARCHAR(9)" +
+                    ");"
+            );
+            s5.close();
+
+            Thread.sleep(250);
+
+            Statement s6 = connection.createStatement();
+            s6.execute(
+                    "CREATE TABLE IF NOT EXISTS curso_asignatura (" +
+                    "    curso INTEGER(11)," +
+                    "    asignatura INTEGER(11)," +
+                    "    CONSTRAINT c_s_pk PRIMARY KEY (curso, asignatura)," +
+                    "    CONSTRAINT c_fk FOREIGN KEY (curso) REFERENCES curso(id_curso) ON DELETE CASCADE," +
+                    "    CONSTRAINT a_fk FOREIGN KEY (asignatura) REFERENCES asignatura(id_asignatura) ON DELETE CASCADE" +
+                    ");"
+            );
+            s6.close();
+
+            Thread.sleep(250);
+
+            Statement s7 = connection.createStatement();
+            s7.execute(
+                    "CREATE TABLE IF NOT EXISTS numero_dia (" +
+                    "    id_dia INTEGER(11) PRIMARY KEY," +
+                    "    dia VARCHAR(150) NOT NULL" +
+                    ");"
+            );
+            s7.close();
+
+            Thread.sleep(250);
+
+            Statement s8 = connection.createStatement();
+            s8.execute(
+                    "CREATE TABLE IF NOT EXISTS numero_hora (" +
+                    "    id_hora INTEGER(11) PRIMARY KEY," +
+                    "    horas VARCHAR(150) NOT NULL" +
+                    ");"
+            );
+            s8.close();
+
+            Thread.sleep(250);
+
+            Statement s9 = connection.createStatement();
+            s9.execute(
+                    "CREATE TABLE IF NOT EXISTS franja_horaria (" +
+                    "    id_franja INTEGER(11) PRIMARY KEY," +
+                    "    dia INTEGER(11) NOT NULL," +
+                    "    hora INTEGER(11) NOT NULL," +
+                    "    CONSTRAINT franja_dia FOREIGN KEY (dia) REFERENCES numero_dia(id_dia) ON DELETE CASCADE," +
+                    "    CONSTRAINT franja_hora FOREIGN KEY (hora) REFERENCES numero_hora(id_hora) ON DELETE CASCADE" +
+                    ");"
+            );
+            s9.close();
+
+            Thread.sleep(250);
+
+            Statement s10 = connection.createStatement();
+            s10.execute(
+                    "CREATE TABLE IF NOT EXISTS grupo (" +
+                    "    id_grupo INTEGER(11) PRIMARY KEY AUTO_INCREMENT," +
+                    "    curso INTEGER(11) NOT NULL," +
+                    "    letra VARCHAR(10) NOT NULL," +
+                    "    CONSTRAINT grupo_fk FOREIGN KEY (curso) REFERENCES curso(id_curso)" +
+                    ");"
+            );
+            s10.close();
+
+            Thread.sleep(250);
+
+            Statement s11 = connection.createStatement();
+            s11.execute(
+                    "CREATE TABLE IF NOT EXISTS imparte (" +
+                    "uuid VARCHAR(36) PRIMARY KEY," +
+                    "profesor INTEGER(11) NOT NULL," +
+                    "asignatura INTEGER(11) NOT NULL," +
+                    "grupo INTEGER(11) NULL," +
+                    "aula INTEGER(11) NULL," +
+                    "franja INTEGER(11) NOT NULL," +
+                    "CONSTRAINT imparte_profesor_fk FOREIGN KEY (profesor) REFERENCES profesor(id_profesor)," +
+                    "CONSTRAINT imparte_asignatura_fk FOREIGN KEY (asignatura) REFERENCES asignatura(id_asignatura)," +
+                    "CONSTRAINT imparte_grupo_fk FOREIGN KEY (grupo) REFERENCES grupo(id_grupo)," +
+                    "CONSTRAINT imparte_aula_fk FOREIGN KEY (aula) REFERENCES aula(id_aula)," +
+                    "CONSTRAINT imparte_franja_fk FOREIGN KEY (franja) REFERENCES franja_horaria(id_franja)" +
+                    ");"
+            );
+            s11.close();
+            
+            Thread.sleep(250);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void insertUser(String username, String password) {
+
+        try {
+
+            Statement s1 = connection.createStatement();
+            s1.execute("REPLACE INTO credencial VALUES (1,'" + username + "','" + HashUtil.sha1(password) + "',NULL,'directivo');");
+            s1.close();
+
+            Thread.sleep(250);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
     }
 

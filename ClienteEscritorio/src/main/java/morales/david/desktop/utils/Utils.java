@@ -28,4 +28,20 @@ public class Utils {
         stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 2);
     }
 
+    public static String stripString(String name) {
+
+        String result = "";
+
+        result = name.toLowerCase().replaceAll(" ", "_");
+
+        result = result.replaceAll("á", "a");
+        result = result.replaceAll("é", "e");
+        result = result.replaceAll("í", "i");
+        result = result.replaceAll("ó", "o");
+        result = result.replaceAll("ú", "u");
+
+        return result;
+
+    }
+
 }

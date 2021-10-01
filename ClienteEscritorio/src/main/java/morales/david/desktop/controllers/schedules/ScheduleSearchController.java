@@ -1,13 +1,18 @@
 package morales.david.desktop.controllers.schedules;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import morales.david.desktop.controllers.modals.AdvancedScheduleExportModalController;
 import morales.david.desktop.interfaces.Controller;
+import morales.david.desktop.managers.AdvSchedulerManager;
 import morales.david.desktop.managers.DataManager;
 import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.models.Classroom;
@@ -17,7 +22,9 @@ import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.FxUtilTest;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ScheduleSearchController implements Initializable, Controller {
@@ -45,6 +52,9 @@ public class ScheduleSearchController implements Initializable, Controller {
 
     @FXML
     private Button exportButton;
+
+    @FXML
+    private Button exportAdvancedButton;
 
     private String searchType;
 
@@ -130,42 +140,44 @@ public class ScheduleSearchController implements Initializable, Controller {
 
         if(event.getSource() == searchButton || event.getSource() == exportButton) {
 
-            if(searchType.equalsIgnoreCase(""))
+            if (searchType.equalsIgnoreCase(""))
                 return;
 
             PacketBuilder packetBuilder = new PacketBuilder()
                     .ofType(PacketType.SEARCHSCHEDULE.getRequest())
                     .addArgument("type", searchType);
 
-            if(searchType.equalsIgnoreCase("TEACHER") && teacherComboBox.getSelectionModel().getSelectedItem() != null) {
+            if (searchType.equalsIgnoreCase("TEACHER") && teacherComboBox.getSelectionModel().getSelectedItem() != null) {
 
                 Teacher teacher = FxUtilTest.getComboBoxValue(teacherComboBox);
                 packetBuilder.addArgument("item", teacher);
 
-            } else if(searchType.equalsIgnoreCase("GROUP") && groupComboBox.getSelectionModel().getSelectedItem() != null) {
+            } else if (searchType.equalsIgnoreCase("GROUP") && groupComboBox.getSelectionModel().getSelectedItem() != null) {
 
                 Group group = FxUtilTest.getComboBoxValue(groupComboBox);
                 packetBuilder.addArgument("item", group);
 
-            } else if(searchType.equalsIgnoreCase("CLASSROOM") && classroomComboBox.getSelectionModel().getSelectedItem() != null) {
+            } else if (searchType.equalsIgnoreCase("CLASSROOM") && classroomComboBox.getSelectionModel().getSelectedItem() != null) {
 
                 Classroom classroom = FxUtilTest.getComboBoxValue(classroomComboBox);
                 packetBuilder.addArgument("item", classroom);
 
             }
 
-            if(event.getSource() == searchButton)
+            if (event.getSource() == searchButton)
                 packetBuilder.addArgument("callback", "SEARCH");
             else
                 packetBuilder.addArgument("callback", "EXPORT");
 
-            if(packetBuilder.hasArgument("item")) {
+            if (packetBuilder.hasArgument("item")) {
 
                 SocketManager.getInstance().sendPacketIO(packetBuilder.build());
 
-                removePressed();
-
             }
+
+        } else if(event.getSource() == exportAdvancedButton) {
+
+            advancedExport();
 
         } else {
 
@@ -191,6 +203,58 @@ public class ScheduleSearchController implements Initializable, Controller {
                 exportButton.setDisable(false);
             }
 
+        }
+
+    }
+
+    private void advancedExport() {
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/advancedScheduleExportModal.fxml"));
+
+        try {
+
+            DialogPane parent = loader.load();
+            AdvancedScheduleExportModalController controller = loader.getController();
+
+            Dialog<ButtonType> dialog = new Dialog<>();
+
+            dialog.setDialogPane(parent);
+            dialog.setTitle("");
+
+            ButtonType updateBtn = new ButtonType("Exportar", ButtonBar.ButtonData.YES);
+            ButtonType cancelBtn = new ButtonType("Cancelar", ButtonBar.ButtonData.NO);
+
+            dialog.getDialogPane().getButtonTypes().addAll(updateBtn, cancelBtn);
+
+            Button updateButton = (Button) dialog.getDialogPane().lookupButton(updateBtn);
+            updateButton.getStyleClass().addAll("dialogButton", "updateButton");
+
+            updateButton.addEventFilter(
+                    ActionEvent.ACTION,
+                    event -> {
+                        if (!controller.validateInputs()) {
+                            event.consume();
+                        }
+                    }
+            );
+
+            Button cancelButton = (Button) dialog.getDialogPane().lookupButton(cancelBtn);
+            cancelButton.getStyleClass().addAll("dialogButton", "cancelButton");
+
+            ((Stage)dialog.getDialogPane().getScene().getWindow()).getIcons().add(new Image("/images/schedule-icon-inverted.png"));
+
+            Optional<ButtonType> clickedButton = dialog.showAndWait();
+
+            if(clickedButton.get() == updateBtn) {
+
+                controller.setExportQuerys();
+
+                AdvSchedulerManager.getInstance().initExport();
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }

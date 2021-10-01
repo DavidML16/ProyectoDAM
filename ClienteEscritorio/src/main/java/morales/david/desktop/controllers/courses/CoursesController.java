@@ -33,9 +33,6 @@ public class CoursesController implements Initializable, Controller {
     private TableView<Course> coursesTable;
 
     @FXML
-    private TableColumn<Course, Integer> idColumn;
-
-    @FXML
     private TableColumn<Course, String> levelColumn;
 
     @FXML
@@ -101,7 +98,6 @@ public class CoursesController implements Initializable, Controller {
 
         ObservableList<Course> list = DataManager.getInstance().getCourses();
 
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         levelColumn.setCellValueFactory(new PropertyValueFactory<>("level"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 

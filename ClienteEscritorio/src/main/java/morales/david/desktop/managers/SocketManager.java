@@ -54,8 +54,8 @@ public final class SocketManager extends Thread {
 
             socket = new Socket(Constants.SERVER_IP, Constants.SERVER_PORT);
 
-            output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF8"));
+            input = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF8"));
 
         } catch (IOException e) {
 
@@ -165,8 +165,6 @@ public final class SocketManager extends Thread {
                                     Constants.FIRST_HOME_VIEW = true;
 
                                     if (!(screenManager.getController() instanceof LoginController)) {
-
-                                        openSocket();
 
                                         screenManager.openScene("login.fxml", "Iniciar sesión" + Constants.WINDOW_TITLE);
 
@@ -414,13 +412,66 @@ public final class SocketManager extends Thread {
                                 else if(callback.equalsIgnoreCase("EXPORT"))
                                     Platform.runLater(() -> {
                                         try {
-                                            ExportSchedulerManager.getInstance().exportSchedule(scheduleList, searchType, searchQuery);
+                                            ExportSchedulerManager.getInstance().exportSchedule(scheduleList, searchType, searchQuery, true, null);
                                         } catch (FileNotFoundException e) {
                                             e.printStackTrace();
                                         } catch (MalformedURLException e) {
                                             e.printStackTrace();
                                         }
                                     });
+
+                            }
+
+                            break;
+
+                        }
+
+                        case ADVSCHEDULE: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.ADVSCHEDULE.getConfirmation())) {
+
+                                ExportableSchedule exportableSchedule = ExportableSchedule.parse(receivedPacket);
+
+                                AdvSchedulerManager.getInstance().addExportableSchedule(exportableSchedule);
+
+                            }
+
+                            break;
+
+                        }
+
+                        case EXPORTINSPECTION: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.EXPORTINSPECTION.getConfirmation())) {
+
+                                List<LinkedTreeMap> schedules = (List<LinkedTreeMap>) receivedPacket.getArgument("schedules");
+
+                                LinkedTreeMap timeZoneMap = (LinkedTreeMap) receivedPacket.getArgument("timeZone");
+
+                                TimeZone timeZone = null;
+
+                                if(timeZoneMap != null) {
+
+                                    timeZone = TimeZone.parse(timeZoneMap);
+
+                                }
+
+                                if(timeZone == null)
+                                    break;
+
+                                final List<ScheduleTurn> scheduleList = new ArrayList<>();
+
+                                for (LinkedTreeMap scheduleMap : schedules)
+                                    scheduleList.add(ScheduleTurn.parse(scheduleMap));
+
+                                TimeZone finalTimeZone = timeZone;
+                                Platform.runLater(() -> {
+                                    try {
+                                        ExportInspectorManager.getInstance().exportSchedule(scheduleList, finalTimeZone);
+                                    } catch (FileNotFoundException e) {
+                                        e.printStackTrace();
+                                    }
+                                });
 
                             }
 

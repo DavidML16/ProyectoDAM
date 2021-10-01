@@ -33,16 +33,40 @@ public class ExportSchedulerManager {
         return INSTANCE;
     }
 
-    public void exportSchedule(List<SchedulerItem> schedules, String searchType, String searchQuery) throws FileNotFoundException, MalformedURLException {
+    private static File initialDirectory;
+
+    public void exportSchedule(List<SchedulerItem> schedules, String searchType, String searchQuery, boolean openOnFinish, File exportDirectory) throws FileNotFoundException, MalformedURLException {
 
         if(schedules.size() == 0) return;
 
         SchedulerManager schedulerManager = new SchedulerManager(schedules, searchType, searchQuery);
         schedulerManager.setMorning(true);
 
-        File saveFile = getSavePath();
-        if(saveFile == null)
-            return;
+        File saveFile;
+
+        if(exportDirectory == null) {
+
+            saveFile = getSavePath(searchQuery, searchType);
+            if (saveFile == null)
+                return;
+
+            if(saveFile.getParentFile().isDirectory())
+                initialDirectory = saveFile.getParentFile();
+
+        } else {
+
+            String prefix = "";
+
+            if(searchType.equalsIgnoreCase("TEACHER"))
+                prefix = "PROFESOR @ ";
+            else if(searchType.equalsIgnoreCase("GROUP"))
+                prefix = "GRUPO @ ";
+            else if(searchType.equalsIgnoreCase("CLASSROOM"))
+                prefix = "AULA @ ";
+
+            saveFile = new File(exportDirectory, prefix + searchQuery + ".pdf");
+
+        }
 
         if(saveFile.exists())
             saveFile.delete();
@@ -180,11 +204,13 @@ public class ExportSchedulerManager {
 
         document.close();
 
-        if (Desktop.isDesktopSupported()) {
-            try {
-                Desktop.getDesktop().open(saveFile);
-            } catch (IOException e) {
-                e.printStackTrace();
+        if(openOnFinish) {
+            if (Desktop.isDesktopSupported()) {
+                try {
+                    Desktop.getDesktop().open(saveFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -489,11 +515,25 @@ public class ExportSchedulerManager {
 
     }
 
-    private File getSavePath() {
+    private File getSavePath(String query, String searchType) {
 
         FileChooser fileChooser = new FileChooser();
+
+        if(initialDirectory != null)
+            fileChooser.setInitialDirectory(initialDirectory);
+
+        String prefix = "";
+
+        if(searchType.equalsIgnoreCase("TEACHER"))
+            prefix = "PROFESOR @ ";
+        else if(searchType.equalsIgnoreCase("GROUP"))
+            prefix = "GRUPO @ ";
+        else if(searchType.equalsIgnoreCase("CLASSROOM"))
+            prefix = "AULA @ ";
+
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PDF files (*.pdf)", "*.pdf");
         fileChooser.getExtensionFilters().add(extFilter);
+        fileChooser.setInitialFileName(prefix + query + ".pdf");
 
         return fileChooser.showSaveDialog(ScreenManager.getInstance().getStage());
 

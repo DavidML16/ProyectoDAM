@@ -1,0 +1,153 @@
+.mainPane {
+    -fx-background-color: #B00A3A;
+}
+
+.mainPane2 {
+    -fx-background-color: #e60547;
+}
+
+.dayButton {
+    -fx-background-color: #11B23B;
+    -fx-text-fill: #FFF;
+}
+
+.hourButton {
+    -fx-background-color: #0E9EB4;
+    -fx-text-fill: #FFF;
+}
+
+.backButton {
+    -fx-background-color: #B00A3A;
+    -fx-text-fill: #FFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 22px;
+}
+
+.scheduleButton {
+    -fx-background-color: #FFF;
+    -fx-text-fill: #000;
+}
+
+.schedulerTabButton {
+    -fx-background-color: #FFF;
+    -fx-text-fill: #000;
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+}
+
+.selectedSchedulerTabButton {
+    -fx-background-color: #EAEAEA;
+    -fx-text-fill: #000;
+}
+
+.breakTimeButton {
+    -fx-background-color: #EAEAEA;
+    -fx-text-fill: #000;
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+}
+
+.scroll-pane{
+   -fx-background-color:transparent;
+}
+
+.scroll-pane .viewport {
+       -fx-background-color: transparent;
+}
+
+
+.scroll-bar{
+ -fx-background-color: rgb(96,96,96);
+}
+.scroll-bar:horizontal .track,
+.scroll-bar:vertical .track {
+ -fx-background-color: transparent;
+ -fx-border-color:transparent;
+ -fx-background-radius: 2em;
+}
+.scroll-bar:vertical .track-background,
+.scroll-bar:horizontal .track-background {
+ -fx-background-color: transparent;
+ -fx-background-insets: 0;
+ -fx-background-radius: 2em;
+}
+.scroll-bar:horizontal .thumb {
+ -fx-background-color: rgb(211,211,211);
+ -fx-background-insets: 4 0 4 0;
+ -fx-background-radius: 2em;
+}
+.scroll-bar:vertical .thumb {
+ -fx-background-color: rgb(211,211,211);
+ -fx-background-insets: 0 4 0 4;
+ -fx-background-radius: 2em;
+}
+.scroll-bar:horizontal .thumb:hover,
+.scroll-bar:vertical .thumb:hover {
+ -fx-background-color: rgb(231,231,231);
+}
+.scroll-bar:horizontal .thumb:pressed,
+.scroll-bar:vertical .thumb:pressed {
+ -fx-background-color: rgb(255,255,255);
+}
+.scroll-bar:vertical .increment-button, .scroll-bar:vertical .decrement-button {
+ -fx-background-color:transparent;
+ -fx-background-radius: 2em;
+ -fx-padding: 5;
+}
+.scroll-bar:horizontal .increment-button, .scroll-bar:horizontal .decrement-button {
+ -fx-background-color:transparent;
+ -fx-background-radius: 2em;
+ -fx-padding: 5;
+}
+.scroll-bar:horizontal .increment-arrow {
+ -fx-shape: "M 0 0 L 4 8 L 8 0 Z";
+ -fx-background-color: rgb(211,211,211);
+ -fx-padding: 0.25em;
+ -fx-rotate: -90;
+}
+.scroll-bar:vertical .increment-arrow {
+ -fx-background-color: rgb(211,211,211);
+ -fx-shape: "M 0 0 L 4 8 L 8 0 Z";
+ -fx-padding: 0.25em;
+ -fx-rotate: 0;
+}
+.scroll-bar:horizontal .decrement-arrow {
+ -fx-background-color: rgb(211,211,211);
+ -fx-shape: "M 0 0 L 4 8 L 8 0 Z";
+ -fx-padding: 0.25em;
+ -fx-rotate: 90;
+}
+.scroll-bar:vertical .decrement-arrow {
+ -fx-background-color: rgb(211,211,211);
+ -fx-shape: "M 0 0 L 4 8 L 8 0 Z";
+ -fx-padding: 0.25em;
+ -fx-rotate: -180;
+}
+.scroll-bar:vertical:focused,
+.scroll-bar:horizontal:focused {
+ -fx-background-color: transparent,rgb(96,96,96),rgb(96,96,96);
+}
+
+.searchButton {
+    -fx-background-color: transparent;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: #FFFFFF;
+    -fx-border-width: 2px;
+    -fx-border-radius: 15px;
+}
+
+.searchButton:hover {
+    -fx-background-color: #B00A3A;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15px;
+    -fx-text-fill: #FFFFFF;
+    -fx-cursor: hand;
+}
+
+.searchButton:pressed {
+    -fx-border-color: #FFFFFF;
+    -fx-border-radius: 15;
+    -fx-border-width: 2;
+    -fx-background-color: #A40A36;
+    -fx-text-fill: #FFFFFF;
+}

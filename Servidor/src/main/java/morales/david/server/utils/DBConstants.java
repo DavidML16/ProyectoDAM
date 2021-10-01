@@ -69,6 +69,7 @@ public class DBConstants {
 
     public static final String DB_QUERY_SCHEDULES = "SELECT COUNT(*) amount FROM imparte";
     public static final String DB_QUERY_SEARCH_SCHEDULE = "SELECT * FROM imparte WHERE ";
+    public static final String DB_QUERY_SEARCH_SCHEDULE_TURNS = "SELECT * FROM imparte WHERE ";
     public static final String DB_QUERY_REMOVESCHEDULE = "DELETE FROM imparte WHERE `uuid` = ?";
     public static final String DB_QUERY_REMOVESCHEDULE_SB = "DELETE FROM imparte WHERE `uuid` IN ";
     public static final String DB_QUERY_UPDATESCHEDULE = "UPDATE imparte SET `profesor` = ?, `asignatura` = ?, `grupo` = ?, `aula` = ?, `franja` = ? WHERE uuid = ?";

@@ -27,9 +27,6 @@ public class HoursController implements Initializable, Controller {
     private TableView<Hour> hoursTable;
 
     @FXML
-    private TableColumn<Hour, Integer> idColumn;
-
-    @FXML
     private TableColumn<Hour, String> nameColumn;
 
     @Override
@@ -53,7 +50,6 @@ public class HoursController implements Initializable, Controller {
 
         ObservableList<Hour> list = DataManager.getInstance().getHours();
 
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
         nameColumn.setCellFactory(

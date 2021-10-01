@@ -1,9 +1,6 @@
 package morales.david.server.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -20,6 +17,8 @@ public class ConfigUtil {
         File propertiesFile = new File(directory.getAbsolutePath() + File.separator + "configuracion.properties");
 
         if(!propertiesFile.exists()) {
+
+            properties.setProperty("setup_first_time", "true");
 
             properties.setProperty("server_port", "6565");
             properties.setProperty("server_file_transfer_port", "6566");
@@ -47,6 +46,9 @@ public class ConfigUtil {
 
         Map<String, String> parameters = new HashMap<>();
 
+        String setup_first_time = properties.getProperty("setup_first_time");
+        parameters.put("setup_first_time", setup_first_time);
+
         String server_port = properties.getProperty("server_port");
         parameters.put("server_port", server_port);
 
@@ -73,6 +75,30 @@ public class ConfigUtil {
 
         return parameters;
 
+    }
+
+    public void saveProperties() {
+
+        File directory = new File("");
+        File propertiesFile = new File(directory.getAbsolutePath() + File.separator + "configuracion.properties");
+
+        FileOutputStream fr = null;
+        try {
+
+            fr = new FileOutputStream(propertiesFile);
+            properties.store(fr, null);
+            fr.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public Properties getProperties() {
+        return properties;
     }
 
 }

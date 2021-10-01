@@ -183,18 +183,6 @@ public class SchedulerModalController implements Initializable {
 
     public boolean validateInputs() {
 
-        if(teacherField.getSelectionModel().isEmpty())
-            return false;
-
-        if(subjectField.getSelectionModel().isEmpty())
-            return false;
-
-        if(classroomField.getSelectionModel().isEmpty())
-            return false;
-
-        if(groupField.getSelectionModel().isEmpty())
-            return false;
-
         return true;
 
     }

@@ -53,8 +53,8 @@ public class ClientThread extends Thread {
     public void openIO() {
 
         try {
-            input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            input = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF8"));
+            output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF8"));
         } catch (IOException e) {
             System.out.println(Constants.LOG_SERVER_ERROR_IO);
             e.printStackTrace();

@@ -36,9 +36,6 @@ public class DaysController implements Initializable, Controller {
     private TableView<Day> daysTable;
 
     @FXML
-    private TableColumn<Day, Integer> idColumn;
-
-    @FXML
     private TableColumn<Day, String> nameColumn;
 
     @Override
@@ -62,7 +59,6 @@ public class DaysController implements Initializable, Controller {
 
         ObservableList<Day> list = DataManager.getInstance().getDays();
 
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
         nameColumn.setCellFactory(

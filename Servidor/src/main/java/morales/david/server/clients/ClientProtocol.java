@@ -183,6 +183,10 @@ public class ClientProtocol {
                 searchSchedule();
                 break;
 
+            case EXPORTINSPECTION:
+                exportInspectionReport();
+                break;
+
             case INSERTSCHEDULEITEM:
                 insertScheduleItem();
                 break;
@@ -209,6 +213,10 @@ public class ClientProtocol {
 
             case EMPTYCLASSROOMSTIMEZONE:
                 emptyClassroomsListTimeZone();
+                break;
+
+            case ADVSCHEDULE:
+                advancedExport();
                 break;
 
         }
@@ -270,7 +278,6 @@ public class ClientProtocol {
                     .build();
 
             sendPacketIO(disconnectConfirmationPacket);
-            clientThread.setConnected(false);
 
         } else {
 
@@ -1154,6 +1161,63 @@ public class ClientProtocol {
             sendPacketIO(packetBuilder.build());
 
         }
+
+    }
+
+    private void advancedExport() {
+
+        List<LinkedTreeMap> exportableItemsRaw = (List<LinkedTreeMap>) lastPacket.getArgument("exportableItems");
+
+        final List<ExportableItem> exportableItems = new ArrayList<>();
+
+        for (LinkedTreeMap map : exportableItemsRaw)
+            exportableItems.add(ExportableItem.parse(map));
+
+        for(ExportableItem exportableItem : exportableItems) {
+
+            ScheduleSearcheable scheduleSearcheable = (ScheduleSearcheable) exportableItem.getItem();
+
+            PacketBuilder packetBuilder = new PacketBuilder()
+                    .ofType(PacketType.ADVSCHEDULE.getConfirmation())
+                    .addArgument("exportType", exportableItem.getExportType())
+                    .addArgument("exportQuery", exportableItem.getExportQuery());
+
+            if(scheduleSearcheable != null) {
+
+                List<SchedulerItem> schedules = clientThread.getDbConnection().searchSchedule(scheduleSearcheable);
+
+                packetBuilder.addArgument("schedules", schedules);
+
+                sendPacketIO(packetBuilder.build());
+
+            }
+
+        }
+
+    }
+
+    /**
+     * Get schedule data from database
+     * Search schedule by packet arguments
+     */
+    private void exportInspectionReport() {
+
+        LinkedTreeMap timeZoneMap = (LinkedTreeMap) lastPacket.getArgument("timeZone");
+
+        if(timeZoneMap == null)
+            return;
+
+        TimeZone timeZone = TimeZone.parse(timeZoneMap);
+
+        PacketBuilder packetBuilder = new PacketBuilder()
+                .ofType(PacketType.EXPORTINSPECTION.getConfirmation())
+                .addArgument("timeZone", timeZone);
+
+        List<ScheduleTurn> schedules = clientThread.getDbConnection().getScheduleTurns(timeZone);
+
+        packetBuilder.addArgument("schedules", schedules);
+
+        sendPacketIO(packetBuilder.build());
 
     }
 

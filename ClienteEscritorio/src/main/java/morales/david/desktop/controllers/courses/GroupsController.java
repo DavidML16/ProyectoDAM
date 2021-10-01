@@ -34,9 +34,6 @@ public class GroupsController implements Initializable, Controller {
     private TableView<Group> groupsTable;
 
     @FXML
-    private TableColumn<Group, Integer> idColumn;
-
-    @FXML
     private TableColumn<Group, String> courseColumn;
 
     @FXML
@@ -102,7 +99,6 @@ public class GroupsController implements Initializable, Controller {
 
         ObservableList<Group> list = DataManager.getInstance().getGroups();
 
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         courseColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCourse().toString()));
         letterColumn.setCellValueFactory(new PropertyValueFactory<>("letter"));
 
