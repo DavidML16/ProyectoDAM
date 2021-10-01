@@ -1,15 +1,18 @@
 package morales.david.desktop.controllers.teachers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import morales.david.desktop.controllers.modals.AdvancedInspectionExportModalController;
+import morales.david.desktop.controllers.modals.AdvancedScheduleExportModalController;
 import morales.david.desktop.interfaces.Controller;
-import morales.david.desktop.managers.DataManager;
-import morales.david.desktop.managers.ScreenManager;
-import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.managers.*;
 import morales.david.desktop.managers.eventcallbacks.EmptyClassroomsConfirmationListener;
 import morales.david.desktop.managers.eventcallbacks.EventManager;
 import morales.david.desktop.managers.eventcallbacks.ScheduleErrorListener;
@@ -22,11 +25,9 @@ import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.FxUtilTest;
 
+import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.UUID;
+import java.util.*;
 
 public class TeacherReportController implements Initializable, Controller {
 
@@ -38,6 +39,9 @@ public class TeacherReportController implements Initializable, Controller {
 
     @FXML
     private Button exportButton;
+
+    @FXML
+    private Button exportAdvancedButton;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -110,6 +114,9 @@ public class TeacherReportController implements Initializable, Controller {
 
             }
 
+        } else if(event.getSource() == exportAdvancedButton) {
+
+            advancedExport();
 
         }
 
@@ -122,6 +129,58 @@ public class TeacherReportController implements Initializable, Controller {
             }
         }
         return null;
+    }
+
+    private void advancedExport() {
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/advancedInspectionExportModal.fxml"));
+
+        try {
+
+            DialogPane parent = loader.load();
+            AdvancedInspectionExportModalController controller = loader.getController();
+
+            Dialog<ButtonType> dialog = new Dialog<>();
+
+            dialog.setDialogPane(parent);
+            dialog.setTitle("");
+
+            ButtonType updateBtn = new ButtonType("Exportar", ButtonBar.ButtonData.YES);
+            ButtonType cancelBtn = new ButtonType("Cancelar", ButtonBar.ButtonData.NO);
+
+            dialog.getDialogPane().getButtonTypes().addAll(updateBtn, cancelBtn);
+
+            Button updateButton = (Button) dialog.getDialogPane().lookupButton(updateBtn);
+            updateButton.getStyleClass().addAll("dialogButton", "updateButton");
+
+            updateButton.addEventFilter(
+                    ActionEvent.ACTION,
+                    event -> {
+                        if (!controller.validateInputs()) {
+                            event.consume();
+                        }
+                    }
+            );
+
+            Button cancelButton = (Button) dialog.getDialogPane().lookupButton(cancelBtn);
+            cancelButton.getStyleClass().addAll("dialogButton", "cancelButton");
+
+            ((Stage)dialog.getDialogPane().getScene().getWindow()).getIcons().add(new Image("/images/schedule-icon-inverted.png"));
+
+            Optional<ButtonType> clickedButton = dialog.showAndWait();
+
+            if(clickedButton.get() == updateBtn) {
+
+                controller.setExportQuerys();
+
+                AdvInspectionManager.getInstance().initExport();
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

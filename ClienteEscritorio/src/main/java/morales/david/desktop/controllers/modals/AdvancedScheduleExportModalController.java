@@ -11,10 +11,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import morales.david.desktop.managers.AdvSchedulerManager;
-import morales.david.desktop.managers.DataManager;
-import morales.david.desktop.managers.ScreenManager;
-import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.managers.*;
 import morales.david.desktop.models.*;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
@@ -90,8 +87,13 @@ public class AdvancedScheduleExportModalController implements Initializable {
                 File directory = chooser.showDialog(teachersField.getParent().getScene().getWindow());
 
                 if(directory != null && directory.isDirectory()) {
+
                     directories.add(0, directory);
                     directoryChooser.setText(directory.getAbsolutePath());
+
+                    if(directories.size() > 0 && directories.get(0).isDirectory())
+                        AdvSchedulerManager.getInstance().setExportDirectory(directories.get(0));
+
                 }
 
             });

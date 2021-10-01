@@ -440,6 +440,20 @@ public final class SocketManager extends Thread {
 
                         }
 
+                        case ADVINSPECTION: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.ADVINSPECTION.getConfirmation())) {
+
+                                ExportableInspection exportableInspection = ExportableInspection.parse(receivedPacket);
+
+                                AdvInspectionManager.getInstance().addExportableInspection(exportableInspection);
+
+                            }
+
+                            break;
+
+                        }
+
                         case EXPORTINSPECTION: {
 
                             if(receivedPacket.getType().equalsIgnoreCase(PacketType.EXPORTINSPECTION.getConfirmation())) {
@@ -467,7 +481,7 @@ public final class SocketManager extends Thread {
                                 TimeZone finalTimeZone = timeZone;
                                 Platform.runLater(() -> {
                                     try {
-                                        ExportInspectorManager.getInstance().exportSchedule(scheduleList, finalTimeZone);
+                                        ExportInspectorManager.getInstance().exportSchedule(scheduleList, finalTimeZone, true, null);
                                     } catch (FileNotFoundException e) {
                                         e.printStackTrace();
                                     }

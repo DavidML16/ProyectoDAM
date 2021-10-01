@@ -216,7 +216,11 @@ public class ClientProtocol {
                 break;
 
             case ADVSCHEDULE:
-                advancedExport();
+                advancedSchedulerExport();
+                break;
+
+            case ADVINSPECTION:
+                advancedInspectionExport();
                 break;
 
         }
@@ -1164,7 +1168,7 @@ public class ClientProtocol {
 
     }
 
-    private void advancedExport() {
+    private void advancedSchedulerExport() {
 
         List<LinkedTreeMap> exportableItemsRaw = (List<LinkedTreeMap>) lastPacket.getArgument("exportableItems");
 
@@ -1191,6 +1195,31 @@ public class ClientProtocol {
                 sendPacketIO(packetBuilder.build());
 
             }
+
+        }
+
+    }
+
+    private void advancedInspectionExport() {
+
+        List<LinkedTreeMap> exportableTimeZonesRaw = (List<LinkedTreeMap>) lastPacket.getArgument("timeZones");
+
+        final List<TimeZone> timeZones = new ArrayList<>();
+
+        for (LinkedTreeMap map : exportableTimeZonesRaw)
+            timeZones.add(TimeZone.parse(map));
+
+        for(TimeZone timeZone : timeZones) {
+
+            PacketBuilder packetBuilder = new PacketBuilder()
+                    .ofType(PacketType.ADVINSPECTION.getConfirmation())
+                    .addArgument("timeZone", timeZone);
+
+            List<ScheduleTurn> schedules = clientThread.getDbConnection().getScheduleTurns(timeZone);
+
+            packetBuilder.addArgument("schedules", schedules);
+
+            sendPacketIO(packetBuilder.build());
 
         }
 

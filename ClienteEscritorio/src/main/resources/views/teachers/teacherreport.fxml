@@ -70,16 +70,27 @@
                               </VBox>
                               <HBox alignment="CENTER" prefHeight="75.0" prefWidth="200.0" VBox.vgrow="NEVER">
                                  <children>
-                                    <Button fx:id="exportButton" graphicTextGap="15.0" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="55.0" prefWidth="200.0" styleClass="searchButton" text="Exportar">
+                                    <Button fx:id="exportButton" graphicTextGap="15.0" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="55.0" prefWidth="165.0" styleClass="searchButton" text="Exportar">
                                        <font>
                                           <Font name="System Bold" size="18.0" />
                                        </font>
                                        <HBox.margin>
-                                          <Insets />
+                                          <Insets right="17.0" />
                                        </HBox.margin>
                                        <graphic>
                                           <FontAwesomeIconView fill="WHITE" glyphName="CLOUD_DOWNLOAD" size="25" />
                                        </graphic>
+                                    </Button>
+                                    <Button fx:id="exportAdvancedButton" graphicTextGap="15.0" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="55.0" prefWidth="165.0" styleClass="searchButton" text="Avanzado">
+                                       <font>
+                                          <Font name="System Bold" size="18.0" />
+                                       </font>
+                                       <graphic>
+                                          <FontAwesomeIconView fill="WHITE" glyphName="CLOUD_DOWNLOAD" size="25" />
+                                       </graphic>
+                                       <HBox.margin>
+                                          <Insets left="17.0" />
+                                       </HBox.margin>
                                     </Button>
                                  </children>
                                  <VBox.margin>

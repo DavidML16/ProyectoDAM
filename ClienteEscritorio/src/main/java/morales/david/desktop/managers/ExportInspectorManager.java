@@ -30,15 +30,30 @@ public class ExportInspectorManager {
         return INSTANCE;
     }
 
-    public void exportSchedule(List<ScheduleTurn> schedules, TimeZone timeZone) throws FileNotFoundException {
+    private static File initialDirectory;
+
+    public void exportSchedule(List<ScheduleTurn> schedules, TimeZone timeZone, boolean openOnFinish, File exportDirectory) throws FileNotFoundException {
 
         if(schedules.size() == 0) return;
 
         List<ScheduleTurn> scheduleTurns = sortSchedules(schedules);
 
-        File saveFile = getSavePath(timeZone);
-        if(saveFile == null)
-            return;
+        File saveFile;
+
+        if(exportDirectory == null) {
+
+            saveFile = getSavePath(timeZone);
+            if (saveFile == null)
+                return;
+
+            if(saveFile.getParentFile().isDirectory())
+                initialDirectory = saveFile.getParentFile();
+
+        } else {
+
+            saveFile = new File(exportDirectory, "parte_guardia_" + timeZone.getDay().getId() + "_" + timeZone.getHour().getId() + ".pdf");
+
+        }
 
         if(saveFile.exists())
             saveFile.delete();
@@ -183,11 +198,13 @@ public class ExportInspectorManager {
 
         document.close();
 
-        if (Desktop.isDesktopSupported()) {
-            try {
-                Desktop.getDesktop().open(saveFile);
-            } catch (IOException e) {
-                e.printStackTrace();
+        if(openOnFinish) {
+            if (Desktop.isDesktopSupported()) {
+                try {
+                    Desktop.getDesktop().open(saveFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -483,6 +500,10 @@ public class ExportInspectorManager {
     private File getSavePath(TimeZone timeZone) {
 
         FileChooser fileChooser = new FileChooser();
+
+        if(initialDirectory != null)
+            fileChooser.setInitialDirectory(initialDirectory);
+
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PDF files (*.pdf)", "*.pdf");
         fileChooser.getExtensionFilters().add(extFilter);
         fileChooser.setInitialFileName("parte_guardia_" + timeZone.getDay().getId() + "_" + timeZone.getHour().getId() + ".pdf");
