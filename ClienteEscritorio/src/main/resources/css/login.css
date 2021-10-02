@@ -28,6 +28,30 @@
     -fx-text-fill: #FFF;
 }
 
+.settingsButton {
+    -fx-background-color: #e60547;
+    -fx-background-radius: 15px;
+    -fx-border-color: #FFF;
+    -fx-border-width: 2px;
+    -fx-border-radius: 15px;
+    -fx-text-fill: #9a0431;
+    -fx-font-weight: bold;
+}
+
+.settingsButton:hover {
+    -fx-border-radius: 15px;
+    -fx-background-radius: 15px;
+    -fx-background-color: #B00A3A;
+    -fx-text-fill: #FFF;
+}
+
+.settingsButton:pressed {
+    -fx-border-color: #FFF;
+    -fx-background-color: #A40A36;
+    -fx-background-radius: 15px;
+    -fx-text-fill: #FFF;
+}
+
 .inputField {
     -fx-border-color: #959595;
 }

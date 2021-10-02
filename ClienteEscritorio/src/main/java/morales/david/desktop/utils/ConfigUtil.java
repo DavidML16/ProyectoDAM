@@ -1,5 +1,6 @@
 package morales.david.desktop.utils;
 
+import morales.david.desktop.managers.DataManager;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -11,7 +12,20 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
-public class ConfigUtil {
+public final class ConfigUtil {
+
+    private static ConfigUtil INSTANCE = null;
+
+    public static ConfigUtil getInstance() {
+        if(INSTANCE == null) {
+            try {
+                INSTANCE = new ConfigUtil();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return INSTANCE;
+    }
 
     private Properties properties;
 
@@ -56,5 +70,30 @@ public class ConfigUtil {
         return parameters;
 
     }
+
+    public void saveProperties() {
+
+        File directory = new File("");
+        File propertiesFile = new File(directory.getAbsolutePath() + File.separator + "configuracion.properties");
+
+        FileOutputStream fr = null;
+        try {
+
+            fr = new FileOutputStream(propertiesFile);
+            properties.store(fr, null);
+            fr.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public Properties getProperties() {
+        return properties;
+    }
+
 
 }

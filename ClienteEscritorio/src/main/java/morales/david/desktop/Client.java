@@ -8,6 +8,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import morales.david.desktop.controllers.LoginController;
+import morales.david.desktop.controllers.SettingsController;
 import morales.david.desktop.controllers.classrooms.EmptyClassroomsTimezoneController;
 import morales.david.desktop.controllers.schedules.SchedulesController;
 import morales.david.desktop.managers.ScreenManager;
@@ -30,22 +31,12 @@ public class Client extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        try {
+        ConfigUtil configUtil = ConfigUtil.getInstance();
 
-            ConfigUtil configUtil = new ConfigUtil();
-
-            Map<String, String> parameters = configUtil.getConfigParams();
-            Constants.SERVER_IP = parameters.get("server_ip");
-            Constants.SERVER_PORT = Integer.parseInt(parameters.get("server_port"));
-            Constants.SERVER_FILE_TRANSFER_PORT = Integer.parseInt(parameters.get("server_file_transfer_port"));
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        SocketManager socketManager = SocketManager.getInstance();
-        socketManager.setDaemon(true);
-        socketManager.start();
+        Map<String, String> parameters = configUtil.getConfigParams();
+        Constants.SERVER_IP = parameters.get("server_ip");
+        Constants.SERVER_PORT = Integer.parseInt(parameters.get("server_port"));
+        Constants.SERVER_FILE_TRANSFER_PORT = Integer.parseInt(parameters.get("server_file_transfer_port"));
 
         primaryStage.getIcons().add(new Image("/images/schedule-icon-inverted.png"));
 
@@ -67,6 +58,9 @@ public class Client extends Application {
 
         primaryStage.setOnCloseRequest(event -> {
 
+            if(SocketManager.getInstance().isClosed())
+                return;
+
             event.consume();
 
             if(ScreenManager.getInstance().getController() instanceof SchedulesController
@@ -82,6 +76,10 @@ public class Client extends Application {
             if(ScreenManager.getInstance().getController() instanceof LoginController) {
 
                 SocketManager.getInstance().sendPacketIO(exitRequestPacket);
+
+            } else if(ScreenManager.getInstance().getController() instanceof SettingsController) {
+
+                screenManager.openScene("login.fxml", "Iniciar sesión" + Constants.WINDOW_TITLE);
 
             } else {
 

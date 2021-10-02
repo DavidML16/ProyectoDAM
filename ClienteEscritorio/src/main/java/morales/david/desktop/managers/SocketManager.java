@@ -12,6 +12,7 @@ import morales.david.desktop.models.*;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.Constants;
+import org.bouncycastle.util.Pack;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -38,11 +39,13 @@ public final class SocketManager extends Thread {
 
     private ClientSession clientSession;
 
-    private final boolean[] closed = { false };
+    private final boolean[] closed = { true };
+
+    private List<Packet> pendingPackets;
 
     public SocketManager() {
 
-        openSocket();
+        this.pendingPackets = new ArrayList<>();
 
         this.clientSession = new ClientSession();
 
@@ -57,15 +60,31 @@ public final class SocketManager extends Thread {
             output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF8"));
             input = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF8"));
 
+            closed[0] = false;
+
+            for(Packet packet : pendingPackets)
+                sendPacketIO(packet);
+
+            pendingPackets.clear();
+
         } catch (IOException e) {
 
-            socketErrorAlert();
+            if (ScreenManager.getInstance().getController() instanceof LoginController) {
+
+                LoginController loginController = (LoginController) ScreenManager.getInstance().getController();
+
+                loginController.getMessageLabel().setText(Constants.MESSAGES_ERROR_SERVER_NO_CONNECTION);
+                loginController.getMessageLabel().setTextFill(Color.TOMATO);
+
+            }
+
+            close();
 
         }
 
     }
 
-    private void close() {
+    public void close() {
 
         try {
             if(output != null)
@@ -81,8 +100,13 @@ public final class SocketManager extends Thread {
         }
 
         try {
+
             if(socket != null && !socket.isClosed())
                 socket.close();
+
+            closed[0] = true;
+            INSTANCE = null;
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -685,7 +709,18 @@ public final class SocketManager extends Thread {
                 }
 
             } catch (IOException e) {
-                e.printStackTrace();
+
+                if (ScreenManager.getInstance().getController() instanceof LoginController) {
+
+                    LoginController loginController = (LoginController) ScreenManager.getInstance().getController();
+
+                    loginController.getMessageLabel().setText(Constants.MESSAGES_ERROR_SERVER_NO_CONNECTION);
+                    loginController.getMessageLabel().setTextFill(Color.TOMATO);
+
+                    close();
+
+                }
+
             }
 
         }
@@ -695,6 +730,22 @@ public final class SocketManager extends Thread {
     public Socket getSocket() { return socket; }
 
     public ClientSession getClientSession() { return clientSession; }
+
+    public boolean isClosed() {
+        return closed[0];
+    }
+
+    public List<Packet> getPendingPackets() {
+        return pendingPackets;
+    }
+
+    public void setPendingPackets(List<Packet> pendingPackets) {
+        this.pendingPackets = pendingPackets;
+    }
+
+    public void addPendingPacket(Packet packet) {
+        this.pendingPackets.add(packet);
+    }
 
     public void socketErrorAlert() {
 

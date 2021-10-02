@@ -11,6 +11,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import morales.david.desktop.interfaces.Controller;
+import morales.david.desktop.managers.ScreenManager;
 import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
@@ -31,6 +32,9 @@ public class LoginController implements Initializable, Controller {
 
     @FXML
     private Button loginButton;
+
+    @FXML
+    private Button settingsButton;
 
     @FXML
     private Label messageLabel;
@@ -62,6 +66,12 @@ public class LoginController implements Initializable, Controller {
 
             login();
 
+        } else if(event.getSource() == settingsButton) {
+
+            ScreenManager screenManager = ScreenManager.getInstance();
+
+            screenManager.openScene("settings.fxml", "Configuración" + Constants.WINDOW_TITLE);
+
         }
 
     }
@@ -86,7 +96,22 @@ public class LoginController implements Initializable, Controller {
                 .addArgument("password", password)
                 .build();
 
-        SocketManager.getInstance().sendPacketIO(loginRequestPacket);
+        SocketManager socketManager = SocketManager.getInstance();
+
+        if(socketManager.isClosed()) {
+
+            socketManager.addPendingPacket(loginRequestPacket);
+
+            socketManager.openSocket();
+
+            socketManager.setDaemon(true);
+            socketManager.start();
+
+        } else {
+
+            SocketManager.getInstance().sendPacketIO(loginRequestPacket);
+
+        }
 
     }
 

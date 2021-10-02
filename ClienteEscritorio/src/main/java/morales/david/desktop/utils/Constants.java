@@ -13,6 +13,7 @@ public class Constants {
 
     public static final String MESSAGES_ERROR_LOGIN = "Usuario o contraseña incorrecta";
     public static final String MESSAGES_ERROR_LOGIN_EMPTY = "Campo o campos vacíos";
+    public static final String MESSAGES_ERROR_SERVER_NO_CONNECTION = "No se a podido conectar con el servidor";
 
     public static boolean FIRST_HOME_VIEW = true;
 
