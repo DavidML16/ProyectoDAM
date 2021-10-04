@@ -40,7 +40,7 @@ public class DashboardController implements Initializable, Controller {
     private Button scheduleNavigationButton;
 
     @FXML
-    private Button importNavigationButton;
+    private Button optionsNavigationButton;
 
     @FXML
     private Button disconnectNavigationButton;
@@ -60,7 +60,7 @@ public class DashboardController implements Initializable, Controller {
         Platform.runLater(() -> sendPackets());
 
         if(SocketManager.getInstance().getClientSession().isTeacherRole()) {
-            importNavigationButton.setVisible(false);
+            optionsNavigationButton.setVisible(false);
         }
 
     }
@@ -78,8 +78,8 @@ public class DashboardController implements Initializable, Controller {
             loadView("classrooms/classroomsmenu.fxml", "Aulas", event);
         else if (event.getSource() == scheduleNavigationButton)
             loadView("schedules/schedulesmenu.fxml", "Horarios", event);
-        else if (event.getSource() == importNavigationButton)
-            loadView("import.fxml", "Importar", event);
+        else if (event.getSource() == optionsNavigationButton)
+            loadView("options/optionsmenu.fxml", "Opciones", event);
         else if(event.getSource() == disconnectNavigationButton)
             disconnect();
 
@@ -121,7 +121,7 @@ public class DashboardController implements Initializable, Controller {
         coursesGroupsNavigationButton.getStyleClass().remove("buttonPressed");
         classroomsNavigationButton.getStyleClass().remove("buttonPressed");
         scheduleNavigationButton.getStyleClass().remove("buttonPressed");
-        importNavigationButton.getStyleClass().remove("buttonPressed");
+        optionsNavigationButton.getStyleClass().remove("buttonPressed");
 
     }
 

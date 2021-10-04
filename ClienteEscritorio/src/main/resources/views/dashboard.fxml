@@ -43,9 +43,9 @@
                      </graphic></Button>
                </children>
             </VBox>
-            <HBox prefHeight="50.0" prefWidth="197.0" spacing="15.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">
+            <HBox alignment="CENTER" prefHeight="50.0" prefWidth="197.0" spacing="10.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                <children>
-                  <Button fx:id="importNavigationButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="50.0" prefWidth="1000.0" styleClass="navigationButton" text="Importar" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="optionsNavigationButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="50.0" prefWidth="1000.0" styleClass="navigationButton" text="Opciones" HBox.hgrow="ALWAYS" />
                   <Button fx:id="disconnectNavigationButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="50.0" prefWidth="1000.0" styleClass="navigationButton" text="Salir" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>

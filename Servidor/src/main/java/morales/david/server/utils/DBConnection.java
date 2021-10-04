@@ -76,6 +76,59 @@ public class DBConnection {
 
     }
 
+    public boolean checkDatabaseExists(String ip, String user, String password, String dbName) {
+
+        boolean exists = false;
+
+        ResultSet rs = null;
+
+        try {
+
+            String url = "jdbc:mysql://" + ip + ":" + DBConstants.DB_PORT + "/";
+            connection = DriverManager.getConnection(url, user, password);
+
+            if(connection == null)
+                exists = false;
+
+            rs = connection.getMetaData().getCatalogs();
+
+            while (rs.next()) {
+
+                String database = rs.getString(1);
+
+                if(database.equalsIgnoreCase(dbName))
+                    exists = true;
+
+            }
+
+        } catch (SQLException e) {
+
+            exists = false;
+
+        } finally {
+
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+        return exists;
+
+    }
+
     public boolean createDatabase(String ip, String user, String password, String database) {
 
         try {

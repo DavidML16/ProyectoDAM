@@ -5,14 +5,14 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 import morales.david.desktop.Client;
-import morales.david.desktop.controllers.ImportController;
+import morales.david.desktop.controllers.options.BackupController;
+import morales.david.desktop.controllers.options.ImportController;
 import morales.david.desktop.controllers.LoginController;
 import morales.david.desktop.managers.eventcallbacks.*;
 import morales.david.desktop.models.*;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.Constants;
-import org.bouncycastle.util.Pack;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -697,6 +697,24 @@ public final class SocketManager extends Thread {
                                 String message = (String) receivedPacket.getArgument("message");
 
                                 EventManager.getInstance().notify(uuid, new ScheduleErrorListener(uuid, message));
+
+                            }
+
+                            break;
+
+                        }
+
+                        case DATABASEBACKUP: {
+
+                            if(receivedPacket.getType().equalsIgnoreCase(PacketType.DATABASEBACKUP.getConfirmation())) {
+
+                                if (screenManager.getController() instanceof BackupController) {
+
+                                    BackupController backupController = (BackupController) screenManager.getController();
+
+                                    Platform.runLater(() -> backupController.setInProgress(false));
+
+                                }
 
                             }
 

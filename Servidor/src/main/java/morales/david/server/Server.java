@@ -47,6 +47,8 @@ public class Server {
             Map<String, String> parameters = configUtil.getConfigParams();
             Constants.SETUP_FIRST_TIME = Boolean.parseBoolean(parameters.get("setup_first_time"));
 
+            DBConnection dbConnection = new DBConnection();
+
             if(!Constants.SETUP_FIRST_TIME) {
 
                 Constants.SERVER_FILE_TRANSFER_PORT = Integer.parseInt(parameters.get("server_file_transfer_port"));
@@ -56,6 +58,43 @@ public class Server {
                 DBConstants.DB_DATABASE = parameters.get("db_database");
                 DBConstants.DB_USER = parameters.get("db_username");
                 DBConstants.DB_PASS = parameters.get("db_password");
+
+                if(!dbConnection.checkDatabaseExists(DBConstants.DB_IP, DBConstants.DB_USER, DBConstants.DB_PASS, DBConstants.DB_DATABASE)) {
+
+                    System.out.println("Se está creando la base de datos de nuevo ya que no existe...");
+
+                    if(!dbConnection.createDatabase(DBConstants.DB_IP, DBConstants.DB_USER, DBConstants.DB_PASS, DBConstants.DB_DATABASE)) {
+
+                        System.out.println(" Se ha producido un error al crear la base de datos ");
+
+                        return;
+
+                    } else {
+
+                        System.out.println(" \n(+) Se ha creado la base de datos correctamente, insertando tablas...");
+
+                        dbConnection.open();
+
+                        dbConnection.insertTables();
+
+                        System.out.println(" \n(+) Se han creado las tablas, insertando usuario por defecto (admin, admin) ...");
+
+                        dbConnection.insertUser("admin", "admin");
+
+                        System.out.println("\n(+) Se ha creado el usuario inicial.");
+                        System.out.println("(+) Ahora se iniciará el servidor...\n");
+
+                        dbConnection.close();
+
+                        try {
+                            Thread.sleep(250);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                }
 
             } else {
 
@@ -75,8 +114,6 @@ public class Server {
                 }
 
                 dbDatabase = db_database;
-
-                DBConnection dbConnection = new DBConnection();
 
                 if(!dbConnection.createDatabase(dbIP, dbUsername, dbPassword, dbDatabase)) {
 

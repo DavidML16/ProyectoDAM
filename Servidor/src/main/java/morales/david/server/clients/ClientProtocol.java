@@ -2,6 +2,7 @@ package morales.david.server.clients;
 
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.LinkedTreeMap;
+import com.smattme.MysqlExportService;
 import morales.david.server.interfaces.ScheduleSearcheable;
 import morales.david.server.Server;
 import morales.david.server.models.*;
@@ -10,10 +11,15 @@ import morales.david.server.models.packets.PacketBuilder;
 import morales.david.server.models.packets.PacketType;
 import morales.david.server.utils.Constants;
 import morales.david.server.utils.DBConnection;
+import morales.david.server.utils.DBConstants;
 
 import java.io.*;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 public class ClientProtocol {
 
@@ -221,6 +227,10 @@ public class ClientProtocol {
 
             case ADVINSPECTION:
                 advancedInspectionExport();
+                break;
+
+            case DATABASEBACKUP:
+                databaseBackup();
                 break;
 
         }
@@ -1590,6 +1600,51 @@ public class ClientProtocol {
                 .build();
 
         sendPacketIO(classroomsConfirmationPacket);
+
+    }
+
+
+    private void databaseBackup() {
+
+        String email = (String) lastPacket.getArgument("email");
+
+        Properties properties = new Properties();
+        properties.setProperty(MysqlExportService.DB_NAME, DBConstants.DB_DATABASE);
+        properties.setProperty(MysqlExportService.DB_USERNAME, DBConstants.DB_USER);
+        properties.setProperty(MysqlExportService.DB_PASSWORD, DBConstants.DB_PASS);
+
+        properties.setProperty(MysqlExportService.EMAIL_HOST, "smtp.gmail.com");
+        properties.setProperty(MysqlExportService.EMAIL_PORT, "587");
+        properties.setProperty(MysqlExportService.EMAIL_USERNAME, "sgh.david.morales@gmail.com");
+        properties.setProperty(MysqlExportService.EMAIL_PASSWORD, "sghdavid044!");
+        properties.setProperty(MysqlExportService.EMAIL_FROM, "sgh.david.morales@gmail.com");
+        properties.setProperty(MysqlExportService.EMAIL_SUBJECT, "BACKUP " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
+        properties.setProperty(MysqlExportService.EMAIL_MESSAGE, "Hola, aquí tienes la copia de seguridad del sistema de horarios del centro. \nPara importarla, necesitas usar un cliente MySQL como PhpMyAdmin");
+        properties.setProperty(MysqlExportService.EMAIL_TO, email);
+
+        properties.setProperty(MysqlExportService.JDBC_CONNECTION_STRING, "jdbc:mysql://" + DBConstants.DB_IP + ":" + DBConstants.DB_PORT + "/" + DBConstants.DB_DATABASE);
+
+        properties.setProperty(MysqlExportService.PRESERVE_GENERATED_ZIP, "true");
+
+        properties.setProperty(MysqlExportService.TEMP_DIR, new File("backups").getPath());
+
+        MysqlExportService mysqlExportService = new MysqlExportService(properties);
+        try {
+            mysqlExportService.export();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        mysqlExportService.clearTempFiles();
+
+        PacketBuilder packetBuilder = new PacketBuilder()
+                .ofType(PacketType.DATABASEBACKUP.getConfirmation());
+
+        sendPacketIO(packetBuilder.build());
 
     }
 
