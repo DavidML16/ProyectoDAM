@@ -1995,7 +1995,7 @@ public class DBConnection {
      * Clear all table rows from database
      * @return rows deleted
      */
-    public boolean clearAll() {
+    public boolean clearAll(boolean backup) {
 
         try {
 
@@ -2018,6 +2018,14 @@ public class DBConnection {
             Statement teacherStm = connection.createStatement();
             teacherStm.execute(DBConstants.DB_QUERY_CLEAR_TEACHERS);
             teacherStm.close();
+
+            if(backup) {
+
+                Statement credentialStm = connection.createStatement();
+                credentialStm.execute(DBConstants.DB_QUERY_CLEAR_CREDENTIALS);
+                credentialStm.close();
+
+            }
 
             Statement courseSubjectsStm = connection.createStatement();
             courseSubjectsStm.execute(DBConstants.DB_QUERY_CLEAR_COURSE_SUBJECTS);
@@ -2053,7 +2061,7 @@ public class DBConnection {
      * Reset all table from database
      * @return tables reseted
      */
-    public boolean resetAll() {
+    public boolean resetAll(boolean backup) {
 
         try {
 
@@ -2076,6 +2084,14 @@ public class DBConnection {
             Statement teacherStm = connection.createStatement();
             teacherStm.execute(DBConstants.DB_QUERY_RESET_TEACHERS);
             teacherStm.close();
+
+            if(backup) {
+
+                Statement credentialStm = connection.createStatement();
+                credentialStm.execute(DBConstants.DB_QUERY_RESET_CREDENTIALS);
+                credentialStm.close();
+
+            }
 
             Statement subjectStm = connection.createStatement();
             subjectStm.execute(DBConstants.DB_QUERY_RESET_SUBJECTS);
@@ -2931,7 +2947,7 @@ public class DBConnection {
                     "    id_grupo INTEGER(11) PRIMARY KEY AUTO_INCREMENT," +
                     "    curso INTEGER(11) NOT NULL," +
                     "    letra VARCHAR(10) NOT NULL," +
-                    "    CONSTRAINT grupo_fk FOREIGN KEY (curso) REFERENCES curso(id_curso)" +
+                    "    CONSTRAINT grupo_fk FOREIGN KEY (curso) REFERENCES curso(id_curso) ON DELETE CASCADE" +
                     ");"
             );
             s10.close();
@@ -2947,11 +2963,11 @@ public class DBConnection {
                     "grupo INTEGER(11) NULL," +
                     "aula INTEGER(11) NULL," +
                     "franja INTEGER(11) NOT NULL," +
-                    "CONSTRAINT imparte_profesor_fk FOREIGN KEY (profesor) REFERENCES profesor(id_profesor)," +
-                    "CONSTRAINT imparte_asignatura_fk FOREIGN KEY (asignatura) REFERENCES asignatura(id_asignatura)," +
-                    "CONSTRAINT imparte_grupo_fk FOREIGN KEY (grupo) REFERENCES grupo(id_grupo)," +
-                    "CONSTRAINT imparte_aula_fk FOREIGN KEY (aula) REFERENCES aula(id_aula)," +
-                    "CONSTRAINT imparte_franja_fk FOREIGN KEY (franja) REFERENCES franja_horaria(id_franja)" +
+                    "CONSTRAINT imparte_profesor_fk FOREIGN KEY (profesor) REFERENCES profesor(id_profesor) ON DELETE CASCADE," +
+                    "CONSTRAINT imparte_asignatura_fk FOREIGN KEY (asignatura) REFERENCES asignatura(id_asignatura) ON DELETE CASCADE," +
+                    "CONSTRAINT imparte_grupo_fk FOREIGN KEY (grupo) REFERENCES grupo(id_grupo) ON DELETE CASCADE," +
+                    "CONSTRAINT imparte_aula_fk FOREIGN KEY (aula) REFERENCES aula(id_aula) ON DELETE CASCADE," +
+                    "CONSTRAINT imparte_franja_fk FOREIGN KEY (franja) REFERENCES franja_horaria(id_franja) ON DELETE CASCADE" +
                     ");"
             );
             s11.close();

@@ -11,6 +11,7 @@
          <children>
             <Button fx:id="importNavigationButton" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="50.0" prefWidth="178.0" styleClass="navigationButton" text="Importar" />
             <Button fx:id="backupNavigationButton" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="50.0" prefWidth="178.0" styleClass="navigationButton" text="Copia de seguridad" />
+            <Button fx:id="deleteDataNavigationButton" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="50.0" prefWidth="178.0" styleClass="navigationButton" text="Borrado de datos" />
          </children>
       </HBox>
       <BorderPane fx:id="viewPane" layoutX="230.0" layoutY="200.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="75.0" />

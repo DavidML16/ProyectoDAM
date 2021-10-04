@@ -85,6 +85,7 @@ public class DBConstants {
     public static final String DB_QUERY_CLEAR_COURSE_SUBJECTS = "DELETE FROM `curso_asignatura`";
     public static final String DB_QUERY_CLEAR_TEACHERS = "DELETE FROM `profesor`";
     public static final String DB_QUERY_CLEAR_SCHEDULES = "DELETE FROM `imparte`";
+    public static final String DB_QUERY_CLEAR_CREDENTIALS = "DELETE FROM `credencial`";
 
     public static final String DB_QUERY_RESET_DAYS = "ALTER TABLE `numero_dia` AUTO_INCREMENT = 1";
     public static final String DB_QUERY_RESET_HOURS = "ALTER TABLE `numero_hora` AUTO_INCREMENT = 1";
@@ -95,6 +96,7 @@ public class DBConstants {
     public static final String DB_QUERY_RESET_GROUPS = "ALTER TABLE `grupo` AUTO_INCREMENT = 1";
     public static final String DB_QUERY_RESET_TEACHERS = "ALTER TABLE `profesor` AUTO_INCREMENT = 1";
     public static final String DB_QUERY_RESET_SCHEDULES = "ALTER TABLE `imparte` AUTO_INCREMENT = 1";
+    public static final String DB_QUERY_RESET_CREDENTIALS = "ALTER TABLE `credencial` AUTO_INCREMENT = 1";
 
     public static final String DB_QUERY_INSERTSB_DAYS = "INSERT INTO numero_dia VALUES ";
     public static final String DB_QUERY_INSERTSB_HOURS = "INSERT INTO numero_hora VALUES ";

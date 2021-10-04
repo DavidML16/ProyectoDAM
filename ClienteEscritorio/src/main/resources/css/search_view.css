@@ -63,3 +63,11 @@
     -fx-background-color: #A40A36;
     -fx-text-fill: #FFFFFF;
 }
+
+.fileDrop {
+    -fx-border-style: dashed, dashed, dashed, dashed;
+    -fx-border-color: #8a8a8a;
+    -fx-border-width: 5;
+    -fx-background-color: #f5f5f5;
+    -fx-cursor: hand;
+}

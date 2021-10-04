@@ -25,6 +25,9 @@ public class OptionsMenuController implements Initializable, Controller {
     private Button backupNavigationButton;
 
     @FXML
+    private Button deleteDataNavigationButton;
+
+    @FXML
     private BorderPane viewPane;
 
     private String actualView;
@@ -44,8 +47,10 @@ public class OptionsMenuController implements Initializable, Controller {
 
         if(event.getSource() == importNavigationButton)
             loadView("options/import.fxml", "Importar", event);
-        else  if(event.getSource() == backupNavigationButton)
+        else if(event.getSource() == backupNavigationButton)
             loadView("options/backup.fxml", "Copias de seguridad", event);
+        else if(event.getSource() == deleteDataNavigationButton)
+            loadView("options/clean.fxml", "Borrado de datos", event);
 
     }
 
@@ -53,6 +58,7 @@ public class OptionsMenuController implements Initializable, Controller {
 
         importNavigationButton.getStyleClass().remove("buttonPressed");
         backupNavigationButton.getStyleClass().remove("buttonPressed");
+        deleteDataNavigationButton.getStyleClass().remove("buttonPressed");
 
     }
 

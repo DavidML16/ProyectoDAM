@@ -1,5 +1,6 @@
 package morales.david.server.managers;
 
+import com.smattme.MysqlImportService;
 import morales.david.server.Server;
 import morales.david.server.models.*;
 import morales.david.server.models.TimeZone;
@@ -12,6 +13,9 @@ import morales.david.server.utils.DBConstants;
 
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.util.*;
 import java.util.List;
@@ -101,15 +105,19 @@ public class ImportManager {
 
         try {
 
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+            if(!isBackup()) {
 
-            acon = DriverManager.getConnection("jdbc:ucanaccess://" + file.getAbsolutePath());
+                Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+
+                acon = DriverManager.getConnection("jdbc:ucanaccess://" + file.getAbsolutePath());
+
+            }
 
             dbConnection.open();
 
-            if(dbConnection.clearAll()) {
+            if(dbConnection.clearAll(isBackup())) {
 
-                dbConnection.resetAll();
+                dbConnection.resetAll(isBackup());
 
                 statusPacket = new PacketBuilder()
                         .ofType(PacketType.IMPORTSTATUS.getConfirmation())
@@ -119,163 +127,180 @@ public class ImportManager {
                         .build();
                 server.getClientRepository().broadcast(statusPacket);
 
-                // DAYS
-                dayList = getDays();
-                {
+                if(!isBackup()) {
 
-                    insertDays();
+                    // DAYS
+                    dayList = getDays();
+                    {
 
-                    statusPacket = new PacketBuilder()
-                            .ofType(PacketType.IMPORTSTATUS.getConfirmation())
-                            .addArgument("importing", isImporting)
-                            .addArgument("type", "import")
-                            .addArgument("message", "Tabla de días importada")
-                            .build();
-                    server.getClientRepository().broadcast(statusPacket);
+                        insertDays();
 
-                }
+                        statusPacket = new PacketBuilder()
+                                .ofType(PacketType.IMPORTSTATUS.getConfirmation())
+                                .addArgument("importing", isImporting)
+                                .addArgument("type", "import")
+                                .addArgument("message", "Tabla de días importada")
+                                .build();
+                        server.getClientRepository().broadcast(statusPacket);
 
-                // HOURS
-                hourList = getHours();
-                {
+                    }
 
-                    insertHours();
+                    // HOURS
+                    hourList = getHours();
+                    {
 
-                    statusPacket = new PacketBuilder()
-                            .ofType(PacketType.IMPORTSTATUS.getConfirmation())
-                            .addArgument("importing", isImporting)
-                            .addArgument("type", "import")
-                            .addArgument("message", "Tabla de horas importada")
-                            .build();
-                    server.getClientRepository().broadcast(statusPacket);
+                        insertHours();
 
-                }
+                        statusPacket = new PacketBuilder()
+                                .ofType(PacketType.IMPORTSTATUS.getConfirmation())
+                                .addArgument("importing", isImporting)
+                                .addArgument("type", "import")
+                                .addArgument("message", "Tabla de horas importada")
+                                .build();
+                        server.getClientRepository().broadcast(statusPacket);
 
-                // TIMEZONES
-                timeZoneList = getTimeZones();
-                {
+                    }
 
-                    insertTimeZone();
+                    // TIMEZONES
+                    timeZoneList = getTimeZones();
+                    {
 
-                    statusPacket = new PacketBuilder()
-                            .ofType(PacketType.IMPORTSTATUS.getConfirmation())
-                            .addArgument("importing", isImporting)
-                            .addArgument("type", "import")
-                            .addArgument("message", "Tabla de franjas horarias importada")
-                            .build();
-                    server.getClientRepository().broadcast(statusPacket);
+                        insertTimeZone();
 
-                }
+                        statusPacket = new PacketBuilder()
+                                .ofType(PacketType.IMPORTSTATUS.getConfirmation())
+                                .addArgument("importing", isImporting)
+                                .addArgument("type", "import")
+                                .addArgument("message", "Tabla de franjas horarias importada")
+                                .build();
+                        server.getClientRepository().broadcast(statusPacket);
 
-                // TEACHERS
-                teacherList = getTeachers();
-                {
+                    }
 
-                    insertTeachers();
+                    // TEACHERS
+                    teacherList = getTeachers();
+                    {
 
-                    statusPacket = new PacketBuilder()
-                            .ofType(PacketType.IMPORTSTATUS.getConfirmation())
-                            .addArgument("importing", isImporting)
-                            .addArgument("type", "import")
-                            .addArgument("message", "Tabla de profesores importada")
-                            .build();
-                    server.getClientRepository().broadcast(statusPacket);
+                        insertTeachers();
 
-                }
+                        statusPacket = new PacketBuilder()
+                                .ofType(PacketType.IMPORTSTATUS.getConfirmation())
+                                .addArgument("importing", isImporting)
+                                .addArgument("type", "import")
+                                .addArgument("message", "Tabla de profesores importada")
+                                .build();
+                        server.getClientRepository().broadcast(statusPacket);
 
-                // SUBJECTS
-                subjectList = getSubjects();
-                {
+                    }
 
-                    insertSubjects();
+                    // SUBJECTS
+                    subjectList = getSubjects();
+                    {
 
-                    statusPacket = new PacketBuilder()
-                            .ofType(PacketType.IMPORTSTATUS.getConfirmation())
-                            .addArgument("importing", isImporting)
-                            .addArgument("type", "import")
-                            .addArgument("message", "Tabla de asignaturas importada")
-                            .build();
-                    server.getClientRepository().broadcast(statusPacket);
+                        insertSubjects();
 
-                }
+                        statusPacket = new PacketBuilder()
+                                .ofType(PacketType.IMPORTSTATUS.getConfirmation())
+                                .addArgument("importing", isImporting)
+                                .addArgument("type", "import")
+                                .addArgument("message", "Tabla de asignaturas importada")
+                                .build();
+                        server.getClientRepository().broadcast(statusPacket);
 
-                // CLASSROOMS
-                classroomList = getClassrooms();
-                {
+                    }
 
-                    insertClassrooms();
+                    // CLASSROOMS
+                    classroomList = getClassrooms();
+                    {
 
-                    statusPacket = new PacketBuilder()
-                            .ofType(PacketType.IMPORTSTATUS.getConfirmation())
-                            .addArgument("importing", isImporting)
-                            .addArgument("type", "import")
-                            .addArgument("message", "Tabla de aulas importada")
-                            .build();
-                    server.getClientRepository().broadcast(statusPacket);
+                        insertClassrooms();
 
-                }
+                        statusPacket = new PacketBuilder()
+                                .ofType(PacketType.IMPORTSTATUS.getConfirmation())
+                                .addArgument("importing", isImporting)
+                                .addArgument("type", "import")
+                                .addArgument("message", "Tabla de aulas importada")
+                                .build();
+                        server.getClientRepository().broadcast(statusPacket);
 
-                // COURSES
-                courseList = getCourses();
-                {
+                    }
 
-                    insertCourses();
+                    // COURSES
+                    courseList = getCourses();
+                    {
 
-                    statusPacket = new PacketBuilder()
-                            .ofType(PacketType.IMPORTSTATUS.getConfirmation())
-                            .addArgument("importing", isImporting)
-                            .addArgument("type", "import")
-                            .addArgument("message", "Tabla de cursos importada")
-                            .build();
-                    server.getClientRepository().broadcast(statusPacket);
+                        insertCourses();
 
-                }
+                        statusPacket = new PacketBuilder()
+                                .ofType(PacketType.IMPORTSTATUS.getConfirmation())
+                                .addArgument("importing", isImporting)
+                                .addArgument("type", "import")
+                                .addArgument("message", "Tabla de cursos importada")
+                                .build();
+                        server.getClientRepository().broadcast(statusPacket);
 
-                // COURSE SUBJECTS
-                courseSubjectList = getCourseSubjects();
-                {
+                    }
 
-                    insertCourseSubjects();
+                    // COURSE SUBJECTS
+                    courseSubjectList = getCourseSubjects();
+                    {
 
-                    statusPacket = new PacketBuilder()
-                            .ofType(PacketType.IMPORTSTATUS.getConfirmation())
-                            .addArgument("importing", isImporting)
-                            .addArgument("type", "import")
-                            .addArgument("message", "Tabla de cursos-asignaturas importada")
-                            .build();
-                    server.getClientRepository().broadcast(statusPacket);
+                        insertCourseSubjects();
 
-                }
+                        statusPacket = new PacketBuilder()
+                                .ofType(PacketType.IMPORTSTATUS.getConfirmation())
+                                .addArgument("importing", isImporting)
+                                .addArgument("type", "import")
+                                .addArgument("message", "Tabla de cursos-asignaturas importada")
+                                .build();
+                        server.getClientRepository().broadcast(statusPacket);
 
-                // GROUPS
-                groupList = getGroups();
-                {
+                    }
 
-                    insertGroups();
+                    // GROUPS
+                    groupList = getGroups();
+                    {
 
-                    statusPacket = new PacketBuilder()
-                            .ofType(PacketType.IMPORTSTATUS.getConfirmation())
-                            .addArgument("importing", isImporting)
-                            .addArgument("type", "import")
-                            .addArgument("message", "Tabla de grupos importada")
-                            .build();
-                    server.getClientRepository().broadcast(statusPacket);
+                        insertGroups();
 
-                }
+                        statusPacket = new PacketBuilder()
+                                .ofType(PacketType.IMPORTSTATUS.getConfirmation())
+                                .addArgument("importing", isImporting)
+                                .addArgument("type", "import")
+                                .addArgument("message", "Tabla de grupos importada")
+                                .build();
+                        server.getClientRepository().broadcast(statusPacket);
 
-                // SCHEDULES
-                scheduleList = getSchedules();
-                {
+                    }
 
-                    insertSchedules();
+                    // SCHEDULES
+                    scheduleList = getSchedules();
+                    {
 
-                    statusPacket = new PacketBuilder()
-                            .ofType(PacketType.IMPORTSTATUS.getConfirmation())
-                            .addArgument("importing", isImporting)
-                            .addArgument("type", "import")
-                            .addArgument("message", "Tabla de horarios importada")
-                            .build();
-                    server.getClientRepository().broadcast(statusPacket);
+                        insertSchedules();
+
+                        statusPacket = new PacketBuilder()
+                                .ofType(PacketType.IMPORTSTATUS.getConfirmation())
+                                .addArgument("importing", isImporting)
+                                .addArgument("type", "import")
+                                .addArgument("message", "Tabla de horarios importada")
+                                .build();
+                        server.getClientRepository().broadcast(statusPacket);
+
+                    }
+
+                } else {
+
+                    String sql = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
+
+                    MysqlImportService.builder()
+                            .setSqlString(sql)
+                            .setJdbcConnString("jdbc:mysql://" + DBConstants.DB_IP + ":" + DBConstants.DB_PORT + "/" + DBConstants.DB_DATABASE)
+                            .setUsername(DBConstants.DB_USER)
+                            .setPassword(DBConstants.DB_PASS)
+                            .setDeleteExisting(false)
+                            .setDropExisting(false)
+                            .importDatabase();
 
                 }
 
@@ -283,7 +308,8 @@ public class ImportManager {
 
             dbConnection.close();
 
-            acon.close();
+            if(!isBackup() && acon != null)
+                acon.close();
 
         } catch (SQLException throwables) {
 
@@ -298,6 +324,10 @@ public class ImportManager {
             server.getClientRepository().broadcast(statusPacket);
 
         } catch (ClassNotFoundException e) {
+
+            e.printStackTrace();
+
+        } catch (IOException e) {
 
             e.printStackTrace();
 
@@ -323,6 +353,10 @@ public class ImportManager {
 
         }
 
+    }
+
+    private boolean isBackup() {
+        return file.getName().endsWith(".sql");
     }
 
     /**

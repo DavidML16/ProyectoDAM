@@ -15,6 +15,7 @@ import morales.david.server.utils.DBConstants;
 
 import java.io.*;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -231,6 +232,14 @@ public class ClientProtocol {
 
             case DATABASEBACKUP:
                 databaseBackup();
+                break;
+
+            case DATABASECLEAN:
+                try {
+                    deleteData();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 break;
 
         }
@@ -1606,21 +1615,28 @@ public class ClientProtocol {
 
     private void databaseBackup() {
 
+        boolean sendEmail = Boolean.parseBoolean((String) lastPacket.getArgument("sendEmail"));
         String email = (String) lastPacket.getArgument("email");
+
+        String backupDate = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date());
 
         Properties properties = new Properties();
         properties.setProperty(MysqlExportService.DB_NAME, DBConstants.DB_DATABASE);
         properties.setProperty(MysqlExportService.DB_USERNAME, DBConstants.DB_USER);
         properties.setProperty(MysqlExportService.DB_PASSWORD, DBConstants.DB_PASS);
 
-        properties.setProperty(MysqlExportService.EMAIL_HOST, "smtp.gmail.com");
-        properties.setProperty(MysqlExportService.EMAIL_PORT, "587");
-        properties.setProperty(MysqlExportService.EMAIL_USERNAME, "sgh.david.morales@gmail.com");
-        properties.setProperty(MysqlExportService.EMAIL_PASSWORD, "sghdavid044!");
-        properties.setProperty(MysqlExportService.EMAIL_FROM, "sgh.david.morales@gmail.com");
-        properties.setProperty(MysqlExportService.EMAIL_SUBJECT, "BACKUP " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
-        properties.setProperty(MysqlExportService.EMAIL_MESSAGE, "Hola, aquí tienes la copia de seguridad del sistema de horarios del centro. \nPara importarla, necesitas usar un cliente MySQL como PhpMyAdmin");
-        properties.setProperty(MysqlExportService.EMAIL_TO, email);
+        if(sendEmail) {
+
+            properties.setProperty(MysqlExportService.EMAIL_HOST, "smtp.gmail.com");
+            properties.setProperty(MysqlExportService.EMAIL_PORT, "587");
+            properties.setProperty(MysqlExportService.EMAIL_USERNAME, "sgh.david.morales@gmail.com");
+            properties.setProperty(MysqlExportService.EMAIL_PASSWORD, "sghdavid044!");
+            properties.setProperty(MysqlExportService.EMAIL_FROM, "sgh.david.morales@gmail.com");
+            properties.setProperty(MysqlExportService.EMAIL_SUBJECT, "BACKUP " + backupDate);
+            properties.setProperty(MysqlExportService.EMAIL_MESSAGE, "Hola, aquí tienes la copia de seguridad del sistema de horarios del centro. \nPara importarla, necesitas usar un cliente MySQL como PhpMyAdmin");
+            properties.setProperty(MysqlExportService.EMAIL_TO, email);
+
+        }
 
         properties.setProperty(MysqlExportService.JDBC_CONNECTION_STRING, "jdbc:mysql://" + DBConstants.DB_IP + ":" + DBConstants.DB_PORT + "/" + DBConstants.DB_DATABASE);
 
@@ -1639,12 +1655,96 @@ public class ClientProtocol {
             e.printStackTrace();
         }
 
+        String generatedSql = mysqlExportService.getGeneratedSql();
+
         mysqlExportService.clearTempFiles();
 
         PacketBuilder packetBuilder = new PacketBuilder()
-                .ofType(PacketType.DATABASEBACKUP.getConfirmation());
+                .ofType(PacketType.DATABASEBACKUP.getConfirmation())
+                .addArgument("date", backupDate)
+                .addArgument("sql", generatedSql);
 
         sendPacketIO(packetBuilder.build());
+
+    }
+
+
+    private void deleteData() throws SQLException {
+
+        String type = (String) lastPacket.getArgument("type");
+
+        DBConnection connection = clientThread.getDbConnection();
+
+        if(type.equalsIgnoreCase("all")) {
+
+            connection.clearAll(false);
+            connection.resetAll(false);
+
+        } else if(type.equalsIgnoreCase("schedules")) {
+
+            Statement scheduleStm = connection.getConnection().createStatement();
+            scheduleStm.execute(DBConstants.DB_QUERY_CLEAR_SCHEDULES);
+            scheduleStm.close();
+
+            Statement schedule2Stm = connection.getConnection().createStatement();
+            schedule2Stm.execute(DBConstants.DB_QUERY_RESET_SCHEDULES);
+            schedule2Stm.close();
+
+        } else if(type.equalsIgnoreCase("subjects")) {
+
+            Statement courseSubjectsStm = connection.getConnection().createStatement();
+            courseSubjectsStm.execute(DBConstants.DB_QUERY_CLEAR_COURSE_SUBJECTS);
+            courseSubjectsStm.close();
+
+            Statement subjectStm = connection.getConnection().createStatement();
+            subjectStm.execute(DBConstants.DB_QUERY_CLEAR_SUBJECTS);
+            subjectStm.close();
+
+            Statement subject2Stm = connection.getConnection().createStatement();
+            subject2Stm.execute(DBConstants.DB_QUERY_RESET_SUBJECTS);
+            subject2Stm.close();
+
+        } else if(type.equalsIgnoreCase("teachers")) {
+
+            Statement teacherStm = connection.getConnection().createStatement();
+            teacherStm.execute(DBConstants.DB_QUERY_CLEAR_TEACHERS);
+            teacherStm.close();
+
+            Statement teacher2Stm = connection.getConnection().createStatement();
+            teacher2Stm.execute(DBConstants.DB_QUERY_RESET_TEACHERS);
+            teacher2Stm.close();
+
+        } else if(type.equalsIgnoreCase("courses")) {
+
+            Statement courseStm = connection.getConnection().createStatement();
+            courseStm.execute(DBConstants.DB_QUERY_CLEAR_COURSES);
+            courseStm.close();
+
+            Statement course2Stm = connection.getConnection().createStatement();
+            course2Stm.execute(DBConstants.DB_QUERY_RESET_COURSES);
+            course2Stm.close();
+
+        } else if(type.equalsIgnoreCase("groups")) {
+
+            Statement groupStm = connection.getConnection().createStatement();
+            groupStm.execute(DBConstants.DB_QUERY_CLEAR_GROUPS);
+            groupStm.close();
+
+            Statement group2Stm = connection.getConnection().createStatement();
+            group2Stm.execute(DBConstants.DB_QUERY_RESET_GROUPS);
+            group2Stm.close();
+
+        } else if(type.equalsIgnoreCase("classrooms")) {
+
+            Statement classroomStm = connection.getConnection().createStatement();
+            classroomStm.execute(DBConstants.DB_QUERY_CLEAR_CLASSROOMS);
+            classroomStm.close();
+
+            Statement classroom2Stm = connection.getConnection().createStatement();
+            classroom2Stm.execute(DBConstants.DB_QUERY_RESET_CLASSROOMS);
+            classroom2Stm.close();
+
+        }
 
     }
 

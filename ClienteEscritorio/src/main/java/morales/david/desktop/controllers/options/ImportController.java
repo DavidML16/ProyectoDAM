@@ -87,10 +87,11 @@ public class ImportController implements Initializable, Controller {
             FileChooser fileChooser = new FileChooser();
 
             fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Microsoft Access Files", "*.accdb")
+                    new FileChooser.ExtensionFilter("Microsoft Access Files", "*.accdb"),
+                    new FileChooser.ExtensionFilter("Archivos SQL", "*.sql")
             );
 
-            List<String> validExtensions = Arrays.asList("accdb");
+            List<String> validExtensions = Arrays.asList("accdb", "sql");
 
             fileDrop.setOnMouseClicked(event -> {
 
@@ -138,7 +139,7 @@ public class ImportController implements Initializable, Controller {
             fileDrop.setOnDragExited(event -> {
 
                 if(selectedFile.size() == 0)
-                    dropLabel.setText("Arrastra o pulsa para elegir el fichero Access");
+                    dropLabel.setText("Arrastra o pulsa para elegir el fichero Access o SQL");
                 else
                     dropLabel.setText(selectedFile.get(0).getName());
 
@@ -236,7 +237,7 @@ public class ImportController implements Initializable, Controller {
         if(type.equalsIgnoreCase("init")) {
             mesagePane.getStyleClass().add("messagePaneInit");
             selectedFile.clear();
-            dropLabel.setText("Arrastra o pulsa para elegir el fichero Access");
+            dropLabel.setText("Arrastra o pulsa para elegir el fichero Access o SQL");
         } else if(type.equalsIgnoreCase("clear"))
             mesagePane.getStyleClass().add("messagePaneClear");
         else if(type.equalsIgnoreCase("import"))

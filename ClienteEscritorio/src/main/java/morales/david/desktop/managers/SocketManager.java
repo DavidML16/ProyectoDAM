@@ -712,7 +712,13 @@ public final class SocketManager extends Thread {
 
                                     BackupController backupController = (BackupController) screenManager.getController();
 
-                                    Platform.runLater(() -> backupController.setInProgress(false));
+                                    String date = (String) receivedPacket.getArgument("date");
+                                    String sql = (String) receivedPacket.getArgument("sql");
+
+                                    Platform.runLater(() -> {
+                                        backupController.setInProgress(false);
+                                        backupController.receivedSQL(date, sql);
+                                    });
 
                                 }
 

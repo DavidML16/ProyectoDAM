@@ -57,8 +57,6 @@ public class DashboardController implements Initializable, Controller {
 
         Platform.runLater(() -> loadView("home.fxml", "Inicio", null));
 
-        Platform.runLater(() -> sendPackets());
-
         if(SocketManager.getInstance().getClientSession().isTeacherRole()) {
             optionsNavigationButton.setVisible(false);
         }
@@ -98,17 +96,6 @@ public class DashboardController implements Initializable, Controller {
                     .build();
 
             SocketManager.getInstance().sendPacketIO(disconnectRequestPacket);
-
-        }
-
-    }
-
-    private void sendPackets() {
-
-        for(PacketType packetType : Constants.INIT_PACKETS) {
-
-            Packet requestPacket = new PacketBuilder().ofType(packetType.getRequest()).build();
-            SocketManager.getInstance().sendPacketIO(requestPacket);
 
         }
 

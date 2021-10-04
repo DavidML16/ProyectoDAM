@@ -38,9 +38,9 @@
                         <Button fx:id="importButton" disable="true" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#handleButtonAction" prefHeight="54.0" prefWidth="155.0" styleClass="importButton" text="Importar" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
                         <BorderPane fx:id="fileDrop" prefHeight="150.0" prefWidth="575.0" styleClass="fileDrop" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                            <center>
-                              <Label fx:id="dropLabel" alignment="CENTER" contentDisplay="CENTER" lineSpacing="1.0" prefHeight="118.0" prefWidth="665.0" text="Arrastra o pulsa para elegir el fichero Access" textAlignment="CENTER" textFill="#656565" textOverrun="WORD_ELLIPSIS" wrapText="true" BorderPane.alignment="CENTER">
+                              <Label fx:id="dropLabel" alignment="CENTER" contentDisplay="CENTER" lineSpacing="1.0" prefHeight="118.0" prefWidth="665.0" text="Arrastra o pulsa para elegir el fichero Access o SQL" textAlignment="CENTER" textFill="#656565" textOverrun="WORD_ELLIPSIS" wrapText="true" BorderPane.alignment="CENTER">
                                  <font>
-                                    <Font name="Microsoft Sans Serif" size="34.0" />
+                                    <Font name="Microsoft Sans Serif" size="28.0" />
                                  </font>
                               </Label>
                            </center>

@@ -13,7 +13,11 @@ import javafx.scene.layout.BorderPane;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.DataManager;
 import morales.david.desktop.managers.ScreenManager;
+import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.models.*;
+import morales.david.desktop.models.packets.Packet;
+import morales.david.desktop.models.packets.PacketBuilder;
+import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.Constants;
 
 import java.io.IOException;
@@ -42,6 +46,8 @@ public class HomeController implements Initializable, Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        Platform.runLater(() -> sendPackets());
 
         if(!Constants.FIRST_HOME_VIEW) {
             Platform.runLater(() -> {
@@ -91,6 +97,17 @@ public class HomeController implements Initializable, Controller {
                 schedulesLabel.setText(Integer.toString(DataManager.getInstance().getSchedules().get(0)));
             });
         });
+
+    }
+
+    private void sendPackets() {
+
+        for(PacketType packetType : Constants.INIT_PACKETS) {
+
+            Packet requestPacket = new PacketBuilder().ofType(packetType.getRequest()).build();
+            SocketManager.getInstance().sendPacketIO(requestPacket);
+
+        }
 
     }
 

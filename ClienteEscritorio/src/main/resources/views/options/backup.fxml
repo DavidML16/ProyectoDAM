@@ -15,7 +15,7 @@
          <children>
             <VBox alignment="CENTER" prefHeight="600.0" prefWidth="550.0">
                <children>
-                  <AnchorPane fx:id="root" prefHeight="400.0" prefWidth="669.0" styleClass="background">
+                  <AnchorPane fx:id="root" prefHeight="500.0" prefWidth="669.0" styleClass="background">
                      <children>
                         <Label alignment="CENTER" contentDisplay="CENTER" minHeight="75.0" styleClass="topPane" text="Copias de seguridad" textAlignment="CENTER" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <font>
@@ -24,6 +24,17 @@
                         </Label>
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="636.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="75.0">
                            <children>
+                              <Label prefHeight="75.0" text="Si no quieres que la copia de seguridad se envíe al correo, por favor deje el campo en blanco/vacío" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                                 <padding>
+                                    <Insets left="15.0" right="15.0" />
+                                 </padding>
+                              </Label>
                               <HBox alignment="CENTER" prefHeight="70.0" prefWidth="200.0" VBox.vgrow="NEVER">
                                  <VBox.margin>
                                     <Insets top="30.0" />
@@ -44,6 +55,17 @@
                                     </TextField>
                                  </children>
                               </HBox>
+                              <Label fx:id="directoryChooser" alignment="CENTER" contentDisplay="CENTER" lineSpacing="1.0" prefHeight="100.0" prefWidth="900.0" styleClass="fileDrop" text="Pulsa para elegir el directorio de salida" textAlignment="CENTER" textFill="#656565" textOverrun="WORD_ELLIPSIS" wrapText="true">
+                                 <font>
+                                    <Font name="Microsoft Sans Serif" size="24.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                                 <VBox.margin>
+                                    <Insets left="15.0" right="15.0" top="35.0" />
+                                 </VBox.margin>
+                              </Label>
                            </children>
                            <padding>
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
