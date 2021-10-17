@@ -15,12 +15,11 @@ import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.ScreenManager;
-import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.ClientManager;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
@@ -71,7 +70,7 @@ public class ImportController implements Initializable, Controller {
                     .ofType(PacketType.IMPORTSTATUS.getRequest())
                     .build();
 
-            SocketManager.getInstance().sendPacketIO(importStatusRequestPacket);
+            ClientManager.getInstance().sendPacketIO(importStatusRequestPacket);
 
             selectedFile.addListener((ListChangeListener) change -> {
 
@@ -246,7 +245,7 @@ public class ImportController implements Initializable, Controller {
             mesagePane.getStyleClass().add("messagePaneEnd");
             for(PacketType packetType : Constants.INIT_PACKETS) {
                 Packet requestPacket = new PacketBuilder().ofType(packetType.getRequest()).build();
-                SocketManager.getInstance().sendPacketIO(requestPacket);
+                ClientManager.getInstance().sendPacketIO(requestPacket);
             }
         } else if(type.equalsIgnoreCase("error"))
             mesagePane.getStyleClass().add("messagePaneError");

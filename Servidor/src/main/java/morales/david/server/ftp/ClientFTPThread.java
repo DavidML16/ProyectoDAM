@@ -1,6 +1,7 @@
 package morales.david.server.ftp;
 
 import morales.david.server.Server;
+import morales.david.server.managers.ImportManager;
 import morales.david.server.models.packets.Packet;
 import morales.david.server.utils.Constants;
 import morales.david.server.utils.DBConnection;
@@ -64,9 +65,9 @@ public class ClientFTPThread extends Thread {
                         ftp.receiveFile(filePath);
 
                         File dbfile = new File(filePath);
-                        if(dbfile.exists() && !server.getImportManager().isImporting()) {
-                            server.getImportManager().setFile(dbfile);
-                            server.getImportManager().importDatabase();
+                        if(dbfile.exists() && !ImportManager.getInstance().isImporting()) {
+                            ImportManager.getInstance().setFile(dbfile);
+                            ImportManager.getInstance().importDatabase();
                         }
 
                         running = false;

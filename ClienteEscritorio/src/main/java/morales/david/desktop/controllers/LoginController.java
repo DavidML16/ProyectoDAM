@@ -12,7 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.ScreenManager;
-import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.ClientManager;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
@@ -96,20 +96,17 @@ public class LoginController implements Initializable, Controller {
                 .addArgument("password", password)
                 .build();
 
-        SocketManager socketManager = SocketManager.getInstance();
+        ClientManager clientManager = ClientManager.getInstance();
 
-        if(socketManager.isClosed()) {
+        if(clientManager.isClosed()) {
 
-            socketManager.addPendingPacket(loginRequestPacket);
+            clientManager.addPendingPacket(loginRequestPacket);
 
-            socketManager.openSocket();
-
-            socketManager.setDaemon(true);
-            socketManager.start();
+            clientManager.open();
 
         } else {
 
-            SocketManager.getInstance().sendPacketIO(loginRequestPacket);
+            ClientManager.getInstance().sendPacketIO(loginRequestPacket);
 
         }
 

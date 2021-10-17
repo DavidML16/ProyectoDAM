@@ -11,7 +11,6 @@ import java.net.Socket;
 public class FileTransferManager extends Thread {
 
     private Server server;
-    private ClientRepository clientRepository;
 
     private ServerSocket serverSocket;
 
@@ -21,7 +20,6 @@ public class FileTransferManager extends Thread {
      */
     public FileTransferManager(Server server) {
         this.server = server;
-        this.clientRepository = server.getClientRepository();
         init();
     }
 

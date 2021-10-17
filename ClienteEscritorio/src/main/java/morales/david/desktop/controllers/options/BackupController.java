@@ -13,9 +13,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
 import morales.david.desktop.interfaces.Controller;
-import morales.david.desktop.managers.AdvInspectionManager;
-import morales.david.desktop.managers.SocketManager;
-import morales.david.desktop.models.packets.Packet;
+import morales.david.desktop.ClientManager;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
 
@@ -104,7 +102,7 @@ public class BackupController implements Initializable, Controller {
                     .addArgument("email", emailField.getText())
                     .addArgument("sendEmail", emailField.getText().trim().isEmpty() ? "false" : "true");
 
-            SocketManager.getInstance().sendPacketIO(packetBuilder.build());
+            ClientManager.getInstance().sendPacketIO(packetBuilder.build());
 
             emailField.setText("");
             directories.clear();

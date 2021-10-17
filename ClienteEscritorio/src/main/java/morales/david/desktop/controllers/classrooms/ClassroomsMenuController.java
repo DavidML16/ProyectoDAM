@@ -10,7 +10,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.ScreenManager;
-import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.ClientManager;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
@@ -45,7 +45,7 @@ public class ClassroomsMenuController implements Initializable, Controller {
 
             Packet coursesRequestPacket = new PacketBuilder().ofType(PacketType.COURSES.getRequest()).build();
 
-            SocketManager.getInstance().sendPacketIO(coursesRequestPacket);
+            ClientManager.getInstance().sendPacketIO(coursesRequestPacket);
 
         });
 

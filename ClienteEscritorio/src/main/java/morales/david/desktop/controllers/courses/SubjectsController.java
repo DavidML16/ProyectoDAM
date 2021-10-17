@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 import morales.david.desktop.controllers.modals.SubjectModalController;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.DataManager;
-import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.ClientManager;
 import morales.david.desktop.models.Subject;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
@@ -68,11 +68,11 @@ public class SubjectsController implements Initializable, Controller {
                     .ofType(PacketType.SUBJECTS.getRequest())
                     .build();
 
-            SocketManager.getInstance().sendPacketIO(coursesRequestPacket);
+            ClientManager.getInstance().sendPacketIO(coursesRequestPacket);
 
         });
 
-        if(SocketManager.getInstance().getClientSession().isTeacherRole()) {
+        if(ClientManager.getInstance().getClientSession().isTeacherRole()) {
             newButton.setVisible(false);
             editButton.setVisible(false);
             deleteButton.setVisible(false);
@@ -165,7 +165,7 @@ public class SubjectsController implements Initializable, Controller {
 
     private void deleteSubject() {
 
-        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+        if(ClientManager.getInstance().getClientSession().isTeacherRole())
             return;
 
         Subject subject = subjectsTable.getSelectionModel().getSelectedItem();
@@ -175,13 +175,13 @@ public class SubjectsController implements Initializable, Controller {
                 .addArgument("subject", subject)
                 .build();
 
-        SocketManager.getInstance().sendPacketIO(removeSubjectRequestPacket);
+        ClientManager.getInstance().sendPacketIO(removeSubjectRequestPacket);
 
     }
 
     private void editSubject(Subject subject) {
 
-        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+        if(ClientManager.getInstance().getClientSession().isTeacherRole())
             return;
 
         if(subject == null)
@@ -233,7 +233,7 @@ public class SubjectsController implements Initializable, Controller {
                         .addArgument("subject", updatedSubject)
                         .build();
 
-                SocketManager.getInstance().sendPacketIO(updateSubjectRequestPacket);
+                ClientManager.getInstance().sendPacketIO(updateSubjectRequestPacket);
 
             }
 
@@ -245,7 +245,7 @@ public class SubjectsController implements Initializable, Controller {
 
     private void newSubject() {
 
-        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+        if(ClientManager.getInstance().getClientSession().isTeacherRole())
             return;
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/newSubjectModal.fxml"));
@@ -294,7 +294,7 @@ public class SubjectsController implements Initializable, Controller {
                         .addArgument("subject", subject)
                         .build();
 
-                SocketManager.getInstance().sendPacketIO(addSubjectRequestPacket);
+                ClientManager.getInstance().sendPacketIO(addSubjectRequestPacket);
 
             }
 

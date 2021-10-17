@@ -2,6 +2,7 @@ package morales.david.server.managers;
 
 import com.smattme.MysqlImportService;
 import morales.david.server.Server;
+import morales.david.server.clients.ClientRepository;
 import morales.david.server.models.*;
 import morales.david.server.models.TimeZone;
 import morales.david.server.models.packets.Packet;
@@ -22,9 +23,16 @@ import java.util.List;
 
 public class ImportManager {
 
-    private File file;
+    private static ImportManager INSTANCE = null;
 
-    private Server server;
+    public static ImportManager getInstance() {
+        if(INSTANCE == null)
+            INSTANCE = new ImportManager();
+        return INSTANCE;
+    }
+
+
+    private File file;
 
     private DBConnection dbConnection;
     private Connection acon;
@@ -44,10 +52,8 @@ public class ImportManager {
 
     /**
      * Create a new instance of ImportManager with server as parameter
-     * @param server
      */
-    public ImportManager(Server server) {
-        this.server = server;
+    public ImportManager() {
         this.isImporting = false;
         this.dbConnection = new DBConnection();
     }
@@ -92,6 +98,8 @@ public class ImportManager {
      * 12º Send the confirmation or error if database has been imported correctly
      */
     public void importDatabase() {
+        
+        ClientRepository clientRepository = ClientRepository.getInstance();
 
         isImporting = true;
 
@@ -101,7 +109,7 @@ public class ImportManager {
                 .addArgument("type", "init")
                 .addArgument("message", "Archivo recibido, iniciado la importación")
                 .build();
-        server.getClientRepository().broadcast(statusPacket);
+        clientRepository.broadcast(statusPacket);
 
         try {
 
@@ -125,7 +133,7 @@ public class ImportManager {
                         .addArgument("type", "clear")
                         .addArgument("message", "Se ha limpiado la base de datos correctamente")
                         .build();
-                server.getClientRepository().broadcast(statusPacket);
+                clientRepository.broadcast(statusPacket);
 
                 if(!isBackup()) {
 
@@ -141,7 +149,7 @@ public class ImportManager {
                                 .addArgument("type", "import")
                                 .addArgument("message", "Tabla de días importada")
                                 .build();
-                        server.getClientRepository().broadcast(statusPacket);
+                        clientRepository.broadcast(statusPacket);
 
                     }
 
@@ -157,7 +165,7 @@ public class ImportManager {
                                 .addArgument("type", "import")
                                 .addArgument("message", "Tabla de horas importada")
                                 .build();
-                        server.getClientRepository().broadcast(statusPacket);
+                        clientRepository.broadcast(statusPacket);
 
                     }
 
@@ -173,7 +181,7 @@ public class ImportManager {
                                 .addArgument("type", "import")
                                 .addArgument("message", "Tabla de franjas horarias importada")
                                 .build();
-                        server.getClientRepository().broadcast(statusPacket);
+                        clientRepository.broadcast(statusPacket);
 
                     }
 
@@ -189,7 +197,7 @@ public class ImportManager {
                                 .addArgument("type", "import")
                                 .addArgument("message", "Tabla de profesores importada")
                                 .build();
-                        server.getClientRepository().broadcast(statusPacket);
+                        clientRepository.broadcast(statusPacket);
 
                     }
 
@@ -205,7 +213,7 @@ public class ImportManager {
                                 .addArgument("type", "import")
                                 .addArgument("message", "Tabla de asignaturas importada")
                                 .build();
-                        server.getClientRepository().broadcast(statusPacket);
+                        clientRepository.broadcast(statusPacket);
 
                     }
 
@@ -221,7 +229,7 @@ public class ImportManager {
                                 .addArgument("type", "import")
                                 .addArgument("message", "Tabla de aulas importada")
                                 .build();
-                        server.getClientRepository().broadcast(statusPacket);
+                        clientRepository.broadcast(statusPacket);
 
                     }
 
@@ -237,7 +245,7 @@ public class ImportManager {
                                 .addArgument("type", "import")
                                 .addArgument("message", "Tabla de cursos importada")
                                 .build();
-                        server.getClientRepository().broadcast(statusPacket);
+                        clientRepository.broadcast(statusPacket);
 
                     }
 
@@ -253,7 +261,7 @@ public class ImportManager {
                                 .addArgument("type", "import")
                                 .addArgument("message", "Tabla de cursos-asignaturas importada")
                                 .build();
-                        server.getClientRepository().broadcast(statusPacket);
+                        clientRepository.broadcast(statusPacket);
 
                     }
 
@@ -269,7 +277,7 @@ public class ImportManager {
                                 .addArgument("type", "import")
                                 .addArgument("message", "Tabla de grupos importada")
                                 .build();
-                        server.getClientRepository().broadcast(statusPacket);
+                        clientRepository.broadcast(statusPacket);
 
                     }
 
@@ -285,7 +293,7 @@ public class ImportManager {
                                 .addArgument("type", "import")
                                 .addArgument("message", "Tabla de horarios importada")
                                 .build();
-                        server.getClientRepository().broadcast(statusPacket);
+                        clientRepository.broadcast(statusPacket);
 
                     }
 
@@ -321,7 +329,7 @@ public class ImportManager {
                     .addArgument("type", "error")
                     .addArgument("message", throwables.getMessage())
                     .build();
-            server.getClientRepository().broadcast(statusPacket);
+            clientRepository.broadcast(statusPacket);
 
         } catch (ClassNotFoundException e) {
 
@@ -349,7 +357,7 @@ public class ImportManager {
                     .addArgument("type", "end")
                     .addArgument("message", "Importación finalizada!")
                     .build();
-            server.getClientRepository().broadcast(statusPacket);
+            clientRepository.broadcast(statusPacket);
 
         }
 

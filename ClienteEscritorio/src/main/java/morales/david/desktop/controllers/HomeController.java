@@ -3,24 +3,17 @@ package morales.david.desktop.controllers;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.DataManager;
-import morales.david.desktop.managers.ScreenManager;
-import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.ClientManager;
 import morales.david.desktop.models.*;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.Constants;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -105,7 +98,7 @@ public class HomeController implements Initializable, Controller {
         for(PacketType packetType : Constants.INIT_PACKETS) {
 
             Packet requestPacket = new PacketBuilder().ofType(packetType.getRequest()).build();
-            SocketManager.getInstance().sendPacketIO(requestPacket);
+            ClientManager.getInstance().sendPacketIO(requestPacket);
 
         }
 

@@ -12,7 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.ScreenManager;
-import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.ClientManager;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
@@ -57,7 +57,7 @@ public class DashboardController implements Initializable, Controller {
 
         Platform.runLater(() -> loadView("home.fxml", "Inicio", null));
 
-        if(SocketManager.getInstance().getClientSession().isTeacherRole()) {
+        if(ClientManager.getInstance().getClientSession().isTeacherRole()) {
             optionsNavigationButton.setVisible(false);
         }
 
@@ -95,7 +95,7 @@ public class DashboardController implements Initializable, Controller {
                     .ofType(PacketType.DISCONNECT.getRequest())
                     .build();
 
-            SocketManager.getInstance().sendPacketIO(disconnectRequestPacket);
+            ClientManager.getInstance().sendPacketIO(disconnectRequestPacket);
 
         }
 

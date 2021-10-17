@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 import morales.david.desktop.controllers.modals.GroupModalController;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.DataManager;
-import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.ClientManager;
 import morales.david.desktop.models.Group;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
@@ -62,11 +62,11 @@ public class GroupsController implements Initializable, Controller {
                     .ofType(PacketType.GROUPS.getRequest())
                     .build();
 
-            SocketManager.getInstance().sendPacketIO(groupsRequestPacket);
+            ClientManager.getInstance().sendPacketIO(groupsRequestPacket);
 
         });
 
-        if(SocketManager.getInstance().getClientSession().isTeacherRole()) {
+        if(ClientManager.getInstance().getClientSession().isTeacherRole()) {
             newButton.setVisible(false);
             editButton.setVisible(false);
             deleteButton.setVisible(false);
@@ -156,7 +156,7 @@ public class GroupsController implements Initializable, Controller {
 
     private void deleteGroup() {
 
-        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+        if(ClientManager.getInstance().getClientSession().isTeacherRole())
             return;
 
         Group group = groupsTable.getSelectionModel().getSelectedItem();
@@ -166,13 +166,13 @@ public class GroupsController implements Initializable, Controller {
                 .addArgument("group", group)
                 .build();
 
-        SocketManager.getInstance().sendPacketIO(removeGroupRequestPacket);
+        ClientManager.getInstance().sendPacketIO(removeGroupRequestPacket);
 
     }
 
     private void editGroup(Group group) {
 
-        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+        if(ClientManager.getInstance().getClientSession().isTeacherRole())
             return;
 
         if(group == null)
@@ -224,7 +224,7 @@ public class GroupsController implements Initializable, Controller {
                         .addArgument("group", updatedGroup)
                         .build();
 
-                SocketManager.getInstance().sendPacketIO(updateGroupRequestPacket);
+                ClientManager.getInstance().sendPacketIO(updateGroupRequestPacket);
 
             }
 
@@ -236,7 +236,7 @@ public class GroupsController implements Initializable, Controller {
 
     private void newGroup() {
 
-        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+        if(ClientManager.getInstance().getClientSession().isTeacherRole())
             return;
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/newGroupModal.fxml"));
@@ -285,7 +285,7 @@ public class GroupsController implements Initializable, Controller {
                         .addArgument("group", group)
                         .build();
 
-                SocketManager.getInstance().sendPacketIO(addGroupRequestPacket);
+                ClientManager.getInstance().sendPacketIO(addGroupRequestPacket);
 
             }
 

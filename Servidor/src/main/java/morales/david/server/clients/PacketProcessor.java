@@ -1,19 +1,19 @@
 package morales.david.server.clients;
 
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.LinkedTreeMap;
 import com.smattme.MysqlExportService;
+import io.netty.channel.Channel;
 import morales.david.server.interfaces.ScheduleSearcheable;
-import morales.david.server.Server;
+import morales.david.server.managers.ImportManager;
 import morales.david.server.models.*;
 import morales.david.server.models.packets.Packet;
 import morales.david.server.models.packets.PacketBuilder;
 import morales.david.server.models.packets.PacketType;
-import morales.david.server.utils.Constants;
 import morales.david.server.utils.DBConnection;
 import morales.david.server.utils.DBConstants;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
@@ -22,31 +22,34 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-public class ClientProtocol {
+public class PacketProcessor implements Runnable {
 
-    private ClientThread clientThread;
+    private Channel channel;
+    private Packet packet;
+    
+    private ClientSession clientSession;
+    private DBConnection clientDatabase;
 
-    private boolean logged;
+    private ClientRepository clientRepository;
 
-    private Packet lastPacket;
+    public PacketProcessor(Channel channel, Packet packet) {
+        
+        this.channel = channel;
+        this.packet = packet;
 
-    public ClientProtocol(ClientThread clientThread) {
-        this.clientThread = clientThread;
-        this.logged = false;
+        clientRepository = ClientRepository.getInstance();
+
+        clientSession = clientRepository.getSession(channel);
+        clientDatabase = new DBConnection();
+        
     }
 
+    @Override
+    public void run() {
 
-    /**
-     * Parse input packet and execute specified actions
-     * @param packet
-     */
-    public void parseInput(Packet packet) {
+        PacketType packetType = PacketType.valueOf(PacketType.getIdentifier(packet.getType()));
 
-        lastPacket = packet;
-
-        PacketType packetType = PacketType.valueOf(PacketType.getIdentifier(lastPacket.getType()));
-
-        clientThread.getDbConnection().open();
+        clientDatabase.open();
 
         switch (packetType) {
 
@@ -67,7 +70,7 @@ public class ClientProtocol {
                 break;
 
             case CREDENTIALS:
-                credentialsList();
+                credentialsList(false);
                 break;
 
             case ADDCREDENTIAL:
@@ -83,7 +86,7 @@ public class ClientProtocol {
                 break;
 
             case TEACHERS:
-                teachersList();
+                teachersList(false);
                 break;
 
             case ADDTEACHER:
@@ -99,7 +102,7 @@ public class ClientProtocol {
                 break;
 
             case CLASSROOMS:
-                classroomsList();
+                classroomsList(false);
                 break;
 
             case ADDCLASSROOM:
@@ -115,7 +118,7 @@ public class ClientProtocol {
                 break;
 
             case COURSES:
-                coursesList();
+                coursesList(false);
                 break;
 
             case ADDCOURSE:
@@ -131,7 +134,7 @@ public class ClientProtocol {
                 break;
 
             case SUBJECTS:
-                subjectsList();
+                subjectsList(false);
                 break;
 
             case ADDSUBJECT:
@@ -147,7 +150,7 @@ public class ClientProtocol {
                 break;
 
             case GROUPS:
-                groupsList();
+                groupsList(false);
                 break;
 
             case ADDGROUP:
@@ -163,7 +166,7 @@ public class ClientProtocol {
                 break;
 
             case DAYS:
-                daysList();
+                daysList(false);
                 break;
 
             case UPDATEDAY:
@@ -171,7 +174,7 @@ public class ClientProtocol {
                 break;
 
             case HOURS:
-                hoursList();
+                hoursList(false);
                 break;
 
             case UPDATEHOUR:
@@ -244,7 +247,7 @@ public class ClientProtocol {
 
         }
 
-        clientThread.getDbConnection().close();
+        clientDatabase.close();
 
     }
 
@@ -255,15 +258,12 @@ public class ClientProtocol {
      */
     private void login() {
 
-        final String username = (String) lastPacket.getArgument("username");
-        final String password = (String) lastPacket.getArgument("password");
+        final String username = (String) packet.getArgument("username");
+        final String password = (String) packet.getArgument("password");
 
-        ClientSession clientSession = clientThread.getClientSession();
-        DBConnection dbConnection = clientThread.getDbConnection();
+        if(clientDatabase.existsCredential(username, password)) {
 
-        if(dbConnection.existsCredential(username, password)) {
-
-            dbConnection.getUserDetails(username, clientSession);
+            clientDatabase.getUserDetails(username, clientSession);
 
             Packet loginConfirmationPacket = new PacketBuilder()
                     .ofType(PacketType.LOGIN.getConfirmation())
@@ -272,9 +272,7 @@ public class ClientProtocol {
                     .addArgument("role", clientSession.getRole())
                     .build();
 
-            sendPacketIO(loginConfirmationPacket);
-
-            logged = true;
+            clientRepository.sendPacketIO(channel, loginConfirmationPacket);
 
         } else {
 
@@ -282,7 +280,7 @@ public class ClientProtocol {
                     .ofType(PacketType.LOGIN.getError())
                     .build();
 
-            sendPacketIO(loginErrorPacket);
+            clientRepository.sendPacketIO(channel, loginErrorPacket);
 
         }
 
@@ -294,23 +292,11 @@ public class ClientProtocol {
      */
     private void disconnect() {
 
-        if(logged) {
+        Packet disconnectErrorPacket = new PacketBuilder()
+                .ofType(PacketType.DISCONNECT.getError())
+                .build();
 
-            Packet disconnectConfirmationPacket = new PacketBuilder()
-                    .ofType(PacketType.DISCONNECT.getConfirmation())
-                    .build();
-
-            sendPacketIO(disconnectConfirmationPacket);
-
-        } else {
-
-            Packet disconnectErrorPacket = new PacketBuilder()
-                    .ofType(PacketType.DISCONNECT.getError())
-                    .build();
-
-            sendPacketIO(disconnectErrorPacket);
-
-        }
+        clientRepository.sendPacketIO(channel, disconnectErrorPacket);
 
     }
 
@@ -324,8 +310,7 @@ public class ClientProtocol {
                 .ofType(PacketType.EXIT.getConfirmation())
                 .build();
 
-        sendPacketIO(exitConfirmationPacket);
-        clientThread.setConnected(false);
+        clientRepository.sendPacketIO(channel, exitConfirmationPacket);
 
     }
 
@@ -334,7 +319,7 @@ public class ClientProtocol {
      */
     private void getImportStatus() {
 
-        boolean importing = clientThread.getServer().getImportManager().isImporting();
+        boolean importing = ImportManager.getInstance().isImporting();
 
         Packet importStatusConfirmationPacket = new PacketBuilder()
                 .ofType(PacketType.IMPORTSTATUS.getConfirmation())
@@ -343,7 +328,7 @@ public class ClientProtocol {
                 .addArgument("importing", importing)
                 .build();
 
-        clientThread.getServer().getClientRepository().broadcast(importStatusConfirmationPacket);
+        clientRepository.broadcast(importStatusConfirmationPacket);
 
     }
 
@@ -352,16 +337,19 @@ public class ClientProtocol {
      * Get credentials list from database
      * Send credentials list packet to client
      */
-    private void credentialsList() {
+    private void credentialsList(boolean broadcast) {
 
-        List<Credential> credentials = clientThread.getDbConnection().getCredentials();
+        List<Credential> credentials = clientDatabase.getCredentials();
 
         Packet credentialsConfirmationPacket = new PacketBuilder()
                 .ofType(PacketType.CREDENTIALS.getConfirmation())
                 .addArgument("credentials", credentials)
                 .build();
 
-        sendPacketIO(credentialsConfirmationPacket);
+        if(!broadcast)
+            clientRepository.sendPacketIO(channel, credentialsConfirmationPacket);
+        else
+            clientRepository.broadcast(credentialsConfirmationPacket);
 
     }
 
@@ -372,16 +360,16 @@ public class ClientProtocol {
      */
     private void addCredential() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap credentialMap = (LinkedTreeMap) lastPacket.getArgument("credential");
+        LinkedTreeMap credentialMap = (LinkedTreeMap) packet.getArgument("credential");
 
         Credential credential = Credential.parse(credentialMap);
 
-        if(clientThread.getDbConnection().addCredential(credential)) {
+        if(clientDatabase.addCredential(credential)) {
 
-            credentialsList();
+            credentialsList(true);
 
         } else {
 
@@ -389,7 +377,7 @@ public class ClientProtocol {
                     .ofType(PacketType.ADDCREDENTIAL.getError())
                     .build();
 
-            sendPacketIO(addCredentialErrorPacket);
+            clientRepository.sendPacketIO(channel, addCredentialErrorPacket);
 
         }
 
@@ -402,16 +390,16 @@ public class ClientProtocol {
      */
     private void updateCredential() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap credentialMap = (LinkedTreeMap) lastPacket.getArgument("credential");
+        LinkedTreeMap credentialMap = (LinkedTreeMap) packet.getArgument("credential");
 
         Credential credential = Credential.parse(credentialMap);
 
-        if(clientThread.getDbConnection().updateCredential(credential)) {
+        if(clientDatabase.updateCredential(credential)) {
 
-            credentialsList();
+            credentialsList(true);
 
         } else {
 
@@ -419,7 +407,7 @@ public class ClientProtocol {
                     .ofType(PacketType.UPDATECREDENTIAL.getError())
                     .build();
 
-            sendPacketIO(updateCredentialErrorPacket);
+            clientRepository.sendPacketIO(channel, updateCredentialErrorPacket);
 
         }
 
@@ -432,16 +420,16 @@ public class ClientProtocol {
      */
     private void removeCredential() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap credentialMap = (LinkedTreeMap) lastPacket.getArgument("credential");
+        LinkedTreeMap credentialMap = (LinkedTreeMap) packet.getArgument("credential");
 
         Credential credential = Credential.parse(credentialMap);
 
-        if(clientThread.getDbConnection().removeCredential(credential)) {
+        if(clientDatabase.removeCredential(credential)) {
 
-            credentialsList();
+            credentialsList(true);
 
         } else {
 
@@ -449,7 +437,7 @@ public class ClientProtocol {
                     .ofType(PacketType.REMOVECREDENTIAL.getError())
                     .build();
 
-            sendPacketIO(removeCredentialErrorPacket);
+            clientRepository.sendPacketIO(channel, removeCredentialErrorPacket);
 
         }
 
@@ -460,16 +448,19 @@ public class ClientProtocol {
      * Get teachers list from database
      * Send teachers list packet to client
      */
-    private void teachersList() {
+    private void teachersList(boolean broadcast) {
 
-        List<Teacher> teachers = clientThread.getDbConnection().getTeachers();
+        List<Teacher> teachers = clientDatabase.getTeachers();
 
         Packet teachersConfirmationPacket = new PacketBuilder()
                 .ofType(PacketType.TEACHERS.getConfirmation())
                 .addArgument("teachers", teachers)
                 .build();
 
-        sendPacketIO(teachersConfirmationPacket);
+        if(!broadcast)
+            clientRepository.sendPacketIO(channel, teachersConfirmationPacket);
+        else
+            clientRepository.broadcast(teachersConfirmationPacket);
 
     }
 
@@ -480,16 +471,16 @@ public class ClientProtocol {
      */
     private void addTeacher() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap teacherMap = (LinkedTreeMap) lastPacket.getArgument("teacher");
+        LinkedTreeMap teacherMap = (LinkedTreeMap) packet.getArgument("teacher");
 
         Teacher teacher = Teacher.parse(teacherMap);
 
-        if(clientThread.getDbConnection().addTeacher(teacher)) {
+        if(clientDatabase.addTeacher(teacher)) {
 
-            teachersList();
+            teachersList(true);
 
         } else {
 
@@ -497,7 +488,7 @@ public class ClientProtocol {
                     .ofType(PacketType.ADDTEACHER.getError())
                     .build();
 
-            sendPacketIO(addTeacherErrorPacket);
+            clientRepository.sendPacketIO(channel, addTeacherErrorPacket);
 
         }
 
@@ -510,16 +501,16 @@ public class ClientProtocol {
      */
     private void updateTeacher() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap teacherMap = (LinkedTreeMap) lastPacket.getArgument("teacher");
+        LinkedTreeMap teacherMap = (LinkedTreeMap) packet.getArgument("teacher");
 
         Teacher teacher = Teacher.parse(teacherMap);
 
-        if(clientThread.getDbConnection().updateTeacher(teacher)) {
+        if(clientDatabase.updateTeacher(teacher)) {
 
-            teachersList();
+            teachersList(true);
 
         } else {
 
@@ -527,7 +518,7 @@ public class ClientProtocol {
                     .ofType(PacketType.UPDATETEACHER.getError())
                     .build();
 
-            sendPacketIO(updateTeacherErrorPacket);
+            clientRepository.sendPacketIO(channel, updateTeacherErrorPacket);
 
         }
 
@@ -540,16 +531,16 @@ public class ClientProtocol {
      */
     private void removeTeacher() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap teacherMap = (LinkedTreeMap) lastPacket.getArgument("teacher");
+        LinkedTreeMap teacherMap = (LinkedTreeMap) packet.getArgument("teacher");
 
         Teacher teacher = Teacher.parse(teacherMap);
 
-        if(clientThread.getDbConnection().removeTeacher(teacher)) {
+        if(clientDatabase.removeTeacher(teacher)) {
 
-            teachersList();
+            teachersList(true);
 
         } else {
 
@@ -557,7 +548,7 @@ public class ClientProtocol {
                     .ofType(PacketType.REMOVETEACHER.getError())
                     .build();
 
-            sendPacketIO(removeTeacherErrorPacket);
+            clientRepository.sendPacketIO(channel, removeTeacherErrorPacket);
 
         }
 
@@ -568,16 +559,19 @@ public class ClientProtocol {
      * Get classrooms list from database
      * Send classrooms list packet to client
      */
-    private void classroomsList() {
+    private void classroomsList(boolean broadcast) {
 
-        List<Classroom> classrooms = clientThread.getDbConnection().getClassrooms();
+        List<Classroom> classrooms = clientDatabase.getClassrooms();
 
         Packet classroomsConfirmationPacket = new PacketBuilder()
                 .ofType(PacketType.CLASSROOMS.getConfirmation())
                 .addArgument("classrooms", classrooms)
                 .build();
 
-        sendPacketIO(classroomsConfirmationPacket);
+        if(!broadcast)
+            clientRepository.sendPacketIO(channel, classroomsConfirmationPacket);
+        else
+            clientRepository.broadcast(classroomsConfirmationPacket);
 
     }
 
@@ -588,16 +582,16 @@ public class ClientProtocol {
      */
     private void addClassroom() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap classroomMap = (LinkedTreeMap) lastPacket.getArgument("classroom");
+        LinkedTreeMap classroomMap = (LinkedTreeMap) packet.getArgument("classroom");
 
         Classroom classroom = Classroom.parse(classroomMap);
 
-        if(clientThread.getDbConnection().addClassroom(classroom)) {
+        if(clientDatabase.addClassroom(classroom)) {
 
-            classroomsList();
+            classroomsList(true);
 
         } else {
 
@@ -605,7 +599,7 @@ public class ClientProtocol {
                     .ofType(PacketType.ADDCLASSROOM.getError())
                     .build();
 
-            sendPacketIO(addClassroomErrorPacket);
+            clientRepository.sendPacketIO(channel, addClassroomErrorPacket);
 
         }
 
@@ -618,16 +612,16 @@ public class ClientProtocol {
      */
     private void updateClassroom() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap classroomMap = (LinkedTreeMap) lastPacket.getArgument("classroom");
+        LinkedTreeMap classroomMap = (LinkedTreeMap) packet.getArgument("classroom");
 
         Classroom classroom = Classroom.parse(classroomMap);
 
-        if(clientThread.getDbConnection().updateClassroom(classroom)) {
+        if(clientDatabase.updateClassroom(classroom)) {
 
-            classroomsList();
+            classroomsList(true);
 
         } else {
 
@@ -635,7 +629,7 @@ public class ClientProtocol {
                     .ofType(PacketType.UPDATECLASSROOM.getError())
                     .build();
 
-            sendPacketIO(updateClassroomErrorPacket);
+            clientRepository.sendPacketIO(channel, updateClassroomErrorPacket);
 
         }
 
@@ -648,16 +642,16 @@ public class ClientProtocol {
      */
     private void removeClassroom() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap classroomMap = (LinkedTreeMap) lastPacket.getArgument("classroom");
+        LinkedTreeMap classroomMap = (LinkedTreeMap) packet.getArgument("classroom");
 
         Classroom classroom = Classroom.parse(classroomMap);
 
-        if(clientThread.getDbConnection().removeClassroom(classroom)) {
+        if(clientDatabase.removeClassroom(classroom)) {
 
-            classroomsList();
+            classroomsList(true);
 
         } else {
 
@@ -665,7 +659,7 @@ public class ClientProtocol {
                     .ofType(PacketType.REMOVECLASSROOM.getError())
                     .build();
 
-            sendPacketIO(removeClassroomErrorPacket);
+            clientRepository.sendPacketIO(channel, removeClassroomErrorPacket);
 
         }
 
@@ -676,16 +670,19 @@ public class ClientProtocol {
      * Get courses list from database
      * Send courses list packet to client
      */
-    private void coursesList() {
+    private void coursesList(boolean broadcast) {
 
-        List<Course> courses = clientThread.getDbConnection().getCourses();
+        List<Course> courses = clientDatabase.getCourses();
 
         Packet coursesConfirmationPacket = new PacketBuilder()
                 .ofType(PacketType.COURSES.getConfirmation())
                 .addArgument("courses", courses)
                 .build();
 
-        sendPacketIO(coursesConfirmationPacket);
+        if(!broadcast)
+            clientRepository.sendPacketIO(channel, coursesConfirmationPacket);
+        else
+            clientRepository.broadcast(coursesConfirmationPacket);
 
     }
 
@@ -696,16 +693,16 @@ public class ClientProtocol {
      */
     private void addCourse() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap courseMap = (LinkedTreeMap) lastPacket.getArgument("course");
+        LinkedTreeMap courseMap = (LinkedTreeMap) packet.getArgument("course");
 
         Course course = Course.parse(courseMap);
 
-        if(clientThread.getDbConnection().addCourse(course)) {
+        if(clientDatabase.addCourse(course)) {
 
-            coursesList();
+            coursesList(true);
 
         } else {
 
@@ -713,7 +710,7 @@ public class ClientProtocol {
                     .ofType(PacketType.ADDCOURSE.getError())
                     .build();
 
-            sendPacketIO(addCourseErrorPacket);
+            clientRepository.sendPacketIO(channel, addCourseErrorPacket);
 
         }
 
@@ -726,16 +723,16 @@ public class ClientProtocol {
      */
     private void updateCourse() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap courseMap = (LinkedTreeMap) lastPacket.getArgument("course");
+        LinkedTreeMap courseMap = (LinkedTreeMap) packet.getArgument("course");
 
         Course course = Course.parse(courseMap);
 
-        if(clientThread.getDbConnection().updateCourse(course)) {
+        if(clientDatabase.updateCourse(course)) {
 
-            coursesList();
+            coursesList(true);
 
         } else {
 
@@ -743,7 +740,7 @@ public class ClientProtocol {
                     .ofType(PacketType.UPDATECOURSE.getError())
                     .build();
 
-            sendPacketIO(updateCourseErrorPacket);
+            clientRepository.sendPacketIO(channel, updateCourseErrorPacket);
 
         }
 
@@ -756,16 +753,16 @@ public class ClientProtocol {
      */
     private void removeCourse() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap courseMap = (LinkedTreeMap) lastPacket.getArgument("course");
+        LinkedTreeMap courseMap = (LinkedTreeMap) packet.getArgument("course");
 
         Course course = Course.parse(courseMap);
 
-        if(clientThread.getDbConnection().removeCourse(course)) {
+        if(clientDatabase.removeCourse(course)) {
 
-            coursesList();
+            coursesList(true);
 
         } else {
 
@@ -773,7 +770,7 @@ public class ClientProtocol {
                     .ofType(PacketType.REMOVECOURSE.getError())
                     .build();
 
-            sendPacketIO(removeCourseErrorPacket);
+            clientRepository.sendPacketIO(channel, removeCourseErrorPacket);
 
         }
 
@@ -784,16 +781,19 @@ public class ClientProtocol {
      * Get subjects list from database
      * Send subjects list packet to client
      */
-    private void subjectsList() {
+    private void subjectsList(boolean broadcast) {
 
-        List<Subject> subjects = clientThread.getDbConnection().getSubjects();
+        List<Subject> subjects = clientDatabase.getSubjects();
 
-        Packet coursesConfirmationPacket = new PacketBuilder()
+        Packet subjectsConfirmationPacket = new PacketBuilder()
                 .ofType(PacketType.SUBJECTS.getConfirmation())
                 .addArgument("subjects", subjects)
                 .build();
 
-        sendPacketIO(coursesConfirmationPacket);
+        if(!broadcast)
+            clientRepository.sendPacketIO(channel, subjectsConfirmationPacket);
+        else
+            clientRepository.broadcast(subjectsConfirmationPacket);
 
     }
 
@@ -804,16 +804,16 @@ public class ClientProtocol {
      */
     private void addSubject() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap subjectMap = (LinkedTreeMap) lastPacket.getArgument("subject");
+        LinkedTreeMap subjectMap = (LinkedTreeMap) packet.getArgument("subject");
 
         Subject subject = Subject.parse(subjectMap);
 
-        if(clientThread.getDbConnection().addSubject(subject)) {
+        if(clientDatabase.addSubject(subject)) {
 
-            subjectsList();
+            subjectsList(true);
 
         } else {
 
@@ -821,7 +821,7 @@ public class ClientProtocol {
                     .ofType(PacketType.ADDSUBJECT.getError())
                     .build();
 
-            sendPacketIO(addSubjectErrorPacket);
+            clientRepository.sendPacketIO(channel, addSubjectErrorPacket);
 
         }
 
@@ -834,16 +834,16 @@ public class ClientProtocol {
      */
     private void updateSubject() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap subjectMap = (LinkedTreeMap) lastPacket.getArgument("subject");
+        LinkedTreeMap subjectMap = (LinkedTreeMap) packet.getArgument("subject");
 
         Subject subject = Subject.parse(subjectMap);
 
-        if(clientThread.getDbConnection().updateSubject(subject)) {
+        if(clientDatabase.updateSubject(subject)) {
 
-            subjectsList();
+            subjectsList(true);
 
         } else {
 
@@ -851,7 +851,7 @@ public class ClientProtocol {
                     .ofType(PacketType.UPDATESUBJECT.getError())
                     .build();
 
-            sendPacketIO(updateSubjectErrorPacket);
+            clientRepository.sendPacketIO(channel, updateSubjectErrorPacket);
 
         }
 
@@ -864,16 +864,16 @@ public class ClientProtocol {
      */
     private void removeSubject() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap subjectMap = (LinkedTreeMap) lastPacket.getArgument("subject");
+        LinkedTreeMap subjectMap = (LinkedTreeMap) packet.getArgument("subject");
 
         Subject subject = Subject.parse(subjectMap);
 
-        if(clientThread.getDbConnection().removeSubject(subject)) {
+        if(clientDatabase.removeSubject(subject)) {
 
-            subjectsList();
+            subjectsList(true);
 
         } else {
 
@@ -881,7 +881,7 @@ public class ClientProtocol {
                     .ofType(PacketType.REMOVESUBJECT.getError())
                     .build();
 
-            sendPacketIO(removeSubjectErrorPacket);
+            clientRepository.sendPacketIO(channel, removeSubjectErrorPacket);
 
         }
 
@@ -892,16 +892,19 @@ public class ClientProtocol {
      * Get groups list from database
      * Send groups list packet to client
      */
-    private void groupsList() {
+    private void groupsList(boolean broadcast) {
 
-        List<Group> groups = clientThread.getDbConnection().getGroups();
+        List<Group> groups = clientDatabase.getGroups();
 
         Packet groupsConfirmationPacket = new PacketBuilder()
                 .ofType(PacketType.GROUPS.getConfirmation())
                 .addArgument("groups", groups)
                 .build();
 
-        sendPacketIO(groupsConfirmationPacket);
+        if(!broadcast)
+            clientRepository.sendPacketIO(channel, groupsConfirmationPacket);
+        else
+            clientRepository.broadcast(groupsConfirmationPacket);
 
     }
 
@@ -912,16 +915,16 @@ public class ClientProtocol {
      */
     private void addGroup() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap groupMap = (LinkedTreeMap) lastPacket.getArgument("group");
+        LinkedTreeMap groupMap = (LinkedTreeMap) packet.getArgument("group");
 
         Group group = Group.parse(groupMap);
 
-        if(clientThread.getDbConnection().addGroup(group)) {
+        if(clientDatabase.addGroup(group)) {
 
-            groupsList();
+            groupsList(true);
 
         } else {
 
@@ -929,7 +932,7 @@ public class ClientProtocol {
                     .ofType(PacketType.ADDGROUP.getError())
                     .build();
 
-            sendPacketIO(addGroupErrorPacket);
+            clientRepository.sendPacketIO(channel, addGroupErrorPacket);
 
         }
 
@@ -942,16 +945,16 @@ public class ClientProtocol {
      */
     private void updateGroup() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap groupMap = (LinkedTreeMap) lastPacket.getArgument("group");
+        LinkedTreeMap groupMap = (LinkedTreeMap) packet.getArgument("group");
 
         Group group = Group.parse(groupMap);
 
-        if(clientThread.getDbConnection().updateGroup(group)) {
+        if(clientDatabase.updateGroup(group)) {
 
-            groupsList();
+            groupsList(true);
 
         } else {
 
@@ -959,7 +962,7 @@ public class ClientProtocol {
                     .ofType(PacketType.UPDATEGROUP.getError())
                     .build();
 
-            sendPacketIO(updateGroupErrorPacket);
+            clientRepository.sendPacketIO(channel, updateGroupErrorPacket);
 
         }
 
@@ -972,16 +975,16 @@ public class ClientProtocol {
      */
     private void removeGroup() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap groupMap = (LinkedTreeMap) lastPacket.getArgument("group");
+        LinkedTreeMap groupMap = (LinkedTreeMap) packet.getArgument("group");
 
         Group group = Group.parse(groupMap);
 
-        if(clientThread.getDbConnection().removeGroup(group)) {
+        if(clientDatabase.removeGroup(group)) {
 
-            groupsList();
+            groupsList(true);
 
         } else {
 
@@ -989,7 +992,7 @@ public class ClientProtocol {
                     .ofType(PacketType.REMOVEGROUP.getError())
                     .build();
 
-            sendPacketIO(removeGroupErrorPacket);
+            clientRepository.sendPacketIO(channel, removeGroupErrorPacket);
 
         }
 
@@ -1000,16 +1003,19 @@ public class ClientProtocol {
      * Get days list from database
      * Send days list packet to client
      */
-    private void daysList() {
+    private void daysList(boolean broadcast) {
 
-        List<Day> days = clientThread.getDbConnection().getDays();
+        List<Day> days = clientDatabase.getDays();
 
         Packet daysConfirmationPacket = new PacketBuilder()
                 .ofType(PacketType.DAYS.getConfirmation())
                 .addArgument("days", days)
                 .build();
 
-        sendPacketIO(daysConfirmationPacket);
+        if(!broadcast)
+            clientRepository.sendPacketIO(channel, daysConfirmationPacket);
+        else
+            clientRepository.broadcast(daysConfirmationPacket);
 
     }
 
@@ -1020,16 +1026,16 @@ public class ClientProtocol {
      */
     private void updateDay() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap dayMap = (LinkedTreeMap) lastPacket.getArgument("day");
+        LinkedTreeMap dayMap = (LinkedTreeMap) packet.getArgument("day");
 
         Day day = Day.parse(dayMap);
 
-        if(clientThread.getDbConnection().updateDay(day)) {
+        if(clientDatabase.updateDay(day)) {
 
-            daysList();
+            daysList(true);
 
         } else {
 
@@ -1037,7 +1043,7 @@ public class ClientProtocol {
                     .ofType(PacketType.UPDATEDAY.getError())
                     .build();
 
-            sendPacketIO(updateDayErrorPacket);
+            clientRepository.sendPacketIO(channel, updateDayErrorPacket);
 
         }
 
@@ -1048,16 +1054,19 @@ public class ClientProtocol {
      * Get hours list from database
      * Send hours list packet to client
      */
-    private void hoursList() {
+    private void hoursList(boolean broadcast) {
 
-        List<Hour> hours = clientThread.getDbConnection().getHours();
+        List<Hour> hours = clientDatabase.getHours();
 
         Packet hoursConfirmationPacket = new PacketBuilder()
                 .ofType(PacketType.HOURS.getConfirmation())
                 .addArgument("hours", hours)
                 .build();
 
-        sendPacketIO(hoursConfirmationPacket);
+        if(!broadcast)
+            clientRepository.sendPacketIO(channel, hoursConfirmationPacket);
+        else
+            clientRepository.broadcast(hoursConfirmationPacket);
 
     }
 
@@ -1068,16 +1077,16 @@ public class ClientProtocol {
      */
     private void updateHour() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap hourMap = (LinkedTreeMap) lastPacket.getArgument("hour");
+        LinkedTreeMap hourMap = (LinkedTreeMap) packet.getArgument("hour");
 
         Hour hour = Hour.parse(hourMap);
 
-        if(clientThread.getDbConnection().updateHour(hour)) {
+        if(clientDatabase.updateHour(hour)) {
 
-            hoursList();
+            hoursList(true);
 
         } else {
 
@@ -1085,7 +1094,7 @@ public class ClientProtocol {
                     .ofType(PacketType.UPDATEHOUR.getError())
                     .build();
 
-            sendPacketIO(updateHourErrorPacket);
+            clientRepository.sendPacketIO(channel, updateHourErrorPacket);
 
         }
 
@@ -1098,14 +1107,14 @@ public class ClientProtocol {
      */
     private void timeZoneList() {
 
-        List<TimeZone> timeZones = clientThread.getDbConnection().getTimeZones();
+        List<TimeZone> timeZones = clientDatabase.getTimeZones();
 
         Packet timeZonesConfirmationPacket = new PacketBuilder()
                 .ofType(PacketType.TIMEZONES.getConfirmation())
                 .addArgument("timeZones", timeZones)
                 .build();
 
-        sendPacketIO(timeZonesConfirmationPacket);
+        clientRepository.sendPacketIO(channel, timeZonesConfirmationPacket);
 
     }
 
@@ -1116,14 +1125,14 @@ public class ClientProtocol {
      */
     private void scheduleList() {
 
-        Integer schedules = clientThread.getDbConnection().getSchedulesAmount();
+        Integer schedules = clientDatabase.getSchedulesAmount();
 
         Packet schedulesConfirmationPacket = new PacketBuilder()
                 .ofType(PacketType.SCHEDULES.getConfirmation())
                 .addArgument("schedules", schedules)
                 .build();
 
-        sendPacketIO(schedulesConfirmationPacket);
+        clientRepository.sendPacketIO(channel, schedulesConfirmationPacket);
 
     }
 
@@ -1133,8 +1142,8 @@ public class ClientProtocol {
      */
     private void searchSchedule() {
 
-        String callback = (String) lastPacket.getArgument("callback");
-        String searchType = (String) lastPacket.getArgument("type");
+        String callback = (String) packet.getArgument("callback");
+        String searchType = (String) packet.getArgument("type");
 
         ScheduleSearcheable scheduleSearcheable = null;
 
@@ -1145,7 +1154,7 @@ public class ClientProtocol {
 
         if(searchType.equalsIgnoreCase("TEACHER")) {
 
-            LinkedTreeMap teacherMap = (LinkedTreeMap) lastPacket.getArgument("item");
+            LinkedTreeMap teacherMap = (LinkedTreeMap) packet.getArgument("item");
 
             Teacher teacher = Teacher.parse(teacherMap);
 
@@ -1155,7 +1164,7 @@ public class ClientProtocol {
 
         } else if(searchType.equalsIgnoreCase("GROUP")) {
 
-            LinkedTreeMap groupMap = (LinkedTreeMap) lastPacket.getArgument("item");
+            LinkedTreeMap groupMap = (LinkedTreeMap) packet.getArgument("item");
 
             Group group = Group.parse(groupMap);
 
@@ -1165,7 +1174,7 @@ public class ClientProtocol {
 
         } else if(searchType.equalsIgnoreCase("CLASSROOM")) {
 
-            LinkedTreeMap classroomMap = (LinkedTreeMap) lastPacket.getArgument("item");
+            LinkedTreeMap classroomMap = (LinkedTreeMap) packet.getArgument("item");
 
             Classroom classroom = Classroom.parse(classroomMap);
 
@@ -1177,11 +1186,11 @@ public class ClientProtocol {
 
         if(scheduleSearcheable != null) {
 
-            List<SchedulerItem> schedules = clientThread.getDbConnection().searchSchedule(scheduleSearcheable);
+            List<SchedulerItem> schedules = clientDatabase.searchSchedule(scheduleSearcheable);
 
             packetBuilder.addArgument("schedules", schedules);
 
-            sendPacketIO(packetBuilder.build());
+            clientRepository.sendPacketIO(channel, packetBuilder.build());
 
         }
 
@@ -1189,7 +1198,7 @@ public class ClientProtocol {
 
     private void advancedSchedulerExport() {
 
-        List<LinkedTreeMap> exportableItemsRaw = (List<LinkedTreeMap>) lastPacket.getArgument("exportableItems");
+        List<LinkedTreeMap> exportableItemsRaw = (List<LinkedTreeMap>) packet.getArgument("exportableItems");
 
         final List<ExportableItem> exportableItems = new ArrayList<>();
 
@@ -1207,11 +1216,11 @@ public class ClientProtocol {
 
             if(scheduleSearcheable != null) {
 
-                List<SchedulerItem> schedules = clientThread.getDbConnection().searchSchedule(scheduleSearcheable);
+                List<SchedulerItem> schedules = clientDatabase.searchSchedule(scheduleSearcheable);
 
                 packetBuilder.addArgument("schedules", schedules);
 
-                sendPacketIO(packetBuilder.build());
+                clientRepository.sendPacketIO(channel, packetBuilder.build());
 
             }
 
@@ -1221,7 +1230,7 @@ public class ClientProtocol {
 
     private void advancedInspectionExport() {
 
-        List<LinkedTreeMap> exportableTimeZonesRaw = (List<LinkedTreeMap>) lastPacket.getArgument("timeZones");
+        List<LinkedTreeMap> exportableTimeZonesRaw = (List<LinkedTreeMap>) packet.getArgument("timeZones");
 
         final List<TimeZone> timeZones = new ArrayList<>();
 
@@ -1234,11 +1243,11 @@ public class ClientProtocol {
                     .ofType(PacketType.ADVINSPECTION.getConfirmation())
                     .addArgument("timeZone", timeZone);
 
-            List<ScheduleTurn> schedules = clientThread.getDbConnection().getScheduleTurns(timeZone);
+            List<ScheduleTurn> schedules = clientDatabase.getScheduleTurns(timeZone);
 
             packetBuilder.addArgument("schedules", schedules);
 
-            sendPacketIO(packetBuilder.build());
+            clientRepository.sendPacketIO(channel, packetBuilder.build());
 
         }
 
@@ -1250,7 +1259,7 @@ public class ClientProtocol {
      */
     private void exportInspectionReport() {
 
-        LinkedTreeMap timeZoneMap = (LinkedTreeMap) lastPacket.getArgument("timeZone");
+        LinkedTreeMap timeZoneMap = (LinkedTreeMap) packet.getArgument("timeZone");
 
         if(timeZoneMap == null)
             return;
@@ -1261,11 +1270,11 @@ public class ClientProtocol {
                 .ofType(PacketType.EXPORTINSPECTION.getConfirmation())
                 .addArgument("timeZone", timeZone);
 
-        List<ScheduleTurn> schedules = clientThread.getDbConnection().getScheduleTurns(timeZone);
+        List<ScheduleTurn> schedules = clientDatabase.getScheduleTurns(timeZone);
 
         packetBuilder.addArgument("schedules", schedules);
 
-        sendPacketIO(packetBuilder.build());
+        clientRepository.sendPacketIO(channel, packetBuilder.build());
 
     }
 
@@ -1276,10 +1285,10 @@ public class ClientProtocol {
      */
     private void insertScheduleItem() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap scheduleMap = (LinkedTreeMap) lastPacket.getArgument("scheduleItem");
+        LinkedTreeMap scheduleMap = (LinkedTreeMap) packet.getArgument("scheduleItem");
 
         SchedulerItem schedulerItem = SchedulerItem.parse(scheduleMap);
 
@@ -1290,7 +1299,7 @@ public class ClientProtocol {
         int required = schedulerItem.getScheduleList().size();
 
         for(Schedule schedule : schedulerItem.getScheduleList()) {
-            if(clientThread.getDbConnection().insertSchedule(schedule)) {
+            if(clientDatabase.insertSchedule(schedule)) {
                 inserted++;
             }
         }
@@ -1303,7 +1312,7 @@ public class ClientProtocol {
                     .addArgument("scheduleItem", schedulerItem)
                     .build();
 
-            sendPacketIO(insertScheduleConfirmationPacket);
+            clientRepository.sendPacketIO(channel, insertScheduleConfirmationPacket);
 
         } else {
 
@@ -1313,7 +1322,7 @@ public class ClientProtocol {
                     .addArgument("message", "No se ha podido insertar ese schedule")
                     .build();
 
-            sendPacketIO(insertScheduleErrorPacket);
+            clientRepository.sendPacketIO(channel, insertScheduleErrorPacket);
 
         }
 
@@ -1326,13 +1335,13 @@ public class ClientProtocol {
      */
     private void switchScheduleItems() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap schedule1Map = (LinkedTreeMap) lastPacket.getArgument("scheduleItem1");
+        LinkedTreeMap schedule1Map = (LinkedTreeMap) packet.getArgument("scheduleItem1");
         SchedulerItem schedule1 = SchedulerItem.parse(schedule1Map);
 
-        LinkedTreeMap schedule2Map = (LinkedTreeMap) lastPacket.getArgument("scheduleItem2");
+        LinkedTreeMap schedule2Map = (LinkedTreeMap) packet.getArgument("scheduleItem2");
         SchedulerItem schedule2 = SchedulerItem.parse(schedule2Map);
 
         if(schedule1 == null || schedule2 == null)
@@ -1349,18 +1358,18 @@ public class ClientProtocol {
         tempDelete.addAll(schedule2.getScheduleList());
 
         for(Schedule schedule : tempDelete) {
-            clientThread.getDbConnection().removeSchedule(schedule);
+            clientDatabase.removeSchedule(schedule);
         }
 
         for(Schedule schedule : schedule1.getScheduleList()) {
             schedule.setTimeZone(timezone2);
-            if(clientThread.getDbConnection().insertSchedule(schedule))
+            if(clientDatabase.insertSchedule(schedule))
                 updated++;
         }
 
         for(Schedule schedule : schedule2.getScheduleList()) {
             schedule.setTimeZone(timezone1);
-            if(clientThread.getDbConnection().insertSchedule(schedule))
+            if(clientDatabase.insertSchedule(schedule))
                 updated++;
         }
 
@@ -1373,7 +1382,7 @@ public class ClientProtocol {
                     .addArgument("scheduleItem2", schedule2)
                     .build();
 
-            sendPacketIO(switchScheduleConfirmationPacket);
+            clientRepository.sendPacketIO(channel, switchScheduleConfirmationPacket);
 
         } else {
 
@@ -1383,7 +1392,7 @@ public class ClientProtocol {
                     .addArgument("message", "No se ha podido insertar ese schedule")
                     .build();
 
-            sendPacketIO(insertScheduleErrorPacket);
+            clientRepository.sendPacketIO(channel, insertScheduleErrorPacket);
 
         }
 
@@ -1396,10 +1405,10 @@ public class ClientProtocol {
      */
     private void removeScheduleItem() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap scheduleMap = (LinkedTreeMap) lastPacket.getArgument("scheduleItem");
+        LinkedTreeMap scheduleMap = (LinkedTreeMap) packet.getArgument("scheduleItem");
 
         SchedulerItem schedulerItem = SchedulerItem.parse(scheduleMap);
 
@@ -1410,7 +1419,7 @@ public class ClientProtocol {
         int required = schedulerItem.getScheduleList().size();
 
         for(Schedule schedule : schedulerItem.getScheduleList()) {
-            if(clientThread.getDbConnection().removeSchedule(schedule)) {
+            if(clientDatabase.removeSchedule(schedule)) {
                 removed++;
             }
         }
@@ -1423,7 +1432,7 @@ public class ClientProtocol {
                     .addArgument("scheduleItem", schedulerItem)
                     .build();
 
-            sendPacketIO(deleteScheduleConfirmationPacket);
+            clientRepository.sendPacketIO(channel, deleteScheduleConfirmationPacket);
 
         } else {
 
@@ -1433,7 +1442,7 @@ public class ClientProtocol {
                     .addArgument("message", "No se ha podido eliminar ese schedule")
                     .build();
 
-            sendPacketIO(deleteScheduleErrorPacket);
+            clientRepository.sendPacketIO(channel, deleteScheduleErrorPacket);
 
         }
 
@@ -1447,19 +1456,19 @@ public class ClientProtocol {
      */
     private void addSchedule() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap scheduleItemMap = (LinkedTreeMap) lastPacket.getArgument("scheduleItem");
+        LinkedTreeMap scheduleItemMap = (LinkedTreeMap) packet.getArgument("scheduleItem");
         SchedulerItem schedulerItem = SchedulerItem.parse(scheduleItemMap);
 
-        LinkedTreeMap scheduleMap = (LinkedTreeMap) lastPacket.getArgument("schedule");
+        LinkedTreeMap scheduleMap = (LinkedTreeMap) packet.getArgument("schedule");
         Schedule schedule = Schedule.parse(scheduleMap);
 
         if(schedulerItem == null || schedule == null)
             return;
 
-        if(clientThread.getDbConnection().insertSchedule(schedule)) {
+        if(clientDatabase.insertSchedule(schedule)) {
 
             Packet addScheduleConfirmationPacket = new PacketBuilder()
                     .ofType(PacketType.ADDSCHEDULE.getConfirmation())
@@ -1468,7 +1477,7 @@ public class ClientProtocol {
                     .addArgument("schedule", schedule)
                     .build();
 
-            sendPacketIO(addScheduleConfirmationPacket);
+            clientRepository.sendPacketIO(channel, addScheduleConfirmationPacket);
 
         } else {
 
@@ -1478,7 +1487,7 @@ public class ClientProtocol {
                     .addArgument("message", "No se ha podido editar ese schedule")
                     .build();
 
-            sendPacketIO(addScheduleErrorPacket);
+            clientRepository.sendPacketIO(channel, addScheduleErrorPacket);
 
         }
 
@@ -1491,19 +1500,19 @@ public class ClientProtocol {
      */
     private void updateSchedule() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap scheduleItemMap = (LinkedTreeMap) lastPacket.getArgument("scheduleItem");
+        LinkedTreeMap scheduleItemMap = (LinkedTreeMap) packet.getArgument("scheduleItem");
         SchedulerItem schedulerItem = SchedulerItem.parse(scheduleItemMap);
 
-        LinkedTreeMap scheduleMap = (LinkedTreeMap) lastPacket.getArgument("schedule");
+        LinkedTreeMap scheduleMap = (LinkedTreeMap) packet.getArgument("schedule");
         Schedule schedule = Schedule.parse(scheduleMap);
 
         if(schedulerItem == null || schedule == null)
             return;
 
-        if(clientThread.getDbConnection().updateSchedule(schedule)) {
+        if(clientDatabase.updateSchedule(schedule)) {
 
             Packet updateScheduleConfirmationPacket = new PacketBuilder()
                     .ofType(PacketType.UPDATESCHEDULE.getConfirmation())
@@ -1512,7 +1521,7 @@ public class ClientProtocol {
                     .addArgument("schedule", schedule)
                     .build();
 
-            sendPacketIO(updateScheduleConfirmationPacket);
+            clientRepository.sendPacketIO(channel, updateScheduleConfirmationPacket);
 
         } else {
 
@@ -1522,7 +1531,7 @@ public class ClientProtocol {
                     .addArgument("message", "No se ha podido editar ese schedule")
                     .build();
 
-            sendPacketIO(updateScheduleErrorPacket);
+            clientRepository.sendPacketIO(channel, updateScheduleErrorPacket);
 
         }
 
@@ -1535,19 +1544,19 @@ public class ClientProtocol {
      */
     private void deleteSchedule() {
 
-        if(clientThread.getClientSession().isTeacherRole())
+        if(clientSession.isTeacherRole())
             return;
 
-        LinkedTreeMap scheduleItemMap = (LinkedTreeMap) lastPacket.getArgument("scheduleItem");
+        LinkedTreeMap scheduleItemMap = (LinkedTreeMap) packet.getArgument("scheduleItem");
         SchedulerItem schedulerItem = SchedulerItem.parse(scheduleItemMap);
 
-        LinkedTreeMap scheduleMap = (LinkedTreeMap) lastPacket.getArgument("schedule");
+        LinkedTreeMap scheduleMap = (LinkedTreeMap) packet.getArgument("schedule");
         Schedule schedule = Schedule.parse(scheduleMap);
 
         if(schedulerItem == null || schedule == null)
             return;
 
-        if(clientThread.getDbConnection().removeSchedule(schedule)) {
+        if(clientDatabase.removeSchedule(schedule)) {
 
             Packet deleteScheduleConfirmationPacket = new PacketBuilder()
                     .ofType(PacketType.DELETESCHEDULE.getConfirmation())
@@ -1555,7 +1564,7 @@ public class ClientProtocol {
                     .addArgument("scheduleItem", schedulerItem)
                     .build();
 
-            sendPacketIO(deleteScheduleConfirmationPacket);
+            clientRepository.sendPacketIO(channel, deleteScheduleConfirmationPacket);
 
         } else {
 
@@ -1565,7 +1574,7 @@ public class ClientProtocol {
                     .addArgument("message", "No se ha podido eliminar ese schedule")
                     .build();
 
-            sendPacketIO(deleteScheduleErrorPacket);
+            clientRepository.sendPacketIO(channel, deleteScheduleErrorPacket);
 
         }
 
@@ -1578,7 +1587,7 @@ public class ClientProtocol {
      */
     private void emptyClassroomsListTimeZone() {
 
-        String uuid = (String) lastPacket.getArgument("uuid");
+        String uuid = (String) packet.getArgument("uuid");
 
         Packet classroomErrorPacket = new PacketBuilder()
                 .ofType(PacketType.EMPTYCLASSROOMSTIMEZONE.getError())
@@ -1586,21 +1595,21 @@ public class ClientProtocol {
                 .addArgument("message", "No se ha podido buscar las aulas vacías")
                 .build();
 
-        LinkedTreeMap timeZoneMap = (LinkedTreeMap) lastPacket.getArgument("timeZone");
+        LinkedTreeMap timeZoneMap = (LinkedTreeMap) packet.getArgument("timeZone");
 
         if(timeZoneMap == null) {
-            sendPacketIO(classroomErrorPacket);
+            clientRepository.sendPacketIO(channel, classroomErrorPacket);
             return;
         }
 
         TimeZone timeZone = TimeZone.parse(timeZoneMap);
 
         if(timeZone == null) {
-            sendPacketIO(classroomErrorPacket);
+            clientRepository.sendPacketIO(channel, classroomErrorPacket);
             return;
         }
 
-        List<Classroom> classrooms = clientThread.getDbConnection().getEmptyClassroomsTimeZone(timeZone);
+        List<Classroom> classrooms = clientDatabase.getEmptyClassroomsTimeZone(timeZone);
 
         Packet classroomsConfirmationPacket = new PacketBuilder()
                 .ofType(PacketType.EMPTYCLASSROOMSTIMEZONE.getConfirmation())
@@ -1608,15 +1617,15 @@ public class ClientProtocol {
                 .addArgument("classrooms", classrooms)
                 .build();
 
-        sendPacketIO(classroomsConfirmationPacket);
+        clientRepository.sendPacketIO(channel, classroomsConfirmationPacket);
 
     }
 
 
     private void databaseBackup() {
 
-        boolean sendEmail = Boolean.parseBoolean((String) lastPacket.getArgument("sendEmail"));
-        String email = (String) lastPacket.getArgument("email");
+        boolean sendEmail = Boolean.parseBoolean((String) packet.getArgument("sendEmail"));
+        String email = (String) packet.getArgument("email");
 
         String backupDate = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date());
 
@@ -1664,16 +1673,16 @@ public class ClientProtocol {
                 .addArgument("date", backupDate)
                 .addArgument("sql", generatedSql);
 
-        sendPacketIO(packetBuilder.build());
+        clientRepository.sendPacketIO(channel, packetBuilder.build());
 
     }
 
 
     private void deleteData() throws SQLException {
 
-        String type = (String) lastPacket.getArgument("type");
+        String type = (String) packet.getArgument("type");
 
-        DBConnection connection = clientThread.getDbConnection();
+        DBConnection connection = clientDatabase;
 
         if(type.equalsIgnoreCase("all")) {
 
@@ -1746,39 +1755,6 @@ public class ClientProtocol {
 
         }
 
-    }
-
-
-    /**
-     * Send packet to client's socket output
-     * @param packet
-     */
-    public void sendPacketIO(Packet packet) {
-        try {
-            clientThread.getOutput().write(packet.toString());
-            clientThread.getOutput().newLine();
-            clientThread.getOutput().flush();
-        } catch (IOException e) {
-            clientThread.setConnected(false);
-        }
-    }
-
-    /**
-     * Read packet from server thread, client's socket input
-     * @return packet object parsed by json input
-     */
-    public Packet readPacketIO() {
-        String json = null;
-        try {
-            json = clientThread.getInput().readLine();
-            return Server.GSON.fromJson(json, Packet.class);
-        } catch (JsonSyntaxException ignored) {
-            System.out.println(Constants.LOG_SERVER_ERROR_IO_READ);
-            System.out.println(json);
-        } catch (IOException e) {
-            clientThread.setConnected(false);
-        }
-        return null;
     }
 
 }

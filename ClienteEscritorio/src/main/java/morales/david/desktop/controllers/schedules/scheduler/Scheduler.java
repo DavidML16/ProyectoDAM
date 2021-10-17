@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 import morales.david.desktop.controllers.modals.SchedulerItemModalController;
 import morales.david.desktop.managers.DataManager;
 import morales.david.desktop.managers.eventcallbacks.*;
-import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.ClientManager;
 import morales.david.desktop.models.*;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
@@ -264,7 +264,7 @@ public class Scheduler {
                     .addArgument("scheduleItem", oldSchedule)
                     .build();
 
-            SocketManager.getInstance().sendPacketIO(deleteScheduleRequestPacket);
+            ClientManager.getInstance().sendPacketIO(deleteScheduleRequestPacket);
 
         }
 
@@ -307,7 +307,7 @@ public class Scheduler {
                     .addArgument("scheduleItem", schedulerItem)
                     .build();
 
-            SocketManager.getInstance().sendPacketIO(insertScheduleRequestPacket);
+            ClientManager.getInstance().sendPacketIO(insertScheduleRequestPacket);
 
         }
 
@@ -362,7 +362,7 @@ public class Scheduler {
                     .addArgument("scheduleItem2", schedule2)
                     .build();
 
-            SocketManager.getInstance().sendPacketIO(switchScheduleRequestPacket);
+            ClientManager.getInstance().sendPacketIO(switchScheduleRequestPacket);
 
         }
 
@@ -400,7 +400,7 @@ public class Scheduler {
                     .addArgument("scheduleItem", schedulerItem)
                     .build();
 
-            SocketManager.getInstance().sendPacketIO(deleteScheduleRequestPacket);
+            ClientManager.getInstance().sendPacketIO(deleteScheduleRequestPacket);
 
         }
 
@@ -434,7 +434,7 @@ public class Scheduler {
                     .addArgument("schedule", schedule)
                     .build();
 
-            SocketManager.getInstance().sendPacketIO(deleteScheduleRequestPacket);
+            ClientManager.getInstance().sendPacketIO(deleteScheduleRequestPacket);
 
         }
 
@@ -480,7 +480,7 @@ public class Scheduler {
                     .addArgument("schedule", schedule)
                     .build();
 
-            SocketManager.getInstance().sendPacketIO(updateScheduleRequestPacket);
+            ClientManager.getInstance().sendPacketIO(updateScheduleRequestPacket);
 
         }
 
@@ -515,7 +515,7 @@ public class Scheduler {
                     .addArgument("schedule", schedule)
                     .build();
 
-            SocketManager.getInstance().sendPacketIO(addScheduleRequestPacket);
+            ClientManager.getInstance().sendPacketIO(addScheduleRequestPacket);
 
         }
 
@@ -577,7 +577,7 @@ public class Scheduler {
                 .addArgument("timeZone", schedulerItem.getTimeZone())
                 .build();
 
-        SocketManager.getInstance().sendPacketIO(emptyClassroomsRequestPacket);
+        ClientManager.getInstance().sendPacketIO(emptyClassroomsRequestPacket);
 
     }
 

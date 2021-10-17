@@ -1,13 +1,12 @@
 package morales.david.desktop.managers;
 
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import morales.david.desktop.controllers.modals.AdvancedScheduleExportModalController;
+import morales.david.desktop.ClientManager;
 import morales.david.desktop.controllers.modals.AdvancedScheduleExportProgressModalController;
 import morales.david.desktop.models.*;
 import morales.david.desktop.models.packets.PacketBuilder;
@@ -19,7 +18,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class AdvSchedulerManager {
 
@@ -85,7 +83,7 @@ public class AdvSchedulerManager {
                 .ofType(PacketType.ADVSCHEDULE.getRequest())
                 .addArgument("exportableItems", exportableItems);
 
-        SocketManager.getInstance().sendPacketIO(packetBuilder.build());
+        ClientManager.getInstance().sendPacketIO(packetBuilder.build());
 
     }
 

@@ -6,16 +6,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import morales.david.desktop.controllers.schedules.scheduler.SchedulerManager;
-import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.ClientManager;
 import morales.david.desktop.models.*;
-import morales.david.desktop.models.packets.PacketBuilder;
-import morales.david.desktop.models.packets.PacketType;
-import morales.david.desktop.utils.FxUtilTest;
 
 import java.net.URL;
 import java.util.List;
@@ -58,7 +51,7 @@ public class SchedulerItemController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if(SocketManager.getInstance().getClientSession().isTeacherRole()) {
+        if(ClientManager.getInstance().getClientSession().isTeacherRole()) {
             deleteButton.setVisible(false);
             editButton.setVisible(false);
         }

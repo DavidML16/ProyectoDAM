@@ -9,18 +9,13 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import morales.david.desktop.ClientManager;
 import morales.david.desktop.controllers.modals.AdvancedInspectionExportModalController;
-import morales.david.desktop.controllers.modals.AdvancedScheduleExportModalController;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.*;
-import morales.david.desktop.managers.eventcallbacks.EmptyClassroomsConfirmationListener;
-import morales.david.desktop.managers.eventcallbacks.EventManager;
-import morales.david.desktop.managers.eventcallbacks.ScheduleErrorListener;
-import morales.david.desktop.models.Classroom;
 import morales.david.desktop.models.Day;
 import morales.david.desktop.models.Hour;
 import morales.david.desktop.models.TimeZone;
-import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.FxUtilTest;
@@ -110,7 +105,7 @@ public class TeacherReportController implements Initializable, Controller {
                         .ofType(PacketType.EXPORTINSPECTION.getRequest())
                         .addArgument("timeZone", timeZone);
 
-                SocketManager.getInstance().sendPacketIO(packetBuilder.build());
+                ClientManager.getInstance().sendPacketIO(packetBuilder.build());
 
             }
 

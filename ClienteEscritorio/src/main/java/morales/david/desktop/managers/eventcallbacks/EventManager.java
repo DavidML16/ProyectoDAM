@@ -1,11 +1,9 @@
 package morales.david.desktop.managers.eventcallbacks;
 
 import javafx.application.Platform;
+import morales.david.desktop.models.Schedule;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EventManager {
 
@@ -32,15 +30,17 @@ public class EventManager {
     }
 
     public void notify(String uuid, ScheduleListenerType scheduleListenerType) {
-        Platform.runLater(() -> {
-            List<ScheduleListener> typeListeners = listeners.get(uuid);
-            if(typeListeners == null)
-                return;
-            for (ScheduleListener listener : typeListeners) {
-                listener.callback(uuid, scheduleListenerType);
-            }
-            listeners.remove(uuid);
-        });
+
+        List<ScheduleListener> typeListeners = listeners.get(uuid);
+
+        if(typeListeners == null)
+            return;
+
+        for (ScheduleListener listener : typeListeners)
+            listener.callback(uuid, scheduleListenerType);
+
+        listeners.remove(uuid);
+
     }
 
 }

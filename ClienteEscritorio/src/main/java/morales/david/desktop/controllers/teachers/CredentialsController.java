@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 import morales.david.desktop.controllers.modals.CredentialModalController;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.DataManager;
-import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.ClientManager;
 import morales.david.desktop.models.Credential;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
@@ -65,11 +65,11 @@ public class CredentialsController implements Initializable, Controller {
                     .ofType(PacketType.CREDENTIALS.getRequest())
                     .build();
 
-            SocketManager.getInstance().sendPacketIO(credentialsRequestPacket);
+            ClientManager.getInstance().sendPacketIO(credentialsRequestPacket);
 
         });
 
-        if(SocketManager.getInstance().getClientSession().isTeacherRole()) {
+        if(ClientManager.getInstance().getClientSession().isTeacherRole()) {
             newButton.setVisible(false);
             editButton.setVisible(false);
             deleteButton.setVisible(false);
@@ -160,7 +160,7 @@ public class CredentialsController implements Initializable, Controller {
 
     private void deleteCredential() {
 
-        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+        if(ClientManager.getInstance().getClientSession().isTeacherRole())
             return;
 
         Credential credential = credentialsTable.getSelectionModel().getSelectedItem();
@@ -170,13 +170,13 @@ public class CredentialsController implements Initializable, Controller {
                 .addArgument("credential", credential)
                 .build();
 
-        SocketManager.getInstance().sendPacketIO(removeCredentialRequestPacket);
+        ClientManager.getInstance().sendPacketIO(removeCredentialRequestPacket);
 
     }
 
     private void editCredential(Credential credential) {
 
-        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+        if(ClientManager.getInstance().getClientSession().isTeacherRole())
             return;
 
         if(credential == null)
@@ -228,7 +228,7 @@ public class CredentialsController implements Initializable, Controller {
                         .addArgument("credential", updatedCredential)
                         .build();
 
-                SocketManager.getInstance().sendPacketIO(updateCredentialRequestPacket);
+                ClientManager.getInstance().sendPacketIO(updateCredentialRequestPacket);
 
             }
 
@@ -240,7 +240,7 @@ public class CredentialsController implements Initializable, Controller {
 
     private void newCredential() {
 
-        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+        if(ClientManager.getInstance().getClientSession().isTeacherRole())
             return;
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/newCredentialModal.fxml"));
@@ -289,7 +289,7 @@ public class CredentialsController implements Initializable, Controller {
                         .addArgument("credential", credential)
                         .build();
 
-                SocketManager.getInstance().sendPacketIO(addCredentialRequestPacket);
+                ClientManager.getInstance().sendPacketIO(addCredentialRequestPacket);
 
             }
 

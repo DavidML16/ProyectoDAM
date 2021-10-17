@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 import morales.david.desktop.controllers.modals.ClassroomModalController;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.DataManager;
-import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.ClientManager;
 import morales.david.desktop.models.Classroom;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
@@ -58,11 +58,11 @@ public class ClassroomsController implements Initializable, Controller {
                     .ofType(PacketType.CLASSROOMS.getRequest())
                     .build();
 
-            SocketManager.getInstance().sendPacketIO(classroomsRequestPacket);
+            ClientManager.getInstance().sendPacketIO(classroomsRequestPacket);
 
         });
 
-        if(SocketManager.getInstance().getClientSession().isTeacherRole()) {
+        if(ClientManager.getInstance().getClientSession().isTeacherRole()) {
             newButton.setVisible(false);
             editButton.setVisible(false);
             deleteButton.setVisible(false);
@@ -151,7 +151,7 @@ public class ClassroomsController implements Initializable, Controller {
 
     private void deleteClassroom() {
 
-        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+        if(ClientManager.getInstance().getClientSession().isTeacherRole())
             return;
 
         Classroom classroom = classroomsTable.getSelectionModel().getSelectedItem();
@@ -161,13 +161,13 @@ public class ClassroomsController implements Initializable, Controller {
                 .addArgument("classroom", classroom)
                 .build();
 
-        SocketManager.getInstance().sendPacketIO(removeClassroomRequestPacket);
+        ClientManager.getInstance().sendPacketIO(removeClassroomRequestPacket);
 
     }
 
     private void editClassroom(Classroom classroom) {
 
-        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+        if(ClientManager.getInstance().getClientSession().isTeacherRole())
             return;
 
         if(classroom == null)
@@ -219,7 +219,7 @@ public class ClassroomsController implements Initializable, Controller {
                         .addArgument("classroom", updatedClassroom)
                         .build();
 
-                SocketManager.getInstance().sendPacketIO(updateClassroomRequestPacket);
+                ClientManager.getInstance().sendPacketIO(updateClassroomRequestPacket);
 
             }
 
@@ -231,7 +231,7 @@ public class ClassroomsController implements Initializable, Controller {
 
     private void newTeacher() {
 
-        if(SocketManager.getInstance().getClientSession().isTeacherRole())
+        if(ClientManager.getInstance().getClientSession().isTeacherRole())
             return;
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/modals/newClassroomModal.fxml"));
@@ -280,7 +280,7 @@ public class ClassroomsController implements Initializable, Controller {
                         .addArgument("classroom", classroom)
                         .build();
 
-                SocketManager.getInstance().sendPacketIO(addClassroomRequestPacket);
+                ClientManager.getInstance().sendPacketIO(addClassroomRequestPacket);
 
             }
 

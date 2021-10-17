@@ -8,8 +8,8 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import morales.david.desktop.ClientManager;
 import morales.david.desktop.controllers.modals.AdvancedInspectionExportProgressModalController;
-import morales.david.desktop.controllers.modals.AdvancedScheduleExportProgressModalController;
 import morales.david.desktop.models.*;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
@@ -17,7 +17,6 @@ import morales.david.desktop.models.packets.PacketType;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +50,7 @@ public class AdvInspectionManager {
                 .ofType(PacketType.ADVINSPECTION.getRequest())
                 .addArgument("timeZones", timeZones);
 
-        SocketManager.getInstance().sendPacketIO(packetBuilder.build());
+        ClientManager.getInstance().sendPacketIO(packetBuilder.build());
 
     }
 

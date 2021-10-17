@@ -4,23 +4,15 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.ScreenManager;
-import morales.david.desktop.managers.SocketManager;
-import morales.david.desktop.models.packets.Packet;
-import morales.david.desktop.models.packets.PacketBuilder;
-import morales.david.desktop.models.packets.PacketType;
+import morales.david.desktop.ClientManager;
 import morales.david.desktop.utils.ConfigUtil;
 import morales.david.desktop.utils.Constants;
-import morales.david.desktop.utils.HashUtil;
 import morales.david.desktop.utils.Utils;
 
 import java.net.URL;
@@ -79,7 +71,7 @@ public class SettingsController implements Initializable, Controller {
             properties.setProperty("server_port", ""+Constants.SERVER_PORT);
             configUtil.saveProperties();
 
-            SocketManager.getInstance().close();
+            ClientManager.getInstance().close();
 
             ScreenManager screenManager = ScreenManager.getInstance();
 

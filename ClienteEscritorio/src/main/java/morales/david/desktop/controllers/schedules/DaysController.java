@@ -1,33 +1,21 @@
 package morales.david.desktop.controllers.schedules;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.image.Image;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
-import morales.david.desktop.controllers.modals.CourseModalController;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.DataManager;
-import morales.david.desktop.managers.SocketManager;
-import morales.david.desktop.models.Course;
+import morales.david.desktop.ClientManager;
 import morales.david.desktop.models.Day;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
 
-import java.io.IOException;
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class DaysController implements Initializable, Controller {
@@ -49,7 +37,7 @@ public class DaysController implements Initializable, Controller {
                     .ofType(PacketType.DAYS.getRequest())
                     .build();
 
-            SocketManager.getInstance().sendPacketIO(daysRequestPacket);
+            ClientManager.getInstance().sendPacketIO(daysRequestPacket);
 
         });
 
@@ -66,7 +54,7 @@ public class DaysController implements Initializable, Controller {
 
         nameColumn.setOnEditCommit(event -> {
 
-            if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            if(ClientManager.getInstance().getClientSession().isTeacherRole())
                 return;
 
             Day day = event.getTableView().getItems().get(event.getTablePosition().getRow());
@@ -77,13 +65,13 @@ public class DaysController implements Initializable, Controller {
                     .addArgument("day", day)
                     .build();
 
-            SocketManager.getInstance().sendPacketIO(dayUpdatePacket);
+            ClientManager.getInstance().sendPacketIO(dayUpdatePacket);
 
         });
 
         daysTable.setItems(list);
 
-        if(SocketManager.getInstance().getClientSession().isTeacherRole()) {
+        if(ClientManager.getInstance().getClientSession().isTeacherRole()) {
             daysTable.setEditable(false);
         } else {
             daysTable.setEditable(true);

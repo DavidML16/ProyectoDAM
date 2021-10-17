@@ -12,7 +12,6 @@ import morales.david.desktop.controllers.SettingsController;
 import morales.david.desktop.controllers.classrooms.EmptyClassroomsTimezoneController;
 import morales.david.desktop.controllers.schedules.SchedulesController;
 import morales.david.desktop.managers.ScreenManager;
-import morales.david.desktop.managers.SocketManager;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
@@ -20,8 +19,6 @@ import morales.david.desktop.utils.ConfigUtil;
 import morales.david.desktop.utils.Constants;
 import morales.david.desktop.utils.Utils;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Map;
 
 public class Client extends Application {
@@ -58,7 +55,7 @@ public class Client extends Application {
 
         primaryStage.setOnCloseRequest(event -> {
 
-            if(SocketManager.getInstance().isClosed())
+            if(ClientManager.getInstance().isClosed())
                 return;
 
             event.consume();
@@ -75,7 +72,7 @@ public class Client extends Application {
 
             if(ScreenManager.getInstance().getController() instanceof LoginController) {
 
-                SocketManager.getInstance().sendPacketIO(exitRequestPacket);
+                ClientManager.getInstance().sendPacketIO(exitRequestPacket);
 
             } else if(ScreenManager.getInstance().getController() instanceof SettingsController) {
 
@@ -89,7 +86,7 @@ public class Client extends Application {
 
                 if (alert.getResult() == ButtonType.YES) {
 
-                    SocketManager.getInstance().sendPacketIO(exitRequestPacket);
+                    ClientManager.getInstance().sendPacketIO(exitRequestPacket);
 
                 }
 

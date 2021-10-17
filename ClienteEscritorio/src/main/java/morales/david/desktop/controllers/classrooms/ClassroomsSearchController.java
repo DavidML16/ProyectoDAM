@@ -1,22 +1,14 @@
 package morales.david.desktop.controllers.classrooms;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.util.StringConverter;
-import morales.david.desktop.controllers.modals.SchedulerItemModalController;
-import morales.david.desktop.controllers.schedules.SchedulesMenuController;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.DataManager;
 import morales.david.desktop.managers.ScreenManager;
-import morales.david.desktop.managers.SocketManager;
+import morales.david.desktop.ClientManager;
 import morales.david.desktop.managers.eventcallbacks.EmptyClassroomsConfirmationListener;
 import morales.david.desktop.managers.eventcallbacks.EventManager;
 import morales.david.desktop.managers.eventcallbacks.ScheduleErrorListener;
@@ -26,7 +18,6 @@ import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.FxUtilTest;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -133,7 +124,7 @@ public class ClassroomsSearchController implements Initializable, Controller {
                         .addArgument("timeZone", timeZone)
                         .build();
 
-                SocketManager.getInstance().sendPacketIO(emptyClassroomsRequestPacket);
+                ClientManager.getInstance().sendPacketIO(emptyClassroomsRequestPacket);
 
             }
 

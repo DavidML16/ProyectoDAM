@@ -11,8 +11,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.DataManager;
-import morales.david.desktop.managers.SocketManager;
-import morales.david.desktop.models.Day;
+import morales.david.desktop.ClientManager;
 import morales.david.desktop.models.Hour;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
@@ -40,7 +39,7 @@ public class HoursController implements Initializable, Controller {
                     .ofType(PacketType.HOURS.getRequest())
                     .build();
 
-            SocketManager.getInstance().sendPacketIO(hoursRequestPacket);
+            ClientManager.getInstance().sendPacketIO(hoursRequestPacket);
 
         });
 
@@ -57,7 +56,7 @@ public class HoursController implements Initializable, Controller {
 
         nameColumn.setOnEditCommit(event -> {
 
-            if(SocketManager.getInstance().getClientSession().isTeacherRole())
+            if(ClientManager.getInstance().getClientSession().isTeacherRole())
                 return;
 
             Hour hour = event.getTableView().getItems().get(event.getTablePosition().getRow());
@@ -68,13 +67,13 @@ public class HoursController implements Initializable, Controller {
                     .addArgument("hour", hour)
                     .build();
 
-            SocketManager.getInstance().sendPacketIO(hourUpdatePacket);
+            ClientManager.getInstance().sendPacketIO(hourUpdatePacket);
 
         });
 
         hoursTable.setItems(list);
 
-        if(SocketManager.getInstance().getClientSession().isTeacherRole()) {
+        if(ClientManager.getInstance().getClientSession().isTeacherRole()) {
             hoursTable.setEditable(false);
         } else {
             hoursTable.setEditable(true);
