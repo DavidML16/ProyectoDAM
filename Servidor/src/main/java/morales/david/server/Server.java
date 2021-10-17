@@ -83,6 +83,7 @@ public class Server {
         Map<String, String> parameters = configUtil.getConfigParams();
         Constants.SETUP_FIRST_TIME = Boolean.parseBoolean(parameters.get("setup_first_time"));
         Constants.SERVER_PORT = Integer.parseInt(parameters.get("server_port"));
+        Constants.SERVER_FILE_TRANSFER_PORT = Constants.SERVER_PORT + 1;
 
         DBConnection dbConnection = new DBConnection();
 

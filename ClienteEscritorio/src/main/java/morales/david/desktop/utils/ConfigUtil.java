@@ -40,7 +40,6 @@ public final class ConfigUtil {
 
             properties.setProperty("server_ip", "localhost");
             properties.setProperty("server_port", "6565");
-            properties.setProperty("server_file_transfer_port", "6566");
 
             FileOutputStream fr = new FileOutputStream(propertiesFile);
             properties.store(fr, null);
@@ -63,9 +62,6 @@ public final class ConfigUtil {
 
         String server_port = properties.getProperty("server_port");
         parameters.put("server_port", server_port);
-
-        String server_file_transfer_port = properties.getProperty("server_file_transfer_port");
-        parameters.put("server_file_transfer_port", server_file_transfer_port);
 
         return parameters;
 

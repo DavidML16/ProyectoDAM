@@ -33,7 +33,7 @@ public class Client extends Application {
         Map<String, String> parameters = configUtil.getConfigParams();
         Constants.SERVER_IP = parameters.get("server_ip");
         Constants.SERVER_PORT = Integer.parseInt(parameters.get("server_port"));
-        Constants.SERVER_FILE_TRANSFER_PORT = Integer.parseInt(parameters.get("server_file_transfer_port"));
+        Constants.SERVER_FILE_TRANSFER_PORT = Constants.SERVER_PORT + 1;
 
         primaryStage.getIcons().add(new Image("/images/schedule-icon-inverted.png"));
 
