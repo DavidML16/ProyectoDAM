@@ -7,8 +7,6 @@ public class Constants {
     public static int SERVER_PORT = 6565;
     public static int SERVER_FILE_TRANSFER_PORT = SERVER_PORT + 1;
 
-    public static long CLIENT_CONNECTION_CHECKING_INTERVAL = 5000;
-
     public static final String LOG_SERVER_INIT = "(+) Servidor iniciado en el puerto '%d'";
     public static final String LOG_SERVER_ERROR = "(X) Se ha producido un error con el servidor";
     public static final String LOG_SERVER_ERROR_IO = "(X) Se ha producido un error con el flujo de E/S";

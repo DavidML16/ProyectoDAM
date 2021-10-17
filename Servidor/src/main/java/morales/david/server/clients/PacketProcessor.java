@@ -292,11 +292,24 @@ public class PacketProcessor implements Runnable {
      */
     private void disconnect() {
 
-        Packet disconnectErrorPacket = new PacketBuilder()
-                .ofType(PacketType.DISCONNECT.getError())
-                .build();
+        if(ClientRepository.getInstance().getChannels().contains(channel)) {
 
-        clientRepository.sendPacketIO(channel, disconnectErrorPacket);
+            Packet disconnectErrorPacket = new PacketBuilder()
+                    .ofType(PacketType.DISCONNECT.getConfirmation())
+                    .build();
+
+            clientRepository.sendPacketIO(channel, disconnectErrorPacket);
+
+        } else {
+
+            Packet disconnectErrorPacket = new PacketBuilder()
+                    .ofType(PacketType.DISCONNECT.getError())
+                    .build();
+
+            clientRepository.sendPacketIO(channel, disconnectErrorPacket);
+
+
+        }
 
     }
 

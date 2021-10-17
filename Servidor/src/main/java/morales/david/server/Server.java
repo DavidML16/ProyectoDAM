@@ -82,13 +82,12 @@ public class Server {
 
         Map<String, String> parameters = configUtil.getConfigParams();
         Constants.SETUP_FIRST_TIME = Boolean.parseBoolean(parameters.get("setup_first_time"));
+        Constants.SERVER_PORT = Integer.parseInt(parameters.get("server_port"));
 
         DBConnection dbConnection = new DBConnection();
 
         if(!Constants.SETUP_FIRST_TIME) {
 
-            Constants.SERVER_FILE_TRANSFER_PORT = Integer.parseInt(parameters.get("server_file_transfer_port"));
-            Constants.CLIENT_CONNECTION_CHECKING_INTERVAL = Integer.parseInt(parameters.get("client_connection_checking_interval"));
             DBConstants.DB_IP = parameters.get("db_ip");
             DBConstants.DB_PORT = Integer.parseInt(parameters.get("db_port"));
             DBConstants.DB_DATABASE = parameters.get("db_database");
