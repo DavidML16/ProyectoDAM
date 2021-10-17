@@ -31,15 +31,19 @@ public class EventManager {
 
     public void notify(String uuid, ScheduleListenerType scheduleListenerType) {
 
-        List<ScheduleListener> typeListeners = listeners.get(uuid);
+        Platform.runLater(() -> {
 
-        if(typeListeners == null)
-            return;
+            List<ScheduleListener> typeListeners = listeners.get(uuid);
 
-        for (ScheduleListener listener : typeListeners)
-            listener.callback(uuid, scheduleListenerType);
+            if(typeListeners == null)
+                return;
 
-        listeners.remove(uuid);
+            for (ScheduleListener listener : typeListeners)
+                listener.callback(uuid, scheduleListenerType);
+
+            listeners.remove(uuid);
+
+        });
 
     }
 
