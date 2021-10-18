@@ -90,6 +90,8 @@ public class LoginController implements Initializable, Controller {
 
         }
 
+        messageLabel.setText("");
+
         Packet loginRequestPacket = new PacketBuilder()
                 .ofType(PacketType.LOGIN.getRequest())
                 .addArgument("username", username)

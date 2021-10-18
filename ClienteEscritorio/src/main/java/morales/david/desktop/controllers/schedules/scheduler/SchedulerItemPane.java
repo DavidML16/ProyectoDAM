@@ -75,7 +75,7 @@ public class SchedulerItemPane extends AnchorPane {
 
             showedButtons.get(0).setFont(font1);
 
-        } else if(showedButtons.size() == 2) {
+        } else {
 
             Font font2 = Font.font("System", FontWeight.LIGHT, h * 0.16);
 
@@ -100,6 +100,8 @@ public class SchedulerItemPane extends AnchorPane {
         }
 
         setStyle("-fx-background-color: #FFFFFF;");
+
+        setOpacity(1);
 
         if(schedulerItem != null && schedulerItem.getScheduleList().size() > 0) {
 
@@ -164,6 +166,37 @@ public class SchedulerItemPane extends AnchorPane {
             }
 
         }
+
+    }
+
+    public void setHighlight(int type) {
+
+        if(type < 0)
+            return;
+
+        if(type == 0) {
+
+            getStyleClass().clear();
+            getStyleClass().add("scheduleButton");
+
+        } else if(type == 1) {
+
+            getStyleClass().clear();
+            getStyleClass().add("scheduleButtonHighlightDestiny");
+
+        } else if(type == 2) {
+
+            getStyleClass().clear();
+            getStyleClass().add("scheduleButtonHighlightOrigin");
+
+        }
+
+    }
+
+    public void removeHighlight() {
+
+        getStyleClass().clear();
+        getStyleClass().add("scheduleButton");
 
     }
 

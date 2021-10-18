@@ -1,5 +1,6 @@
 package morales.david.desktop.controllers.schedules.scheduler;
 
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -178,7 +179,12 @@ public class Scheduler {
     }
 
     public SchedulerItem getScheduleItem(int day, int hour) {
+
+        if(day < 0 || hour < 0)
+            return null;
+
         return schedules[day][hour];
+
     }
 
     public boolean haveSchedules() {
@@ -325,7 +331,8 @@ public class Scheduler {
         if(schedule2 == null || schedule2.getScheduleList().size() <= 0) {
 
             deleteScheduleItem(i1, j1);
-            setScheduleItemFinal(schedule1, i2, j2);
+
+            Platform.runLater(() -> setScheduleItemFinal(schedule1, i2, j2));
 
         } else {
 

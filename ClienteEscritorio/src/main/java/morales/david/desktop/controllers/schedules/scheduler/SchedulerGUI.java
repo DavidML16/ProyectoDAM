@@ -62,6 +62,8 @@ public class SchedulerGUI {
     private SchedulerItemPane selectedScheduleButton;
     private SchedulerItem selectedScheduleItem;
 
+    private SchedulerItem lastOverSchedule;
+
     private HBox tabBox;
     private Label tabMorning;
     private Label tabAfternoon;
@@ -154,8 +156,11 @@ public class SchedulerGUI {
         schedulePreview = new SchedulerItemPane(null, true, schedulerManager);
         schedulePreview.prefWidthProperty().bind(schedules[0][0].widthProperty());
         schedulePreview.prefHeightProperty().bind(schedules[0][0].heightProperty());
+        schedulePreview.setOpacity(0.55);
         schedulePreview.setVisible(false);
         background.getChildren().add(schedulePreview);
+
+        lastOverSchedule = null;
 
         selectMorningTurn();
 
@@ -231,6 +236,47 @@ public class SchedulerGUI {
         displayCurrentTimetable();
     }
 
+    private int[] getSelectedSchedules(MouseEvent event) {
+
+        int[] result = new int[5];
+
+        int onSubject = 0;
+        int is1 = -1;
+        int js1 = -1;
+        int is2 = -1;
+        int js2 = -1;
+
+        for (int i = 0; i < schedules.length; i++) {
+            for (int j = 0; j < schedules[0].length; j++) {
+                if (schedules[i][j] == event.getSource()) {
+                    is1 = i;
+                    js1 = j;
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < schedules.length; i++) {
+            for (int j = 0; j < schedules[0].length; j++) {
+                if (schedules[i][j].getLayoutX() < event.getSceneX() && schedules[i][j].getLayoutX() + schedules[i][j].getWidth() > event.getSceneX() &&
+                        schedules[i][j].getLayoutY() < event.getSceneY() && schedules[i][j].getLayoutY() + schedules[i][j].getHeight() > event.getSceneY()) {
+                    is2 = i;
+                    js2 = j;
+                    onSubject = 1;
+                    break;
+                }
+            }
+        }
+
+        result[0] = is1;
+        result[1] = js1;
+        result[2] = is2;
+        result[3] = js2;
+        result[4] = onSubject;
+
+        return result;
+
+    }
+
     private void scheduleReleased(MouseEvent event) {
 
         if(ClientManager.getInstance().getClientSession().isTeacherRole())
@@ -238,40 +284,19 @@ public class SchedulerGUI {
 
         if(primaryButton) {
 
-            boolean onSubject = false;
-            int is1 = 0;
-            int js1 = 0;
-            int is2 = 0;
-            int js2 = 0;
+            int[] result = getSelectedSchedules(event);
 
-            for (int i = 0; i < schedules.length; i++) {
-                for (int j = 0; j < schedules[0].length; j++) {
-                    if (schedules[i][j] == event.getSource()) {
-                        is1 = i;
-                        js1 = j;
-                        break;
-                    }
-                }
-            }
-            for (int i = 0; i < schedules.length; i++) {
-                for (int j = 0; j < schedules[0].length; j++) {
-                    if (schedules[i][j].getLayoutX() < event.getSceneX() && schedules[i][j].getLayoutX() + schedules[i][j].getWidth() > event.getSceneX() &&
-                            schedules[i][j].getLayoutY() < event.getSceneY() && schedules[i][j].getLayoutY() + schedules[i][j].getHeight() > event.getSceneY()) {
-                        is2 = i;
-                        js2 = j;
-                        onSubject = true;
-                        break;
-                    }
-                }
-            }
-
-            if (onSubject) {
-                schedulerManager.getCurrentTable().switchSchedule(is1, js1, is2, js2);
+            if (result[4] == 1) {
+                schedulerManager.getCurrentTable().switchSchedule(result[0], result[1], result[2], result[3]);
                 displayCurrentTimetable();
             }
 
             schedulePreview.setVisible(false);
             firstDrag = true;
+
+            schedulerManager.removeHighlight(schedules);
+
+            lastOverSchedule = null;
 
         }
 
@@ -294,6 +319,7 @@ public class SchedulerGUI {
 
                             if(schedulerItem != null && schedulerItem.getScheduleList() != null && schedulerItem.getScheduleList().size() > 0) {
                                 schedulePreview.setVisible(true);
+                                schedulePreview.setOpacity(0.65);
                                 schedulePreview.clear();
                                 schedulePreview.setSchedulerItem(schedulerItem);
                                 schedulePreview.setReferenceButton(hours[0]);
@@ -308,6 +334,40 @@ public class SchedulerGUI {
 
             schedulePreview.setLayoutX(event.getSceneX() - scheduleInnerX);
             schedulePreview.setLayoutY(event.getSceneY() - scheduleInnerY);
+            schedulePreview.setOpacity(0.65);
+
+            int[] result = getSelectedSchedules(event);
+
+            SchedulerItem origin = schedulerManager.getCurrentTable().getScheduleItem(result[0], result[1]);
+
+            if(origin == null || origin.getScheduleList().size() == 0)
+                return;
+
+            SchedulerItem destiny = schedulerManager.getCurrentTable().getScheduleItem(result[2], result[3]);
+
+            if(destiny != null) {
+
+                if(lastOverSchedule == null || !lastOverSchedule.equals(destiny)) {
+
+                    lastOverSchedule = destiny;
+
+                    schedulerManager.highlightSchedule(destiny, schedules, false);
+
+                }
+
+            } else {
+
+                lastOverSchedule = null;
+
+                schedulerManager.removeHighlight(schedules);
+
+            }
+
+            if(origin != null) {
+
+                schedulerManager.highlightSchedule(origin, schedules, true);
+
+            }
 
         }
 

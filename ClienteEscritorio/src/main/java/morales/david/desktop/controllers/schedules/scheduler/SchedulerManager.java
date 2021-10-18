@@ -134,4 +134,47 @@ public class SchedulerManager {
             return 0;
     }
 
+    public void highlightSchedule(SchedulerItem item, SchedulerItemPane[][] schedulerItemPanes, boolean origin) {
+
+        for (int i = 0; i < schedulerItemPanes.length; i++) {
+
+            for (int j = 0; j < schedulerItemPanes[0].length; j++) {
+
+                SchedulerItemPane schedulerItemPane = schedulerItemPanes[i][j];
+
+                if(schedulerItemPane == null || schedulerItemPane.getSchedulerItem() == null)
+                    continue;
+
+                if(origin) {
+
+                    schedulerItemPane.setHighlight(schedulerItemPane.getSchedulerItem().equals(item) ? 2 : -1);
+
+                } else {
+
+                    schedulerItemPane.setHighlight(schedulerItemPane.getSchedulerItem().equals(item) ? 1 : 0);
+
+                }
+
+            }
+
+        }
+
+    }
+
+    public void removeHighlight(SchedulerItemPane[][] schedulerItemPanes) {
+
+        for (int i = 0; i < schedulerItemPanes.length; i++) {
+
+            for (int j = 0; j < schedulerItemPanes[0].length; j++) {
+
+                SchedulerItemPane schedulerItemPane = schedulerItemPanes[i][j];
+
+                schedulerItemPane.removeHighlight();
+
+            }
+
+        }
+
+    }
+
 }

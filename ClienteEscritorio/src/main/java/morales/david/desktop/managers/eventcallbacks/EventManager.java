@@ -33,9 +33,12 @@ public class EventManager {
 
         Platform.runLater(() -> {
 
-            List<ScheduleListener> typeListeners = listeners.get(uuid);
+            if(!listeners.containsKey(uuid))
+                return;
 
-            if(typeListeners == null)
+            List<ScheduleListener> typeListeners = new ArrayList<>(listeners.get(uuid));
+
+            if (typeListeners == null)
                 return;
 
             for (ScheduleListener listener : typeListeners)

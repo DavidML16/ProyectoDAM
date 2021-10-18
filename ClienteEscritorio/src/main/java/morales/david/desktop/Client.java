@@ -55,8 +55,10 @@ public class Client extends Application {
 
         primaryStage.setOnCloseRequest(event -> {
 
-            if(ClientManager.getInstance().isClosed())
+            if(ClientManager.getInstance().isClosed()) {
+                ClientManager.getInstance().close();
                 return;
+            }
 
             event.consume();
 

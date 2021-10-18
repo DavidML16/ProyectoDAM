@@ -4,9 +4,13 @@ import com.google.gson.internal.LinkedTreeMap;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ConnectTimeoutException;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.FutureListener;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
@@ -21,6 +25,7 @@ import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.Constants;
 
 import java.io.FileNotFoundException;
+import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,9 +73,33 @@ public final class ClientManager {
                     .channel(NioSocketChannel.class)
                     .handler(new ClientInitializer());
 
+            final ChannelFuture f = bootstrap.connect(Constants.SERVER_IP, Constants.SERVER_PORT);
+
+            f.addListener((FutureListener<Void>) voidFuture -> {
+
+                if(!f.isSuccess()) {
+
+                    Platform.runLater(() -> {
+
+                        if (ScreenManager.getInstance().getController() instanceof LoginController) {
+
+                            LoginController loginController = (LoginController) ScreenManager.getInstance().getController();
+
+                            loginController.getMessageLabel().setText(Constants.MESSAGES_ERROR_SERVER_NO_CONNECTION);
+                            loginController.getMessageLabel().setTextFill(Color.TOMATO);
+
+                        }
+
+                    });
+
+                }
+
+            });
+
+            channel = f.sync().channel();
+
             closed = false;
 
-            channel = bootstrap.connect(Constants.SERVER_IP, Constants.SERVER_PORT).sync().channel();
 
         } catch (InterruptedException e) {
 

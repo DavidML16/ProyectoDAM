@@ -34,6 +34,6 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {  }
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) { }
 
 }
