@@ -87,7 +87,7 @@ public class ClassroomsAdapter extends RecyclerView.Adapter<ClassroomsAdapter.Cl
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(classroomsOriginal);
             } else {
-                String filterPattern = constraint.toString().trim();
+                String filterPattern = constraint.toString().toLowerCase().trim();
 
                 for (Classroom item : classroomsOriginal) {
                     if (item.getName().toLowerCase().contains(filterPattern)) {

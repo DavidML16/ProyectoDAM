@@ -1,21 +1,14 @@
 package morales.david.android.activities;
 
+import android.content.Intent;
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.net.Socket;
-
+import morales.david.android.ClientManager;
 import morales.david.android.R;
-import morales.david.android.managers.DataManager;
 import morales.david.android.managers.ScreenManager;
-import morales.david.android.managers.SocketManager;
-import morales.david.android.models.Teacher;
 import morales.david.android.models.packets.Packet;
 import morales.david.android.models.packets.PacketBuilder;
 import morales.david.android.models.packets.PacketType;
@@ -74,7 +67,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         disconnectCard.setOnClickListener((view) -> {
             Packet exitRequestPacket = new PacketBuilder().ofType(PacketType.EXIT.getRequest()).build();
-            SocketManager.getInstance().sendPacketIO(exitRequestPacket);
+            ClientManager.getInstance().sendPacketIO(exitRequestPacket);
         });
 
     }

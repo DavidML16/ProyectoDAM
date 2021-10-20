@@ -82,7 +82,7 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.CoursesV
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(coursesOriginal);
             } else {
-                String filterPattern = constraint.toString().trim();
+                String filterPattern = constraint.toString().toLowerCase().trim();
 
                 for (Course item : coursesOriginal) {
                     if (item.getName().toLowerCase().contains(filterPattern)

@@ -3,6 +3,8 @@
 
     <string name="app_name">SGH</string>
 
+    <string name="act_login_message_error_server">Error de conexión con el servidor</string>
+
     <string name="act_login_button_login">Iniciar sesión</string>
     <string name="act_login_input_username">Nombre de usuario</string>
     <string name="act_login_input_password">Contraseña</string>

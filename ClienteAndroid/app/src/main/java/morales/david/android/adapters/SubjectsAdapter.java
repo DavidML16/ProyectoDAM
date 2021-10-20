@@ -93,7 +93,7 @@ public class SubjectsAdapter extends RecyclerView.Adapter<SubjectsAdapter.Subjec
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(subjectsOriginal);
             } else {
-                String filterPattern = constraint.toString().trim();
+                String filterPattern = constraint.toString().toLowerCase().trim();
 
                 for (Subject item : subjectsOriginal) {
                     if (item.getName().toLowerCase().contains(filterPattern)
@@ -126,7 +126,7 @@ public class SubjectsAdapter extends RecyclerView.Adapter<SubjectsAdapter.Subjec
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(subjectsOriginal);
             } else {
-                String filterPattern = constraint.toString().trim();
+                String filterPattern = constraint.toString().toLowerCase().trim();
 
                 for (Subject item : subjectsOriginal) {
                     for(Course course : item.getCourses()) {

@@ -90,10 +90,10 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.SubjectVie
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(groupsOriginal);
             } else {
-                String filterPattern = constraint.toString().trim();
+                String filterPattern = constraint.toString().toLowerCase().trim();
 
                 for (Group item : groupsOriginal) {
-                    if (item.getCourse().toString().contains(filterPattern) || item.getLetter().contains(filterPattern)) {
+                    if (item.getCourse().toString().toLowerCase().contains(filterPattern) || item.getLetter().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }
                 }

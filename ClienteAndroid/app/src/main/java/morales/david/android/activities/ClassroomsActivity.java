@@ -2,15 +2,11 @@ package morales.david.android.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,19 +15,16 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
-import morales.david.android.MainActivity;
+import morales.david.android.ClientManager;
 import morales.david.android.R;
 import morales.david.android.adapters.ClassroomsAdapter;
 import morales.david.android.fragments.EmptyClassroomsDialogFragment;
 import morales.david.android.fragments.SearchEmptyClassroomsDialogFragment;
 import morales.david.android.interfaces.OptionClicked;
 import morales.david.android.managers.DataManager;
-import morales.david.android.managers.SocketManager;
 import morales.david.android.managers.eventcallbacks.EmptyClassroomsConfirmationListener;
 import morales.david.android.managers.eventcallbacks.ErrorEventListener;
 import morales.david.android.managers.eventcallbacks.EventManager;
@@ -158,7 +151,7 @@ public class ClassroomsActivity extends AppCompatActivity implements OptionClick
                 .addArgument("timeZone", timeZone)
                 .build();
 
-        SocketManager.getInstance().sendPacketIO(emptyClassroomsRequestPacket);
+        ClientManager.getInstance().sendPacketIO(emptyClassroomsRequestPacket);
 
 
     }

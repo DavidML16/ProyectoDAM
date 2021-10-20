@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -15,7 +17,6 @@ import android.widget.Toast;
 import morales.david.android.activities.DashboardActivity;
 import morales.david.android.activities.SettingsActivity;
 import morales.david.android.managers.ScreenManager;
-import morales.david.android.managers.SocketManager;
 import morales.david.android.managers.eventcallbacks.ConfirmationEventListener;
 import morales.david.android.managers.eventcallbacks.ErrorEventListener;
 import morales.david.android.managers.eventcallbacks.EventManager;
@@ -57,6 +58,15 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.sgh_preference_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
 
+        if(sharedPref.contains(getString(R.string.sgh_preference_user)) && sharedPref.contains(getString(R.string.sgh_preference_user))) {
+
+            String user = sharedPref.getString(getString(R.string.sgh_preference_user), "");
+            String pass = sharedPref.getString(getString(R.string.sgh_preference_pass), "");
+
+            login(editor, user, pass);
+
+        }
+
         loginButton.setOnClickListener(v -> {
             login(editor, usernameInput.getText().toString(), HashUtil.sha1(passwordInput.getText().toString()));
         });
@@ -85,25 +95,29 @@ public class MainActivity extends AppCompatActivity {
                 .addArgument("password", password)
                 .build();
 
-        EventManager.getInstance().subscribe("start", (eventType, eventListenerType) -> {
+        ClientManager clientManager = ClientManager.getInstance();
 
-            if(eventListenerType instanceof ConfirmationEventListener) {
+        if(clientManager.isClosed()) {
 
-                SocketManager.getInstance().sendPacketIO(loginRequestPacket);
+            clientManager.addPendingPacket(loginRequestPacket);
 
-            }
+            clientManager.open();
 
-        });
+            EventManager.getInstance().subscribe("start", (eventType, eventListenerType) -> {
 
-        SocketManager socketManager = SocketManager.getInstance();
-        if(!socketManager.isOpened()) {
+                if (eventListenerType instanceof ErrorEventListener) {
 
-            socketManager.setDaemon(true);
-            socketManager.start();
+                    ErrorEventListener errorListener = (ErrorEventListener) eventListenerType;
+
+                    Toast.makeText(this, errorListener.getMessage(), Toast.LENGTH_SHORT).show();
+
+                }
+
+            });
 
         } else {
 
-            SocketManager.getInstance().sendPacketIO(loginRequestPacket);
+            ClientManager.getInstance().sendPacketIO(loginRequestPacket);
 
         }
 

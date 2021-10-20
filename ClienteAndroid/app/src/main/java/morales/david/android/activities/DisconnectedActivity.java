@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 
+import morales.david.android.ClientManager;
 import morales.david.android.R;
 
 public class DisconnectedActivity extends AppCompatActivity {
@@ -24,6 +26,8 @@ public class DisconnectedActivity extends AppCompatActivity {
         editor.remove(getString(R.string.sgh_preference_user));
         editor.remove(getString(R.string.sgh_preference_pass));
         editor.commit();
+
+        new Handler().postDelayed(() -> ClientManager.getInstance().close(), 1500);
 
     }
 

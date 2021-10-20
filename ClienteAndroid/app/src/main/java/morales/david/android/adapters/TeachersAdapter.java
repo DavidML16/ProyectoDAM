@@ -85,7 +85,7 @@ public class TeachersAdapter extends RecyclerView.Adapter<TeachersAdapter.Teache
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(teachersOriginal);
             } else {
-                String filterPattern = constraint.toString().trim();
+                String filterPattern = constraint.toString().toLowerCase().trim();
 
                 for (Teacher item : teachersOriginal) {
                     if (item.getName().toLowerCase().contains(filterPattern)
@@ -118,7 +118,7 @@ public class TeachersAdapter extends RecyclerView.Adapter<TeachersAdapter.Teache
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(teachersOriginal);
             } else {
-                String filterPattern = constraint.toString().trim();
+                String filterPattern = constraint.toString().toLowerCase().trim();
 
                 for (Teacher item : teachersOriginal) {
                     if (item.getDepartment().toLowerCase().contains(filterPattern)) {

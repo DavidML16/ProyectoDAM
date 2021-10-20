@@ -1,29 +1,25 @@
 package morales.david.android.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
-import java.io.Serializable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import morales.david.android.ClientManager;
 import morales.david.android.R;
 import morales.david.android.managers.DataManager;
-import morales.david.android.managers.SocketManager;
-import morales.david.android.managers.eventcallbacks.ConfirmationEventListener;
 import morales.david.android.managers.eventcallbacks.ErrorEventListener;
 import morales.david.android.managers.eventcallbacks.EventManager;
 import morales.david.android.managers.eventcallbacks.SchedulesConfirmationEventListener;
 import morales.david.android.models.Classroom;
-import morales.david.android.models.Day;
 import morales.david.android.models.Group;
 import morales.david.android.models.Schedule;
 import morales.david.android.models.Teacher;
@@ -90,7 +86,7 @@ public class SearchScheduleActivity extends AppCompatActivity {
                     .addArgument("item", selectedTeacher)
                     .addArgument("callback", "SEARCH");
 
-                SocketManager.getInstance().sendPacketIO(packetBuilder.build());
+                ClientManager.getInstance().sendPacketIO(packetBuilder.build());
 
             });
 
@@ -127,7 +123,7 @@ public class SearchScheduleActivity extends AppCompatActivity {
                         .addArgument("item", selectedGroup)
                         .addArgument("callback", "SEARCH");
 
-                SocketManager.getInstance().sendPacketIO(packetBuilder.build());
+                ClientManager.getInstance().sendPacketIO(packetBuilder.build());
 
             });
 
@@ -164,7 +160,7 @@ public class SearchScheduleActivity extends AppCompatActivity {
                         .addArgument("item", selectedClassroom)
                         .addArgument("callback", "SEARCH");
 
-                SocketManager.getInstance().sendPacketIO(packetBuilder.build());
+                ClientManager.getInstance().sendPacketIO(packetBuilder.build());
 
             });
 
