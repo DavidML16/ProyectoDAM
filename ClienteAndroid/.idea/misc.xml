@@ -3,7 +3,44 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/activity_login.xml" value="0.3625" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/drawable-night/splash.xml" value="0.25243055555555555" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/drawable-v24/ic_baseline_cancel_24.xml" value="0.25243055555555555" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/drawable-v24/ic_baseline_check_circle_24.xml" value="0.25243055555555555" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/drawable-v24/rounded_background_dialog.xml" value="0.25243055555555555" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/drawable/ic_baseline_watch_24.xml" value="0.25243055555555555" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/drawable/ic_courses.xml" value="0.25243055555555555" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/drawable/ic_groups.xml" value="0.25243055555555555" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/drawable/ic_teacher.xml" value="0.25243055555555555" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/drawable/splash.xml" value="0.25243055555555555" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/activity_classrooms.xml" value="0.25" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/activity_courses.xml" value="0.25" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/activity_dashboard.xml" value="0.25" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/activity_disconnected.xml" value="0.24166666666666667" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/activity_groups.xml" value="0.25" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/activity_login.xml" value="0.25" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/activity_main.xml" value="0.22" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/activity_schedule.xml" value="0.25" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/activity_search_schedule.xml" value="0.25" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/activity_settings.xml" value="0.25" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/activity_subjects.xml" value="0.25" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/activity_teachers.xml" value="0.22" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/close_app_dialog.xml" value="0.24166666666666667" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/disconnect_dialog.xml" value="0.24166666666666667" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/fragment_course_options_dialog.xml" value="0.24166666666666667" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/fragment_empty_classrooms.xml" value="0.24166666666666667" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/fragment_search_classrooms_dialog.xml" value="0.24166666666666667" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/fragment_subject_courses_dialog.xml" value="0.24166666666666667" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/ip_setting_dialog.xml" value="0.24166666666666667" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/ipdir_setting_dialog.xml" value="0.24166666666666667" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/item_classroom.xml" value="0.24166666666666667" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/item_course.xml" value="0.24166666666666667" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/item_dropdown.xml" value="0.24166666666666667" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/item_group.xml" value="0.24166666666666667" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/item_schedule.xml" value="0.24166666666666667" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/item_subject.xml" value="0.24166666666666667" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/item_teacher.xml" value="0.24166666666666667" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/layout/port_setting_dialog.xml" value="0.24166666666666667" />
+        <entry key="..\:/Users/david/Desktop/ProyectoDAM/ClienteAndroid/app/src/main/res/xml/preferences.xml" value="0.3625" />
       </map>
     </option>
   </component>

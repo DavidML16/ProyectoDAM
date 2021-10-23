@@ -5,15 +5,16 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/primaryBackgroundColor">
+    android:background="@drawable/rounded_background_dialog">
 
     <androidx.cardview.widget.CardView
-        android:backgroundTint="?attr/listFilterCardBackgroundColor"
+        app:cardBackgroundColor="?attr/cCardBackgroundColor"
+        app:cardElevation="0dp"
         android:layout_width="match_parent"
-        android:layout_height="85dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="25dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
         app:cardCornerRadius="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,9 +28,9 @@
             android:paddingTop="10dp"
             android:paddingBottom="12dp"
             android:layout_width="match_parent"
-            android:textColor="?attr/listFilterTextColor"
-            android:textColorHint="?attr/listFilterTextColor"
-            app:boxStrokeColor="?attr/listFilterTextColor"
+            android:textColor="?attr/cColorOnPrimary"
+            android:textColorHint="?attr/cInputHintColor"
+            app:boxStrokeColor="?attr/cColorOnPrimary"
             android:layout_height="match_parent">
 
             <AutoCompleteTextView
@@ -43,12 +44,13 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:backgroundTint="?attr/listFilterCardBackgroundColor"
+        app:cardBackgroundColor="?attr/cCardBackgroundColor"
+        app:cardElevation="0dp"
         android:layout_width="match_parent"
-        android:layout_height="85dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="25dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="32dp"
         app:cardCornerRadius="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,9 +64,9 @@
             android:paddingTop="10dp"
             android:paddingBottom="12dp"
             android:layout_width="match_parent"
-            android:textColor="?attr/listFilterTextColor"
-            android:textColorHint="?attr/listFilterTextColor"
-            app:boxStrokeColor="?attr/listFilterTextColor"
+            android:textColor="?attr/cColorOnPrimary"
+            android:textColorHint="?attr/cInputHintColor"
+            app:boxStrokeColor="?attr/cColorOnPrimary"
             android:layout_height="match_parent">
 
             <AutoCompleteTextView
@@ -85,7 +87,8 @@
         android:layout_marginBottom="32dp"
         android:layout_marginLeft="72dp"
         android:layout_marginRight="72dp"
-        android:backgroundTint="?attr/dashboardItemCardBackgroundColor"
+        app:cardBackgroundColor="?attr/cDefaultButtonBackgroundColor"
+        app:cardElevation="0dp"
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
         app:cardCornerRadius="15dp">

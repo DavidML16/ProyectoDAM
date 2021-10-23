@@ -5,13 +5,19 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
@@ -21,36 +27,68 @@ import java.util.Set;
 
 import morales.david.android.R;
 import morales.david.android.adapters.TeachersAdapter;
+import morales.david.android.databinding.ActivitySubjectsBinding;
+import morales.david.android.databinding.ActivityTeachersBinding;
 import morales.david.android.managers.DataManager;
 import morales.david.android.models.Teacher;
 import morales.david.android.utils.ActionBarUtil;
 
 public class TeachersActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
+    private ActivityTeachersBinding binding;
 
-    private AutoCompleteTextView departmentDropDown;
     private ArrayAdapter<String> departmentsAdapter;
-    private ImageView unfilterImageView;
 
     private TeachersAdapter adapter;
+
+    private boolean searchOpen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_teachers);
 
-        getSupportActionBar().setTitle(getString(R.string.act_teachers_title));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        binding = ActivityTeachersBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        ActionBarUtil.changeStyle(this, getSupportActionBar());
+        binding.backButton.setOnClickListener((v) -> onBackPressed());
 
-        recyclerView = findViewById(R.id.act_teachers_recyclerview);
-        recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        binding.searchButton.setOnClickListener((v) -> {
+
+            binding.textView2.setVisibility(View.GONE);
+            binding.searchButton.setVisibility(View.GONE);
+
+            binding.searchEditText.setVisibility(View.VISIBLE);
+            binding.searchEditText.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+            binding.backButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_close_24));
+
+            searchOpen = true;
+
+        });
+
+        binding.searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                adapter.getFilter().filter(s);
+                binding.departmentSpinner.setText(null);
+                binding.departmentSpinner.clearFocus();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        binding.textView2.setAlpha(0f);
+        binding.textView2.animate().alpha(1f).setDuration(250).setStartDelay(300).start();
+
+        binding.teachersRecyclerView.setHasFixedSize(true);
+        binding.teachersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         Set<String> departments = getDepartments();
         String[] departmentsArray = new String[departments.size()];
@@ -58,25 +96,23 @@ public class TeachersActivity extends AppCompatActivity {
 
         departmentsAdapter = new ArrayAdapter(this, R.layout.item_dropdown, departmentsArray);
 
-        departmentDropDown = findViewById(R.id.act_teachers_spinner_department);
-        departmentDropDown.setOnItemClickListener((parent, view, position, id) -> {
+        binding.departmentSpinner.setOnItemClickListener((parent, view, position, id) -> {
             String selected = departmentsAdapter.getItem(position);
             adapter.getDepartmentFilter().filter(selected);
         });
 
-        departmentDropDown.setAdapter(departmentsAdapter);
+        binding.departmentSpinner.setAdapter(departmentsAdapter);
 
-        unfilterImageView = findViewById(R.id.act_teachers_unfilter);
-        unfilterImageView.setOnClickListener(v -> {
+        binding.unfilter.setOnClickListener(v -> {
             adapter.getDepartmentFilter().filter(null);
             adapter.getFilter().filter(null);
-            departmentDropDown.setText(null);
-            departmentDropDown.clearFocus();
+            binding.departmentSpinner.setText(null);
+            binding.departmentSpinner.clearFocus();
         });
 
         adapter = new TeachersAdapter(this);
 
-        recyclerView.setAdapter(adapter);
+        binding.teachersRecyclerView.setAdapter(adapter);
 
         DataManager.getInstance().getTeachers().observe(this, teachers -> {
             adapter.setTeachers(teachers);
@@ -94,53 +130,38 @@ public class TeachersActivity extends AppCompatActivity {
         departments.toArray(departmentsArray);
 
         departmentsAdapter = new ArrayAdapter(this, R.layout.item_dropdown, departmentsArray);
-        departmentDropDown.setAdapter(departmentsAdapter);
+        binding.departmentSpinner.setAdapter(departmentsAdapter);
 
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this, DashboardActivity.class);
-        startActivity(intent);
-        super.onBackPressed();
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.search_menu, menu);
+        if(searchOpen) {
 
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) searchItem.getActionView();
+            binding.textView2.setVisibility(View.VISIBLE);
+            binding.searchButton.setVisibility(View.VISIBLE);
+            binding.searchEditText.setVisibility(View.GONE);
 
-        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            binding.searchEditText.setText("");
+            binding.searchEditText.clearFocus();
+            adapter.getFilter().filter(null);
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(binding.searchEditText.getWindowToken(), 0);
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
-                departmentDropDown.setText(null);
-                departmentDropDown.clearFocus();
-                return false;
-            }
-        });
-        return true;
+            binding.backButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_chevron_left_24));
+
+            searchOpen = false;
+
+        } else {
+
+            Intent intent = new Intent(this, DashboardActivity.class);
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, Pair.create(binding.textView2, "title"));
+            startActivity(intent, options.toBundle());
+
+        }
+
     }
 
     private Set<String> getDepartments() {

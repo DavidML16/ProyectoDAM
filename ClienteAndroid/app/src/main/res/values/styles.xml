@@ -1,41 +1,41 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="SplashTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/splash</item>
+        <item name="colorPrimaryDark">@color/light_gray</item>
     </style>
 
-    <style name="ActionBarStyle" parent="Widget.AppCompat.ActionBar">
-        <item name="background">@color/primary_dark</item>
+    <style name="myDropDownItemStyle" parent="Widget.AppCompat.DropDownItem.Spinner">
+        <item name="android:textColor">@color/dark_blue</item>
+        <item name="android:textSize">14dp</item>
     </style>
 
-    <style name="ClienteAndroid" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="myDropDownListViewStyle" parent="Widget.AppCompat.ListView.DropDown">
+        <item name="android:background">@color/white</item>
+    </style>
 
-        <item name="colorPrimary">@color/primary_main</item>
-        <item name="colorPrimaryVariant">@color/primary_light</item>
-        <item name="colorOnPrimary">@color/white</item>
+    <style name="ClienteAndroid" parent="Theme.MaterialComponents.Light.NoActionBar">
 
-        <item name="colorSecondary">@color/secondary_main</item>
-        <item name="colorSecondaryVariant">@color/secondary_light</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/light_gray</item>
+        <item name="android:windowLightStatusBar">true</item>
 
-        <item name="actionBarStyle">@style/ActionBarStyle</item>
+        <item name="android:windowBackground">@color/light_gray</item>
+        <item name="android:colorBackground">@color/light_gray</item>
 
-        <item name="android:statusBarColor" tools:targetApi="l">@color/primary_dark</item>
+        <item name="android:dropDownItemStyle">@style/myDropDownItemStyle</item>
+        <item name="android:dropDownListViewStyle">@style/myDropDownListViewStyle</item>
 
-        <item name="actionBarColor">@color/primary_dark</item>
-
-        <item name="primaryBackgroundColor">@color/primary_main</item>
-        <item name="loginInputCardBackgroundColor">@color/white</item>
-        <item name="loginInputHintColor">#919191</item>
-        <item name="loginInputTextColor">@color/black</item>
-        <item name="loginButtonBackgroundColor">@color/secondary_main</item>
-        <item name="onDarkTextColor">@color/white</item>
-        <item name="onLightTextColor">@color/secondary_dark</item>
-        <item name="dashboardItemCardBackgroundColor">@color/secondary_main</item>
-        <item name="listFilterCardBackgroundColor">@color/white</item>
-        <item name="listFilterTextColor">#6A6A6A</item>
-        <item name="itemTopBarBackgroundColor">@color/secondary_light</item>
-        <item name="itemBottomBarBackgroundColor">@color/secondary_main</item>
+        <item name="cBackgroundColor">@color/light_gray</item>
+        <item name="cColorOnPrimary">@color/dark_blue</item>
+        <item name="cColorOnSecondary">@color/white</item>
+        <item name="cCardBackgroundColor">@color/white</item>
+        <item name="cCardImageColor">@color/secondary_main</item>
+        <item name="cDisconnectButtonBackgroundColor">@color/red</item>
+        <item name="cDefaultButtonBackgroundColor">@color/blue</item>
+        <item name="cCardLoginInputBackgroundColor">@color/light_gray_2</item>
+        <item name="cDecorationBarBackgroundColor">@color/secondary_main</item>
+        <item name="cInputHintColor">#919191</item>
+        <item name="cColorSchedule">@color/dark_blue</item>
 
     </style>
 

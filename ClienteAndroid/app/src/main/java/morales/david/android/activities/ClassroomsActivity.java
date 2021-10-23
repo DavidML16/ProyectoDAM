@@ -1,12 +1,18 @@
 package morales.david.android.activities;
 
+import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +24,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import java.util.UUID;
 
-import morales.david.android.ClientManager;
+import morales.david.android.databinding.ActivityClassroomsBinding;
+import morales.david.android.netty.ClientManager;
 import morales.david.android.R;
 import morales.david.android.adapters.ClassroomsAdapter;
 import morales.david.android.fragments.EmptyClassroomsDialogFragment;
@@ -37,37 +44,66 @@ import morales.david.android.utils.ActionBarUtil;
 
 public class ClassroomsActivity extends AppCompatActivity implements OptionClicked {
 
-    private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
-
     private ClassroomsAdapter adapter;
+
+    private ActivityClassroomsBinding binding;
+
+    private boolean searchOpen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_classrooms);
 
-        getSupportActionBar().setTitle(getString(R.string.act_classrooms_title));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        binding = ActivityClassroomsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        ActionBarUtil.changeStyle(this, getSupportActionBar());
+        binding.backButton.setOnClickListener((v) -> onBackPressed());
 
-        recyclerView = findViewById(R.id.act_classrooms_recyclerview);
-        recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        binding.searchButton.setOnClickListener((v) -> {
+
+            binding.textView2.setVisibility(View.GONE);
+            binding.searchButton.setVisibility(View.GONE);
+
+            binding.searchEditText.setVisibility(View.VISIBLE);
+            binding.searchEditText.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+            binding.backButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_close_24));
+
+            searchOpen = true;
+
+        });
+
+        binding.searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                adapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        binding.textView2.setAlpha(0f);
+        binding.textView2.animate().alpha(1f).setDuration(250).setStartDelay(300).start();
+
+        binding.classroomsRecyclerView.setHasFixedSize(true);
+        binding.classroomsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         adapter = new ClassroomsAdapter(this);
 
-        recyclerView.setAdapter(adapter);
+        binding.classroomsRecyclerView.setAdapter(adapter);
 
         DataManager.getInstance().getClassrooms().observe(this, classrooms -> {
             adapter.setClassrooms(classrooms);
         });
 
-        CardView searchButton = findViewById(R.id.act_classrooms_searcheempty_cardview);
-        searchButton.setOnClickListener((v) -> {
+        binding.searchClassroomsCardView.setOnClickListener((v) -> {
             SearchEmptyClassroomsDialogFragment dialogFragment = SearchEmptyClassroomsDialogFragment.newInstance();
             dialogFragment.show(getSupportFragmentManager(), "SearchEmptyClassroomsDialogFragment");
         });
@@ -75,46 +111,33 @@ public class ClassroomsActivity extends AppCompatActivity implements OptionClick
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
+    public void onBackPressed() {
+
+        if (searchOpen) {
+
+            binding.textView2.setVisibility(View.VISIBLE);
+            binding.searchButton.setVisibility(View.VISIBLE);
+            binding.searchEditText.setVisibility(View.GONE);
+
+            binding.searchEditText.setText("");
+            binding.searchEditText.clearFocus();
+            adapter.getFilter().filter(null);
+
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(binding.searchEditText.getWindowToken(), 0);
+
+            binding.backButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_chevron_left_24));
+
+            searchOpen = false;
+
+        } else {
+
+            Intent intent = new Intent(this, DashboardActivity.class);
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, Pair.create(binding.textView2, "title"));
+            startActivity(intent, options.toBundle());
+
         }
 
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(this, DashboardActivity.class);
-        startActivity(intent);
-        super.onBackPressed();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.search_menu, menu);
-
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) searchItem.getActionView();
-
-        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
-                return false;
-            }
-        });
-        return true;
     }
 
     @Override

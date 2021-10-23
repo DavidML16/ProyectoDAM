@@ -4,6 +4,19 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
 
+    <color name="dark_blue">#242545</color>
+
+    <color name="light_gray">#f1f5f9</color>
+    <color name="light_gray_2">#e9edf2</color>
+    <color name="light_gray_3">#C1C2C5</color>
+
+    <color name="dark_gray">#121212</color>
+    <color name="dark_gray_2">#232323</color>
+
+    <color name="green">#21B300</color>
+    <color name="blue">#3d72de</color>
+    <color name="red">#FF002F</color>
+
     <color name="primary_main">#E60547</color>
     <color name="primary_light">#FF5772</color>
     <color name="primary_dark">#AC0020</color>

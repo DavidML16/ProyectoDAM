@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list android:opacity="opaque"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/primary_main" />
-    <item android:gravity="center" android:drawable="@drawable/logo" android:height="91dp" android:width="285dp"/>
+    <item android:drawable="@color/light_gray" />
 </layer-list>

@@ -21,10 +21,9 @@
         <activity android:name=".activities.CoursesActivity" />
         <activity android:name=".activities.ClassroomsActivity" />
         <activity android:name=".activities.TeachersActivity" />
-        <activity android:name=".activities.DisconnectedActivity" />
         <activity android:name=".activities.DashboardActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

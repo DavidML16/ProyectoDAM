@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary_main"
+    android:background="@drawable/rounded_background_dialog"
     android:orientation="vertical" >
 
     <TextView
@@ -16,7 +16,7 @@
         android:layout_marginTop="25dp"
         android:layout_marginEnd="25dp"
         android:text="@string/fragment_subjectcourses_info"
-        android:textColor="@color/white"
+        android:textColor="?attr/cColorOnPrimary"
         android:textStyle="bold"
         android:textSize="16sp"
         android:textAlignment="center" />
@@ -28,19 +28,21 @@
         android:layout_marginStart="25dp"
         android:layout_marginTop="6dp"
         android:layout_marginEnd="25dp"
-        android:textColor="@color/white"
+        android:textColor="?attr/cColorOnPrimary"
         android:text="@string/act_subjects_title"
         android:textStyle="bold"
         android:textSize="18sp"
         android:textAlignment="center" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <morales.david.android.utils.FadingRecyclerView
         android:id="@+id/fragment_subjectcourses_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="15dp"
         android:clipToPadding="false"
-        android:paddingBottom="16dp"
+        android:fadingEdgeLength="16dp"
+        android:paddingBottom="24dp"
+        android:requiresFadingEdge="vertical"
         tools:listitem="@layout/item_course" />
 
 </LinearLayout>

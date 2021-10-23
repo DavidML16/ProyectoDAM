@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary_main"
+    android:background="@drawable/rounded_background_dialog"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -17,16 +17,17 @@
         android:textSize="20sp"
         android:paddingTop="32dp"
         android:paddingBottom="16dp"
-        android:textColor="@color/white"
+        android:textColor="?attr/cColorOnPrimary"
         android:text="@string/course_options_name"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/option_groups_cardview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/secondary_main"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="?attr/cDefaultButtonBackgroundColor"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
         android:layout_marginTop="16dp"
         app:cardCornerRadius="15dp"
         android:clickable="true"
@@ -43,7 +44,7 @@
                 android:layout_height="42dp"
                 android:layout_marginRight="16dp"
                 android:src="@drawable/ic_groups"
-                />
+                app:tint="?attr/cColorOnSecondary" />
 
             <TextView
                 android:id="@+id/option_stops_textview"
@@ -52,7 +53,7 @@
                 android:gravity="center_vertical"
                 android:textStyle="bold"
                 android:textSize="22sp"
-                android:textColor="@color/white"
+                android:textColor="?attr/cColorOnSecondary"
                 android:text="@string/act_groups_title"/>
 
         </LinearLayout>
@@ -63,10 +64,11 @@
         android:id="@+id/option_subjects_cardview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/secondary_main"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="25dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="?attr/cDefaultButtonBackgroundColor"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginTop="24dp"
         android:layout_marginBottom="32dp"
         app:cardCornerRadius="15dp"
         android:clickable="true"
@@ -83,7 +85,7 @@
                 android:layout_height="42dp"
                 android:layout_marginRight="16dp"
                 android:src="@drawable/ic_subjects"
-                />
+                app:tint="?attr/cColorOnSecondary" />
 
             <TextView
                 android:id="@+id/option_subjects_textview"
@@ -92,7 +94,7 @@
                 android:gravity="center_vertical"
                 android:textStyle="bold"
                 android:textSize="22sp"
-                android:textColor="@color/white"
+                android:textColor="?attr/cColorOnSecondary"
                 android:text="@string/act_subjects_title"/>
 
         </LinearLayout>

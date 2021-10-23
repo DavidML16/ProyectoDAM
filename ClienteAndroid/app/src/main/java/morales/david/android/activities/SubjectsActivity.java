@@ -5,12 +5,19 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
@@ -20,6 +27,8 @@ import java.util.Set;
 
 import morales.david.android.R;
 import morales.david.android.adapters.SubjectsAdapter;
+import morales.david.android.databinding.ActivityScheduleBinding;
+import morales.david.android.databinding.ActivitySubjectsBinding;
 import morales.david.android.managers.DataManager;
 import morales.david.android.models.Classroom;
 import morales.david.android.models.Course;
@@ -27,32 +36,62 @@ import morales.david.android.utils.ActionBarUtil;
 
 public class SubjectsActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
+    private ActivitySubjectsBinding binding;
 
-    private AutoCompleteTextView courseDropDown;
     private ArrayAdapter<String> coursesAdapter;
-    private ImageView unfilterImageView;
 
     private SubjectsAdapter adapter;
 
     private Course intentCourse;
 
+    private boolean searchOpen = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_subjects);
 
-        getSupportActionBar().setTitle(getString(R.string.act_subjects_title));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        binding = ActivitySubjectsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        ActionBarUtil.changeStyle(this, getSupportActionBar());
+        binding.backButton.setOnClickListener((v) -> onBackPressed());
 
-        recyclerView = findViewById(R.id.act_subjects_recyclerview);
-        recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        binding.searchButton.setOnClickListener((v) -> {
+
+            binding.textView2.setVisibility(View.GONE);
+            binding.searchButton.setVisibility(View.GONE);
+
+            binding.searchEditText.setVisibility(View.VISIBLE);
+            binding.searchEditText.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+            binding.backButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_close_24));
+
+            searchOpen = true;
+
+        });
+
+        binding.searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                adapter.getFilter().filter(s);
+                binding.courseSpinner.setText(null);
+                binding.courseSpinner.clearFocus();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        binding.textView2.setAlpha(0f);
+        binding.textView2.animate().alpha(1f).setDuration(250).setStartDelay(300).start();
+
+        binding.subjectsRecyclerView.setHasFixedSize(true);
+        binding.subjectsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         Bundle extras = getIntent().getExtras();
         if(extras != null)
@@ -64,25 +103,23 @@ public class SubjectsActivity extends AppCompatActivity {
 
         coursesAdapter = new ArrayAdapter(this, R.layout.item_dropdown, coursesArray);
 
-        courseDropDown = findViewById(R.id.act_subjects_spinner_course);
-        courseDropDown.setOnItemClickListener((parent, view, position, id) -> {
+        binding.courseSpinner.setOnItemClickListener((parent, view, position, id) -> {
             String selected = coursesAdapter.getItem(position);
             adapter.getCourseFilter().filter(selected);
         });
 
-        courseDropDown.setAdapter(coursesAdapter);
+        binding.courseSpinner.setAdapter(coursesAdapter);
 
-        unfilterImageView = findViewById(R.id.act_subjects_unfilter);
-        unfilterImageView.setOnClickListener(v -> {
+        binding.unfilter.setOnClickListener(v -> {
             adapter.getCourseFilter().filter(null);
             adapter.getFilter().filter(null);
-            courseDropDown.setText(null);
-            courseDropDown.clearFocus();
+            binding.courseSpinner.setText(null);
+            binding.courseSpinner.clearFocus();
         });
 
         adapter = new SubjectsAdapter(this, getSupportFragmentManager());
 
-        recyclerView.setAdapter(adapter);
+        binding.subjectsRecyclerView.setAdapter(adapter);
 
         DataManager.getInstance().getSubjects().observe(this, subjects -> {
 
@@ -90,7 +127,7 @@ public class SubjectsActivity extends AppCompatActivity {
 
             if(intentCourse != null) {
                 adapter.getCourseFilter().filter(intentCourse.toString());
-                courseDropDown.setText(intentCourse.toString());
+                binding.courseSpinner.setText(intentCourse.toString());
             }
 
         });
@@ -107,53 +144,46 @@ public class SubjectsActivity extends AppCompatActivity {
         courses.toArray(coursesArray);
 
         coursesAdapter = new ArrayAdapter(this, R.layout.item_dropdown, coursesArray);
-        courseDropDown.setAdapter(coursesAdapter);
+        binding.courseSpinner.setAdapter(coursesAdapter);
 
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this, DashboardActivity.class);
-        startActivity(intent);
-        super.onBackPressed();
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.search_menu, menu);
+        if(searchOpen) {
 
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) searchItem.getActionView();
+            binding.textView2.setVisibility(View.VISIBLE);
+            binding.searchButton.setVisibility(View.VISIBLE);
+            binding.searchEditText.setVisibility(View.GONE);
 
-        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            binding.searchEditText.setText("");
+            binding.searchEditText.clearFocus();
+            adapter.getFilter().filter(null);
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(binding.searchEditText.getWindowToken(), 0);
+
+            binding.backButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_chevron_left_24));
+
+            searchOpen = false;
+
+        } else {
+
+            if(intentCourse == null) {
+
+                Intent intent = new Intent(this, DashboardActivity.class);
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, Pair.create(binding.textView2, "title"));
+                startActivity(intent, options.toBundle());
+
+            } else {
+
+                super.onBackPressed();
+
             }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
-                courseDropDown.setText(null);
-                courseDropDown.clearFocus();
-                return false;
-            }
-        });
-        return true;
+        }
+
     }
 
     private Set<String> getCourses() {

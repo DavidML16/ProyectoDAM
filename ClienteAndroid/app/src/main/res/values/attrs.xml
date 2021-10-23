@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <attr name="actionBarColor" format="reference" />
-    <attr name="primaryBackgroundColor" type="color"/>
-    <attr name="loginInputCardBackgroundColor" type="color"/>
-    <attr name="loginInputHintColor" type="color"/>
-    <attr name="loginInputTextColor" type="color"/>
-    <attr name="loginButtonBackgroundColor" type="color"/>
-    <attr name="onDarkTextColor" type="color"/>
-    <attr name="onLightTextColor" type="color"/>
-    <attr name="dashboardItemCardBackgroundColor" type="color"/>
-    <attr name="listFilterCardBackgroundColor" type="color"/>
-    <attr name="listFilterTextColor" type="color"/>
-    <attr name="itemTopBarBackgroundColor" type="color"/>
-    <attr name="itemBottomBarBackgroundColor" type="color"/>
+
+    <attr name="cBackgroundColor" type="color"/>
+    <attr name="cColorOnPrimary" type="color"/>
+    <attr name="cColorOnSecondary" type="color"/>
+    <attr name="cCardBackgroundColor" type="color"/>
+    <attr name="cCardImageColor" type="color"/>
+    <attr name="cDisconnectButtonBackgroundColor" type="color"/>
+    <attr name="cDefaultButtonBackgroundColor" type="color"/>
+    <attr name="cCardLoginInputBackgroundColor" type="color"/>
+    <attr name="cDecorationBarBackgroundColor" type="color"/>
+    <attr name="cInputHintColor" type="color"/>
+    <attr name="cColorSchedule" type="color"/>
+
 </resources>

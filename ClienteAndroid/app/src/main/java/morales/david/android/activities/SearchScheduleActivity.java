@@ -1,7 +1,9 @@
 package morales.david.android.activities;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -13,7 +15,9 @@ import androidx.cardview.widget.CardView;
 import java.util.ArrayList;
 import java.util.List;
 
-import morales.david.android.ClientManager;
+import morales.david.android.databinding.ActivityScheduleBinding;
+import morales.david.android.databinding.ActivitySearchScheduleBinding;
+import morales.david.android.netty.ClientManager;
 import morales.david.android.R;
 import morales.david.android.managers.DataManager;
 import morales.david.android.managers.eventcallbacks.ErrorEventListener;
@@ -29,39 +33,36 @@ import morales.david.android.utils.ActionBarUtil;
 
 public class SearchScheduleActivity extends AppCompatActivity {
 
-    private AutoCompleteTextView teachersDropDown;
+    private ActivitySearchScheduleBinding binding;
+
     private ArrayAdapter<String> teachersAdapter;
-    private CardView teachersButton;
     private Teacher selectedTeacher;
 
-    private AutoCompleteTextView groupsDropDown;
     private ArrayAdapter<String> groupsAdapter;
-    private CardView groupsButton;
     private Group selectedGroup;
 
-    private AutoCompleteTextView classroomsDropDown;
     private ArrayAdapter<String> classroomsAdapter;
-    private CardView classroomsButton;
     private Classroom selectedClassroom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_schedule);
 
-        getSupportActionBar().setTitle(getString(R.string.act_schedules_title));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        binding = ActivitySearchScheduleBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        ActionBarUtil.changeStyle(this, getSupportActionBar());
+        binding.textView2.setAlpha(0f);
+        binding.textView2.animate().alpha(1f).setDuration(250).setStartDelay(300).start();
+
+        binding.backButton.setOnClickListener((v) -> onBackPressed());
 
         {
 
             teachersAdapter = new ArrayAdapter(this, R.layout.item_dropdown, getTeachers());
-            teachersDropDown = findViewById(R.id.act_schedules_teacher);
-            teachersDropDown.setAdapter(teachersAdapter);
+            binding.teacherDropDown.setAdapter(teachersAdapter);
 
-            teachersDropDown.setOnItemClickListener((parent, v, position, id) -> {
+            binding.teacherDropDown.setOnItemClickListener((parent, v, position, id) -> {
                 String selected = teachersAdapter.getItem(position);
                 if (DataManager.getInstance().getTeachers().getValue() == null)
                     return;
@@ -73,9 +74,7 @@ public class SearchScheduleActivity extends AppCompatActivity {
                 };
             });
 
-            teachersButton = findViewById(R.id.act_schedules_teacher_button);
-
-            teachersButton.setOnClickListener(v -> {
+            binding.teacherSearchButton.setOnClickListener(v -> {
 
                 if(selectedTeacher == null)
                     return;
@@ -95,10 +94,9 @@ public class SearchScheduleActivity extends AppCompatActivity {
         {
 
             groupsAdapter = new ArrayAdapter(this, R.layout.item_dropdown, getGroups());
-            groupsDropDown = findViewById(R.id.act_schedules_group);
-            groupsDropDown.setAdapter(groupsAdapter);
+            binding.groupDropDown.setAdapter(groupsAdapter);
 
-            groupsDropDown.setOnItemClickListener((parent, v, position, id) -> {
+            binding.groupDropDown.setOnItemClickListener((parent, v, position, id) -> {
                 String selected = groupsAdapter.getItem(position);
                 if (DataManager.getInstance().getGroups().getValue() == null)
                     return;
@@ -110,9 +108,7 @@ public class SearchScheduleActivity extends AppCompatActivity {
                 };
             });
 
-            groupsButton = findViewById(R.id.act_schedules_group_button);
-
-            groupsButton.setOnClickListener(v -> {
+            binding.groupSearchButton.setOnClickListener(v -> {
 
                 if(selectedGroup == null)
                     return;
@@ -132,10 +128,9 @@ public class SearchScheduleActivity extends AppCompatActivity {
         {
 
             classroomsAdapter = new ArrayAdapter(this, R.layout.item_dropdown, getClassrooms());
-            classroomsDropDown = findViewById(R.id.act_schedules_classroom);
-            classroomsDropDown.setAdapter(classroomsAdapter);
+            binding.classroomDropDown.setAdapter(classroomsAdapter);
 
-            classroomsDropDown.setOnItemClickListener((parent, v, position, id) -> {
+            binding.classroomDropDown.setOnItemClickListener((parent, v, position, id) -> {
                 String selected = classroomsAdapter.getItem(position);
                 if (DataManager.getInstance().getClassrooms().getValue() == null)
                     return;
@@ -147,9 +142,7 @@ public class SearchScheduleActivity extends AppCompatActivity {
                 };
             });
 
-            classroomsButton = findViewById(R.id.act_schedules_classroom_button);
-
-            classroomsButton.setOnClickListener(v -> {
+            binding.classroomSearchButton.setOnClickListener(v -> {
 
                 if(selectedClassroom == null)
                     return;
@@ -175,8 +168,9 @@ public class SearchScheduleActivity extends AppCompatActivity {
                 ArrayList<Schedule> schedules = (ArrayList<Schedule>) listener.getSchedules();
 
                 Intent intent = new Intent(this, ScheduleActivity.class);
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, Pair.create(binding.textView2, "title"));
                 intent.putExtra("schedules", schedules);
-                startActivity(intent);
+                startActivity(intent, options.toBundle());
 
             } else if (eventListenerType instanceof ErrorEventListener) {
 
@@ -231,8 +225,8 @@ public class SearchScheduleActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(this, DashboardActivity.class);
-        startActivity(intent);
-        super.onBackPressed();
+        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, Pair.create(binding.textView2, "title"));
+        startActivity(intent, options.toBundle());
     }
 
 }

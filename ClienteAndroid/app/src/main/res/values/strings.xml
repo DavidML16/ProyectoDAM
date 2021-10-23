@@ -6,11 +6,18 @@
     <string name="act_login_message_error_server">Error de conexión con el servidor</string>
 
     <string name="act_login_button_login">Iniciar sesión</string>
+    <string name="act_login_button_login_progress">Iniciando sesión</string>
     <string name="act_login_input_username">Nombre de usuario</string>
     <string name="act_login_input_password">Contraseña</string>
     <string name="act_login_checkbox_remember">Recordar credenciales</string>
     <string name="act_login_message_error_credentials">Usuario o contraseña incorrecta</string>
     <string name="act_login_message_error_empty">Usuario o contraseña en blanco</string>
+
+    <string name="act_login_text">Inicie sesión con tu cuenta</string>
+
+    <string name="act_login_settings">Pulse aquí para ir a la configuración</string>
+
+    <string name="act_login_hello">¡Hola!</string>
 
     <string name="act_dashboard_message_teachers">Profesores</string>
     <string name="act_dashboard_message_courses">Cursos</string>
@@ -22,6 +29,12 @@
     <string name="act_dashboard_message_app">Sistema de gestión de horarios</string>
     <string name="act_dashboard_message_exit">Desconexión</string>
     <string name="act_dashboard_message_disconnected">Desconectándote del sistema...</string>
+
+    <string name="close_confirmation">¿Estás seguro de que deseas salir del sistema?</string>
+    <string name="disconnect_confirmation">¿Estás seguro de que deseas salir de tu cuenta?</string>
+
+    <string name="act_dashboard_message_hello">Bienvenido de nuevo,</string>
+    <string name="act_dashboard_message_teacher_name">Nombre del usuario</string>
 
     <string name="item_teacher_name">Nombre</string>
     <string name="item_teacher_department" translatable="false">Departamento: <xliff:g example="-" id="department">%s</xliff:g></string>
@@ -65,6 +78,21 @@
     <string name="sgh_preference_key">sgh_preference_key</string>
     <string name="sgh_preference_user">sgh_preference_user</string>
     <string name="sgh_preference_pass">sgh_preference_pass</string>
+    <string name="sgh_preference_ip">sgh_preference_ip</string>
+    <string name="sgh_preference_port">sgh_preference_port</string>
+
+    <string name="act_settings_title">Configuración</string>
+
+    <string name="act_settings_ip_title">Dirección IP</string>
+    <string name="act_settings_port_title">Número de puerto</string>
+
+    <string name="act_settings_ip_summary">¿Estás seguro de cambiar la dirección IP?</string>
+    <string name="act_settings_port_summary">¿Estás seguro de cambiar el número de puerto?</string>
+
+    <string name="option_accept">Sí</string>
+    <string name="option_cancel">No</string>
+
+    <string name="search_input_hint">Escribe para buscar...</string>
 
     <string name="act_schedules_title">Buscar horario</string>
     <string name="act_schedules_teacher_info">Profesor / Profesora</string>
@@ -77,7 +105,6 @@
     <string name="item_schedule_subject">Asignatura: <xliff:g example="-" id="subject">%s</xliff:g></string>
     <string name="item_schedule_classroom">Aula: <xliff:g example="-" id="classroom">%s</xliff:g></string>
     <string name="item_schedule_group">Grupo: <xliff:g example="-" id="group">%s</xliff:g></string>
-
-    <string name="act_settings_title">Ajustes</string>
+    <string name="act_classrooms_search">Buscar aulas libres</string>
 
 </resources>

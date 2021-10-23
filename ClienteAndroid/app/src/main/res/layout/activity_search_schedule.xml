@@ -1,269 +1,313 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".activities.SearchScheduleActivity"
-    android:background="?attr/primaryBackgroundColor">
+    android:background="?attr/cBackgroundColor">
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/backButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/ic_baseline_chevron_left_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/cColorOnPrimary" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:transitionName="title"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:text="@string/act_schedules_title"
+        android:textColor="?attr/cColorOnPrimary"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/act_schedules_teacher_cardview"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
-            android:backgroundTint="?attr/dashboardItemCardBackgroundColor"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            app:cardCornerRadius="15dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <androidx.cardview.widget.CardView
+                android:id="@+id/teacherCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="15dp">
+                android:layout_columnWeight="1"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                app:cardBackgroundColor="?attr/cCardBackgroundColor"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="0dp">
 
-                <androidx.cardview.widget.CardView
-                    android:backgroundTint="?attr/listFilterCardBackgroundColor"
-                    android:layout_width="match_parent"
-                    android:layout_height="85dp"
-                    android:layout_margin="8dp"
-                    app:cardCornerRadius="15dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" >
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                        android:hint="@string/act_schedules_teacher_info"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="15dp"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="12dp"
-                        android:layout_width="match_parent"
-                        android:textColor="?attr/listFilterTextColor"
-                        android:textColorHint="?attr/listFilterTextColor"
-                        app:boxStrokeColor="?attr/listFilterTextColor"
-                        android:layout_height="match_parent">
-
-                        <AutoCompleteTextView
-                            android:id="@+id/act_schedules_teacher"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:inputType="none"/>
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/act_schedules_teacher_button"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="?attr/primaryBackgroundColor"
-                    android:clickable="true"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    app:cardCornerRadius="15dp">
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="15dp">
 
-                    <TextView
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="@string/act_schedules_search"
-                        android:textAllCaps="true"
-                        android:textColor="@color/white"
-                        android:gravity="center"
-                        android:padding="16dp"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:layout_height="85dp"
+                        android:layout_margin="8dp"
+                        app:cardBackgroundColor="?attr/cCardLoginInputBackgroundColor"
+                        app:cardElevation="0dp"
+                        app:cardCornerRadius="15dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                </androidx.cardview.widget.CardView>
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:hint="@string/act_schedules_teacher_info"
+                            android:paddingLeft="15dp"
+                            android:paddingTop="10dp"
+                            android:paddingRight="15dp"
+                            android:paddingBottom="12dp"
+                            android:textColor="?attr/cColorOnPrimary"
+                            android:textColorHint="?attr/cInputHintColor"
+                            app:boxStrokeColor="?attr/cColorOnPrimary">
 
-            </LinearLayout>
+                            <AutoCompleteTextView
+                                android:id="@+id/teacherDropDown"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:inputType="none" />
 
-        </androidx.cardview.widget.CardView>
+                        </com.google.android.material.textfield.TextInputLayout>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/act_schedules_group_cardview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
-            android:backgroundTint="?attr/dashboardItemCardBackgroundColor"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            app:cardCornerRadius="15dp">
+                    </androidx.cardview.widget.CardView>
 
-            <LinearLayout
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/teacherSearchButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:backgroundTint="?attr/cDefaultButtonBackgroundColor"
+                        android:clickable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        app:cardCornerRadius="15dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:text="@string/act_schedules_search"
+                            android:textAllCaps="true"
+                            android:textColor="?attr/cColorOnSecondary"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/groupCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="15dp">
+                android:layout_columnWeight="1"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                app:cardBackgroundColor="?attr/cCardBackgroundColor"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="0dp">
 
-                <androidx.cardview.widget.CardView
-                    android:backgroundTint="?attr/listFilterCardBackgroundColor"
-                    android:layout_width="match_parent"
-                    android:layout_height="85dp"
-                    android:layout_margin="8dp"
-                    app:cardCornerRadius="15dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" >
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                        android:hint="@string/act_schedules_group_info"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="15dp"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="12dp"
-                        android:layout_width="match_parent"
-                        android:textColor="?attr/listFilterTextColor"
-                        android:textColorHint="?attr/listFilterTextColor"
-                        app:boxStrokeColor="?attr/listFilterTextColor"
-                        android:layout_height="match_parent">
-
-                        <AutoCompleteTextView
-                            android:id="@+id/act_schedules_group"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:inputType="none"/>
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/act_schedules_group_button"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="?attr/primaryBackgroundColor"
-                    android:clickable="true"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    app:cardCornerRadius="15dp">
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="15dp">
 
-                    <TextView
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="@string/act_schedules_search"
-                        android:textAllCaps="true"
-                        android:textColor="@color/white"
-                        android:gravity="center"
-                        android:padding="16dp"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:layout_height="85dp"
+                        android:layout_margin="8dp"
+                        app:cardBackgroundColor="?attr/cCardLoginInputBackgroundColor"
+                        app:cardElevation="0dp"
+                        app:cardCornerRadius="15dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                </androidx.cardview.widget.CardView>
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:hint="@string/act_schedules_group_info"
+                            android:paddingLeft="15dp"
+                            android:paddingTop="10dp"
+                            android:paddingRight="15dp"
+                            android:paddingBottom="12dp"
+                            android:textColor="?attr/cColorOnPrimary"
+                            android:textColorHint="?attr/cInputHintColor"
+                            app:boxStrokeColor="?attr/cColorOnPrimary">
 
-            </LinearLayout>
+                            <AutoCompleteTextView
+                                android:id="@+id/groupDropDown"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:inputType="none" />
 
-        </androidx.cardview.widget.CardView>
+                        </com.google.android.material.textfield.TextInputLayout>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/act_schedules_classroom_cardview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="24dp"
-            android:backgroundTint="?attr/dashboardItemCardBackgroundColor"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            app:cardCornerRadius="15dp">
+                    </androidx.cardview.widget.CardView>
 
-            <LinearLayout
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/groupSearchButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:backgroundTint="?attr/cDefaultButtonBackgroundColor"
+                        android:clickable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        app:cardCornerRadius="15dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:text="@string/act_schedules_search"
+                            android:textAllCaps="true"
+                            android:textColor="?attr/cColorOnSecondary"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/classroomCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="15dp">
+                android:layout_columnWeight="1"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="24dp"
+                app:cardBackgroundColor="?attr/cCardBackgroundColor"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="0dp">
 
-                <androidx.cardview.widget.CardView
-                    android:backgroundTint="?attr/listFilterCardBackgroundColor"
-                    android:layout_width="match_parent"
-                    android:layout_height="85dp"
-                    android:layout_margin="8dp"
-                    app:cardCornerRadius="15dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" >
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                        android:hint="@string/act_schedules_classroom_info"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="15dp"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="12dp"
-                        android:layout_width="match_parent"
-                        android:textColor="?attr/listFilterTextColor"
-                        android:textColorHint="?attr/listFilterTextColor"
-                        app:boxStrokeColor="?attr/listFilterTextColor"
-                        android:layout_height="match_parent">
-
-                        <AutoCompleteTextView
-                            android:id="@+id/act_schedules_classroom"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:inputType="none"/>
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/act_schedules_classroom_button"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="?attr/primaryBackgroundColor"
-                    android:clickable="true"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    app:cardCornerRadius="15dp">
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="15dp">
 
-                    <TextView
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="@string/act_schedules_search"
-                        android:textAllCaps="true"
-                        android:textColor="@color/white"
-                        android:gravity="center"
-                        android:padding="16dp"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:layout_height="85dp"
+                        android:layout_margin="8dp"
+                        app:cardBackgroundColor="?attr/cCardLoginInputBackgroundColor"
+                        app:cardElevation="0dp"
+                        app:cardCornerRadius="15dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                </androidx.cardview.widget.CardView>
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:hint="@string/act_schedules_classroom_info"
+                            android:paddingLeft="15dp"
+                            android:paddingTop="10dp"
+                            android:paddingRight="15dp"
+                            android:paddingBottom="12dp"
+                            android:textColor="?attr/cColorOnPrimary"
+                            android:textColorHint="?attr/cInputHintColor"
+                            app:boxStrokeColor="?attr/cColorOnPrimary">
 
-            </LinearLayout>
+                            <AutoCompleteTextView
+                                android:id="@+id/classroomDropDown"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:inputType="none" />
 
-        </androidx.cardview.widget.CardView>
+                        </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
+                    </androidx.cardview.widget.CardView>
 
-</ScrollView>
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/classroomSearchButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:backgroundTint="?attr/cDefaultButtonBackgroundColor"
+                        android:clickable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        app:cardCornerRadius="15dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:text="@string/act_schedules_search"
+                            android:textAllCaps="true"
+                            android:textColor="?attr/cColorOnSecondary"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

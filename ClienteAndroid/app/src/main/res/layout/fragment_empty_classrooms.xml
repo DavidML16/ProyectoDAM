@@ -4,15 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/primaryBackgroundColor"
+    android:background="@drawable/rounded_background_dialog"
     tools:context=".activities.ClassroomsActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <morales.david.android.utils.FadingRecyclerView
         android:id="@+id/frg_classrooms_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:paddingBottom="25dp"
+        android:fadingEdgeLength="16dp"
+        android:paddingBottom="24dp"
+        android:requiresFadingEdge="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

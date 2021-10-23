@@ -4,34 +4,95 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/primaryBackgroundColor"
+    android:background="?attr/cBackgroundColor"
     tools:context=".activities.TeachersActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/act_teachers_recyclerview"
+    <ImageView
+        android:id="@+id/backButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/ic_baseline_chevron_left_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/cColorOnPrimary" />
+
+    <ImageView
+        android:id="@+id/searchButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:padding="4dp"
+        android:src="@drawable/ic_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/cColorOnPrimary" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/act_teachers_title"
+        android:textColor="?attr/cColorOnPrimary"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:transitionName="title"
+        app:layout_constraintEnd_toStartOf="@+id/searchButton"
+        app:layout_constraintStart_toEndOf="@+id/backButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/searchEditText"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="125dp"
+        android:hint="@string/search_input_hint"
+        android:textColorHint="?attr/cInputHintColor"
+        android:textColor="?attr/cColorOnPrimary"
+        android:background="@null"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/backButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/backButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <morales.david.android.utils.FadingRecyclerView
+        android:id="@+id/teachersRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
         android:clipToPadding="false"
-        android:paddingBottom="25dp"
+        android:fadingEdgeLength="16dp"
+        android:paddingBottom="24dp"
+        android:requiresFadingEdge="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/departmentCardView"
         tools:listitem="@layout/item_teacher" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/act_teachers_cardview_department"
-        android:backgroundTint="?attr/listFilterCardBackgroundColor"
+        android:id="@+id/departmentCardView"
         android:layout_width="match_parent"
         android:layout_height="85dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="25dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        app:cardBackgroundColor="?attr/cCardBackgroundColor"
+        app:cardElevation="0dp"
         app:cardCornerRadius="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toBottomOf="@+id/backButton">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -40,36 +101,35 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:hint="@string/act_teachers_department"
                 android:paddingLeft="15dp"
-                android:paddingRight="15dp"
                 android:paddingTop="10dp"
+                android:paddingRight="15dp"
                 android:paddingBottom="12dp"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:textColor="?attr/listFilterTextColor"
-                android:textColorHint="?attr/listFilterTextColor"
-                app:boxStrokeColor="?attr/listFilterTextColor"
-                android:layout_height="match_parent">
+                android:textColor="?attr/cColorOnPrimary"
+                android:textColorHint="?attr/cInputHintColor"
+                app:boxStrokeColor="?attr/cColorOnPrimary">
 
                 <AutoCompleteTextView
-                    android:id="@+id/act_teachers_spinner_department"
+                    android:id="@+id/departmentSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="none"/>
+                    android:inputType="none" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <ImageView
-                android:id="@+id/act_teachers_unfilter"
-                android:background="@color/primary_dark"
-                android:padding="10dp"
+                android:id="@+id/unfilter"
                 android:layout_width="60dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_remove"/>
+                android:background="@color/red"
+                android:padding="10dp"
+                android:src="@drawable/ic_remove" />
 
         </LinearLayout>
-
 
 
     </androidx.cardview.widget.CardView>

@@ -4,60 +4,114 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/primaryBackgroundColor"
+    android:background="?attr/cBackgroundColor"
     tools:context=".activities.ClassroomsActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/act_classrooms_recyclerview"
+    <ImageView
+        android:id="@+id/backButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/ic_baseline_chevron_left_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/cColorOnPrimary" />
+
+    <ImageView
+        android:id="@+id/searchButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:padding="4dp"
+        android:src="@drawable/ic_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/cColorOnPrimary" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/act_classrooms_title"
+        android:textColor="?attr/cColorOnPrimary"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:transitionName="title"
+        app:layout_constraintEnd_toStartOf="@+id/searchButton"
+        app:layout_constraintStart_toEndOf="@+id/backButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/searchEditText"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:hint="@string/search_input_hint"
+        android:textColorHint="?attr/cInputHintColor"
+        android:textColor="?attr/cColorOnPrimary"
+        android:background="@null"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/backButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/backButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <morales.david.android.utils.FadingRecyclerView
+        android:id="@+id/classroomsRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
         android:clipToPadding="false"
-        android:paddingBottom="25dp"
-        android:layout_marginTop="105dp"
+        android:fadingEdgeLength="16dp"
+        android:paddingBottom="24dp"
+        android:requiresFadingEdge="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchClassroomsCardView"
         tools:listitem="@layout/item_classroom" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/act_classrooms_searcheempty_cardview"
-        android:backgroundTint="?attr/listFilterCardBackgroundColor"
+        android:id="@+id/searchClassroomsCardView"
         android:layout_width="match_parent"
         android:layout_height="65dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="25dp"
-        app:cardCornerRadius="15dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
+        app:cardBackgroundColor="?attr/cDefaultButtonBackgroundColor"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toBottomOf="@+id/backButton">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
             android:gravity="center"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:padding="5dp"
-                app:tint="@color/black"
-                android:src="@drawable/ic_search"/>
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
 
             <TextView
                 android:layout_width="wrap_content"
-                android:padding="16dp"
-                android:gravity="center_vertical"
                 android:layout_height="match_parent"
-                android:textColor="@color/black"
-                android:textSize="24sp"
-                android:text="Buscar aulas libres"/>
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:text="@string/act_classrooms_search"
+                android:textColor="?attr/cColorOnSecondary"
+                android:textSize="22sp" />
 
         </LinearLayout>
 
