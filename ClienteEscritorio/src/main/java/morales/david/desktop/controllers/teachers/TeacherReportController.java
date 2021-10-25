@@ -9,7 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
-import morales.david.desktop.ClientManager;
+import morales.david.desktop.netty.ClientManager;
 import morales.david.desktop.controllers.modals.AdvancedInspectionExportModalController;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.*;

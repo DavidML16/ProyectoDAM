@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 import morales.david.desktop.controllers.modals.CredentialModalController;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.DataManager;
-import morales.david.desktop.ClientManager;
+import morales.david.desktop.netty.ClientManager;
 import morales.david.desktop.models.Credential;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;

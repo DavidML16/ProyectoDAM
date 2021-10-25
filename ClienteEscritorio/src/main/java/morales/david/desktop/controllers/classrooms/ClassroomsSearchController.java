@@ -8,7 +8,7 @@ import javafx.util.StringConverter;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.DataManager;
 import morales.david.desktop.managers.ScreenManager;
-import morales.david.desktop.ClientManager;
+import morales.david.desktop.netty.ClientManager;
 import morales.david.desktop.managers.eventcallbacks.EmptyClassroomsConfirmationListener;
 import morales.david.desktop.managers.eventcallbacks.EventManager;
 import morales.david.desktop.managers.eventcallbacks.ScheduleErrorListener;

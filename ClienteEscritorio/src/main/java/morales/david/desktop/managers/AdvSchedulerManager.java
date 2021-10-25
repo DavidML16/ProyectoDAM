@@ -6,7 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import morales.david.desktop.ClientManager;
+import morales.david.desktop.netty.ClientManager;
 import morales.david.desktop.controllers.modals.AdvancedScheduleExportProgressModalController;
 import morales.david.desktop.models.*;
 import morales.david.desktop.models.packets.PacketBuilder;

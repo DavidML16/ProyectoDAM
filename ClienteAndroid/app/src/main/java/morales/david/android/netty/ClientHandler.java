@@ -29,7 +29,16 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) { }
+    public void channelInactive(ChannelHandlerContext ctx) {
+
+        if(!clientManager.isClosedManually()) {
+
+            ScreenManager.getInstance().getActivity().finishAffinity();
+            System.exit(0);
+
+        }
+
+    }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {

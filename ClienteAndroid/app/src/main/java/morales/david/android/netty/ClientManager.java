@@ -68,12 +68,16 @@ public final class ClientManager {
 
     private boolean closed;
 
+    private boolean closedManually;
+
     public ClientManager() {
 
         this.pendingPackets = new ArrayList<>();
         this.clientSession = new ClientSession();
 
         this.closed = true;
+
+        this.closedManually = false;
 
     }
 
@@ -112,6 +116,8 @@ public final class ClientManager {
     }
 
     public void close() {
+
+        closedManually = true;
 
         if (group != null) {
 
@@ -443,6 +449,10 @@ public final class ClientManager {
 
     public boolean isClosed () {
         return closed;
+    }
+
+    public boolean isClosedManually() {
+        return closedManually;
     }
 
     public List<Packet> getPendingPackets () {

@@ -8,7 +8,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import morales.david.desktop.ClientManager;
+import morales.david.desktop.netty.ClientManager;
 import morales.david.desktop.controllers.modals.AdvancedInspectionExportProgressModalController;
 import morales.david.desktop.models.*;
 import morales.david.desktop.models.packets.PacketBuilder;

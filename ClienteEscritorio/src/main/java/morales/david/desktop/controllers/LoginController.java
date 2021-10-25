@@ -12,7 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.ScreenManager;
-import morales.david.desktop.ClientManager;
+import morales.david.desktop.netty.ClientManager;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
@@ -92,6 +92,9 @@ public class LoginController implements Initializable, Controller {
 
         messageLabel.setText("");
 
+        getLoginButton().setDisable(true);
+        getLoginButton().setText("Iniciando sesión");
+
         Packet loginRequestPacket = new PacketBuilder()
                 .ofType(PacketType.LOGIN.getRequest())
                 .addArgument("username", username)
@@ -118,4 +121,7 @@ public class LoginController implements Initializable, Controller {
         return messageLabel;
     }
 
+    public Button getLoginButton() {
+        return loginButton;
+    }
 }

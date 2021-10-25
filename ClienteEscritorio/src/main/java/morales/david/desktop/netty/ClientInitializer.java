@@ -1,4 +1,4 @@
-package morales.david.desktop;
+package morales.david.desktop.netty;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;

@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 import morales.david.desktop.controllers.modals.SchedulerItemModalController;
 import morales.david.desktop.managers.DataManager;
 import morales.david.desktop.managers.eventcallbacks.*;
-import morales.david.desktop.ClientManager;
+import morales.david.desktop.netty.ClientManager;
 import morales.david.desktop.models.*;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;

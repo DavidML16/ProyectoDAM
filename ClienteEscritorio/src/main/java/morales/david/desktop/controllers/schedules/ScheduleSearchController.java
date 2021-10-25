@@ -14,7 +14,7 @@ import morales.david.desktop.controllers.modals.AdvancedScheduleExportModalContr
 import morales.david.desktop.interfaces.Controller;
 import morales.david.desktop.managers.AdvSchedulerManager;
 import morales.david.desktop.managers.DataManager;
-import morales.david.desktop.ClientManager;
+import morales.david.desktop.netty.ClientManager;
 import morales.david.desktop.models.Classroom;
 import morales.david.desktop.models.Group;
 import morales.david.desktop.models.Teacher;

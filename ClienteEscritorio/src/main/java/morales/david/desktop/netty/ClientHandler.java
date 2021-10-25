@@ -1,4 +1,4 @@
-package morales.david.desktop;
+package morales.david.desktop.netty;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -24,12 +24,15 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
         for(Packet packet : clientManager.getPendingPackets())
             clientManager.sendPacketIO(packet);
 
+        clientManager.getPendingPackets().clear();
+
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
 
-        Platform.exit();
+        if(!clientManager.isClosedManually())
+            Platform.exit();
 
     }
 

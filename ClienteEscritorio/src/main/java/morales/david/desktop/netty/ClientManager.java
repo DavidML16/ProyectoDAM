@@ -1,19 +1,19 @@
-package morales.david.desktop;
+package morales.david.desktop.netty;
 
 import com.google.gson.internal.LinkedTreeMap;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ConnectTimeoutException;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.FutureListener;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
+import morales.david.desktop.Client;
 import morales.david.desktop.controllers.LoginController;
 import morales.david.desktop.controllers.options.BackupController;
 import morales.david.desktop.controllers.options.ImportController;
@@ -25,7 +25,6 @@ import morales.david.desktop.models.packets.PacketType;
 import morales.david.desktop.utils.Constants;
 
 import java.io.FileNotFoundException;
-import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +52,8 @@ public final class ClientManager {
 
     private boolean closed;
 
+    private boolean closedManually;
+
     public ClientManager() {
 
         this.pendingPackets = new ArrayList<>();
@@ -60,56 +61,57 @@ public final class ClientManager {
 
         this.closed = true;
 
+        this.closedManually = false;
+
     }
 
     public void open() {
 
         group = new NioEventLoopGroup();
 
-        try {
+        bootstrap = new Bootstrap()
+                .group(group)
+                .channel(NioSocketChannel.class)
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 7000)
+                .handler(new ClientInitializer());
 
-            bootstrap = new Bootstrap()
-                    .group(group)
-                    .channel(NioSocketChannel.class)
-                    .handler(new ClientInitializer());
+        final ChannelFuture f = bootstrap.connect(Constants.SERVER_IP, Constants.SERVER_PORT);
 
-            final ChannelFuture f = bootstrap.connect(Constants.SERVER_IP, Constants.SERVER_PORT);
+        f.addListener((FutureListener<Void>) voidFuture -> {
 
-            f.addListener((FutureListener<Void>) voidFuture -> {
+            if(!f.isSuccess()) {
 
-                if(!f.isSuccess()) {
+                Platform.runLater(() -> {
 
-                    Platform.runLater(() -> {
+                    if (ScreenManager.getInstance().getController() instanceof LoginController) {
 
-                        if (ScreenManager.getInstance().getController() instanceof LoginController) {
+                        LoginController loginController = (LoginController) ScreenManager.getInstance().getController();
 
-                            LoginController loginController = (LoginController) ScreenManager.getInstance().getController();
+                        loginController.getMessageLabel().setText(Constants.MESSAGES_ERROR_SERVER_NO_CONNECTION);
+                        loginController.getMessageLabel().setTextFill(Color.TOMATO);
+                        loginController.getLoginButton().setDisable(false);
+                        loginController.getLoginButton().setText("Iniciar sesión");
 
-                            loginController.getMessageLabel().setText(Constants.MESSAGES_ERROR_SERVER_NO_CONNECTION);
-                            loginController.getMessageLabel().setTextFill(Color.TOMATO);
+                        ClientManager.getInstance().close();
 
-                        }
+                    }
 
-                    });
+                });
 
-                }
+            }
 
-            });
+        });
 
-            channel = f.sync().channel();
+        channel = f.channel();
 
-            closed = false;
-
-
-        } catch (InterruptedException e) {
-
-            e.printStackTrace();
-
-        }
+        closed = false;
+        closedManually = false;
 
     }
 
     public void close() {
+
+        closedManually = true;
 
         if(group != null) {
 
@@ -119,7 +121,8 @@ public final class ClientManager {
         }
 
         closed = true;
-        INSTANCE = null;
+
+        pendingPackets.clear();
 
     }
 
@@ -157,6 +160,8 @@ public final class ClientManager {
 
                             loginController.getMessageLabel().setText(Constants.MESSAGES_ERROR_LOGIN);
                             loginController.getMessageLabel().setTextFill(Color.TOMATO);
+                            loginController.getLoginButton().setDisable(false);
+                            loginController.getLoginButton().setText("Iniciar sesión");
 
                         }
 
@@ -195,6 +200,8 @@ public final class ClientManager {
 
                             screenManager.openScene("login.fxml", "Iniciar sesión" + Constants.WINDOW_TITLE);
 
+                            close();
+
                         }
 
                     }
@@ -212,6 +219,8 @@ public final class ClientManager {
                     if (receivedPacket.getType().equalsIgnoreCase(PacketType.EXIT.getConfirmation())) {
 
                         close();
+
+                        Platform.exit();
 
                     }
 
@@ -743,6 +752,10 @@ public final class ClientManager {
         return closed;
     }
 
+    public boolean isClosedManually() {
+        return closedManually;
+    }
+
     public List<Packet> getPendingPackets() {
         return pendingPackets;
     }
@@ -775,7 +788,7 @@ public final class ClientManager {
         final ByteBuf byteBufMsg = channel.alloc().buffer(msg.length());
         byteBufMsg.writeBytes(msg.getBytes());
 
-        if(channel != null)
+        if (channel != null && channel.isOpen())
             channel.writeAndFlush(byteBufMsg);
 
     }

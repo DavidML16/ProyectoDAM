@@ -15,6 +15,7 @@ import morales.david.desktop.managers.ScreenManager;
 import morales.david.desktop.models.packets.Packet;
 import morales.david.desktop.models.packets.PacketBuilder;
 import morales.david.desktop.models.packets.PacketType;
+import morales.david.desktop.netty.ClientManager;
 import morales.david.desktop.utils.ConfigUtil;
 import morales.david.desktop.utils.Constants;
 import morales.david.desktop.utils.Utils;

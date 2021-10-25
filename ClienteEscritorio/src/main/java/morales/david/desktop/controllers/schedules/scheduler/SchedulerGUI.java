@@ -16,7 +16,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import morales.david.desktop.interfaces.Hideable;
-import morales.david.desktop.ClientManager;
+import morales.david.desktop.netty.ClientManager;
 import morales.david.desktop.models.Day;
 import morales.david.desktop.models.Hour;
 import morales.david.desktop.models.SchedulerItem;
